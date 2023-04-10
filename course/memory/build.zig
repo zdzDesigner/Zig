@@ -9,7 +9,8 @@ pub fn build(b: *std.build.Builder) void {
 
     // Standard release options allow the person running `zig build` to select
     // between Debug, ReleaseSafe, ReleaseFast, and ReleaseSmall.
-    const mode = b.standardReleaseOptions();
+    // const mode = b.standardReleaseOptions();
+    const mode = std.builtin.Mode.ReleaseSmall; // ReleaseSmall
 
     const exe = b.addExecutable("memory", "src/main.zig");
     // exe.linkLibC(); // c_allocator

@@ -1,5 +1,5 @@
 reset
 erase
-loadfile /home/zdz/Documents/Try/Zig/bluepill/application.bin 0x08000000
+loadfile ./zig-out/bin/bluepill.bin 0x08000000
 r
 qc

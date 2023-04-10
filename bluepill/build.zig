@@ -16,8 +16,11 @@ pub fn build(b: *std.build.Builder) void {
 
     // Standard release options allow the person running `zig build` to select
     // between Debug, ReleaseSafe, ReleaseFast, and ReleaseSmall.
-    // const mode = b.standardReleaseOptions(std.builtin.Mode.ReleaseSmall); // ReleaseSmall
-    const mode = std.builtin.Mode.ReleaseSmall; // ReleaseSmall
+    // const mode = b.standardReleaseOptions(); // ReleaseSmall
+    // const mode = std.builtin.Mode.ReleaseSmall; // ReleaseSmall
+    // const mode = std.builtin.Mode.ReleaseFast; // ReleaseSmall
+    const mode = std.builtin.Mode.Debug; // ReleaseSmall
+    
 
     const exe = b.addExecutable("bluepill.elf", "src/main.zig");
     exe.setTarget(target catch |err| {
