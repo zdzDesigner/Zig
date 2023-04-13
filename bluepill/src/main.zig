@@ -9,7 +9,7 @@ export fn main() void {
     while (true) {
         var i: u32 = 0;
         GPIOC_ODR.* ^= @as(u32, 1 << 13); // 去反
-        while (i < 100000) { // 硬等待
+        while (i < 10000) { // 硬等待
             i += 1;
         }
     }

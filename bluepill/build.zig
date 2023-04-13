@@ -29,6 +29,7 @@ pub fn build(b: *std.build.Builder) void {
     });
     exe.setBuildMode(mode);
     exe.setLinkerScriptPath(std.build.FileSource.relative("./memory.ld"));
+    // exe.setLinkerScriptPath(std.build.FileSource.relative("./STM32F103C8Tx_FLASH.ld"));
     exe.install();
 
     const run_cmd = exe.run();
