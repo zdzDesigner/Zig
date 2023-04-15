@@ -1,20 +1,18 @@
 
 
-all:c/main zig/main go/main cpp/main
+all:c zig go cpp
 
-c/main:
+c:c/main.c
 	cd c && gcc -o main main.c
 
-
-
-zig/main:
+zig:zig/main.zig
 	cd zig && zig build-exe  main.zig  -O ReleaseSmall  --name main
 
 
-go/main:
+go:go/main.go
 	cd go && go build main.go
 
-cpp/main:
+cpp:cpp/main.cpp
 	cd cpp && g++ -o main main.cpp
 
 
@@ -26,3 +24,4 @@ bench:
 
 # --warmup 3 'grep -R TODO *'
 
+.PHONY:c zig go cpp
