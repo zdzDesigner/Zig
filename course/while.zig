@@ -17,3 +17,8 @@ pub fn main() void {
         std.debug.print("i:{d}\n", .{i});
     }
 }
+
+test "test while" {
+    var i: usize = 1;
+    while (i < 10) : (i += 3) {}
+}

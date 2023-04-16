@@ -10,3 +10,9 @@ pub fn main() void {
         std.debug.print("index:{d},item:{d}\n", .{ i, item });
     }
 }
+test "test for" {
+    
+    // 0.11 支持
+    // for (0..10) |_, i| {
+    // }
+}

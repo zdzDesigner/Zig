@@ -2,6 +2,7 @@ const std = @import("std");
 const expect = std.testing.expect;
 const deferLogic = @import("./defer.zig");
 const pointerLogic = @import("./pointer.zig");
+const structLogic = @import("./struct.zig");
 
 pub fn main() !void {
     // std.log.info("undefined:{}",.{undefined});
@@ -24,6 +25,7 @@ pub fn main() !void {
     std.log.info("{}", .{error.OutOfMemory == error.OutOfMemory}); // true
 
     pointerLogic.size();
+    structLogic.access();
 }
 
 // 导入测试
@@ -38,4 +40,7 @@ comptime {
     // _ = @import("./safe.zig");
     _ = @import("./optimize.zig");
     _ = @import("./pointer.zig");
+    _ = @import("./enum.zig");
+    _ = @import("./struct.zig");
+    _ = @import("./union.zig");
 }
