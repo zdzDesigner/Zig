@@ -6,4 +6,5 @@ test "test union" {
         float: u64,
         bool: bool,
     };
+    Val{ .int = 3 };
 }

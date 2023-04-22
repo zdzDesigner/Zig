@@ -11,6 +11,8 @@ pub fn size() void {
     // usize 和 isize 作为无符号和有符号整数给出，其大小与指针相同。
     std.log.info("usize sizeof:{}, *u8 sizeof:{}", .{ @sizeOf(usize), @sizeOf(*u8) });
     std.log.info("*u16 sizeof:{}", .{@sizeOf(*u16)});
+    var arr = [_]u8{ 5, 4, 2, 6 };
+    std.log.info("&arr:{}", .{@TypeOf(&arr)}); // &arr:*[4]u8
 }
 
 fn inc(i: *u8) void {
