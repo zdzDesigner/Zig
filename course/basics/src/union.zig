@@ -6,5 +6,7 @@ test "test union" {
         float: u64,
         bool: bool,
     };
-    Val{ .int = 3 };
+    const v = Val{ .int = 3 };
+
+    try expect(v.int == 3);
 }
