@@ -1,6 +1,6 @@
 const expect = @import("std").testing.expect;
 test "test undefined" {
-    // undefined可赋值给任何类型的变量, 这里无法确认类型, 则类型为@TypeOf(undefined)
+    // undefined 可赋值给任何类型的变量, 这里"无法确认类型", 则类型为@TypeOf(undefined)
     // const maxage = undefined;
     // try expect(@TypeOf(maxage) == undefined);
     // error: 无法对比
@@ -19,7 +19,7 @@ test "test array" {
 }
 
 test "test while" {
-    var sum: u8 = 0;
+    var sum: u16 = 0;
     var i: u8 = 1;
     while (i <= 10) : (i += 1) {
         sum += i;

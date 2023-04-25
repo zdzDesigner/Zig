@@ -19,6 +19,7 @@ pub fn main() !void {
     const AllocationError = error{OutOfMemory};
     const mybe_error: AllocationError!u8 = 10;
     std.log.info("mybe_error type: {}", .{@TypeOf(mybe_error)}); // error{OutOfMemory}!u8
+    std.log.info("error type:{}", .{@TypeOf(error{OutOfMemory})}); // error type:type
     std.log.info("{}", .{@TypeOf(error.OutOfMemory)}); // error{OutOfMemory}
     // std.log.info("{}", .{@ptrToInt(&error.OutOfMemory)}); // error.OutOfMemory
     std.log.info("{}", .{error.OutOfMemory}); // error.OutOfMemory
