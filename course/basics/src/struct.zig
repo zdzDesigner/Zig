@@ -16,9 +16,9 @@ const OTProtol = struct {
 const ot = OTProtol{ .ErrorCode = 2, .Message = "ok", .Data = null };
 
 pub fn access() void {
-    std.log.info("OTProtol.Data:{}", .{OTProtol.Data});
+    std.log.info("OTProtol.Data:{}", .{OTProtol.Data}); // OTProtol.Data:struct.OTProtol.Data
     // info: OTProtol.Data:struct.OTProtol.Data
-    std.log.info("OTProtol.List:{}", .{OTProtol.List});
+    std.log.info("OTProtol.List:{}", .{OTProtol.List}); // OTProtol.List:struct.OTProtol.List
     // info: OTProtol.List:struct.OTProtol.List
 
 }

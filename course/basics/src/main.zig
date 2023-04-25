@@ -3,6 +3,7 @@ const expect = std.testing.expect;
 const deferLogic = @import("./defer.zig");
 const pointerLogic = @import("./pointer.zig");
 const structLogic = @import("./struct.zig");
+const stringLogic = @import("./string.zig");
 
 pub fn main() !void {
     // std.log.info("undefined:{}",.{undefined});
@@ -27,6 +28,7 @@ pub fn main() !void {
 
     pointerLogic.size();
     structLogic.access();
+    stringLogic.u();
 }
 
 // 导入测试
@@ -44,4 +46,5 @@ comptime {
     _ = @import("./enum.zig");
     _ = @import("./struct.zig");
     _ = @import("./union.zig");
+    _ = @import("./string.zig");
 }
