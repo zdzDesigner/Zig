@@ -19,7 +19,7 @@ test "test enum" {
     };
     // try expect(Code2.fail == 1);
     //  error: incompatible types: 'enum.test.test enum.Code' and 'comptime_int'
-    try expect(@enumToInt(Code2.fail) == 1);
+    try expect(Code2.fail == 1);
 }
 test "test enum value" {
     const Code3 = enum(u16) {
@@ -31,7 +31,7 @@ test "test enum value" {
 
     // try expect(Code.server_panic == 501);
     //  error: incompatible types: 'enum.test.test enum.Code' and 'comptime_int'
-    try expect(@enumToInt(Code3.server_panic) == 501);
+    try expect(@intFromEnum(Code3.server_panic) == 501);
 }
 
 const Code = enum(u16) {

@@ -30,7 +30,7 @@ test "test while" {
 test "test for" {
     const str = [_]u8{ 'z', 'd', 'z' };
 
-    for (str) |char, i| {
+    for (str, 0..) |char, i| {
         if (i == 0) {
             try expect(char == 'z');
         }
