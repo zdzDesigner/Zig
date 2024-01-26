@@ -1,56 +1,40 @@
 const std = @import("std");
 
-pub fn build_old(b: *std.build.Builder) void {
-    // Standard target options allows the person running `zig build` to choose
-    // what target to build for. Here we do not override the defaults, which
-    // means any target is allowed, and the default is native. Other options
-    // for restricting supported target set are available.
-    const target = b.standardTargetOptions(.{});
-
-    // Standard release options allow the person running `zig build` to select
-    // between Debug, ReleaseSafe, ReleaseFast, and ReleaseSmall.
-    const mode = b.standardReleaseOptions();
-
-    const exe = b.addExecutable("basics", "src/main.zig");
-    exe.setTarget(target);
-    exe.setBuildMode(mode);
-    exe.install();
-
-    const run_cmd = exe.run();
-    run_cmd.step.dependOn(b.getInstallStep());
-    if (b.args) |args| {
-        run_cmd.addArgs(args);
-    }
-
-    const run_step = b.step("run", "Run the app");
-    run_step.dependOn(&run_cmd.step);
-
-    const exe_tests = b.addTest("src/main.zig");
-    // b.addTest("src/defer.zig");
-    exe_tests.setTarget(target);
-    exe_tests.setBuildMode(mode);
-
-    const test_step = b.step("test", "Run unit tests");
-    test_step.dependOn(&exe_tests.step);
-}
-
 pub fn build(b: *std.Build) void {
+    // 标准构建目标
     const target = b.standardTargetOptions(.{});
+    // 标准构建模式
     const optimize = b.standardOptimizeOption(.{});
+    // 添加一个二进制可执行程序构建
     const exe = b.addExecutable(.{
         .name = "test",
         .root_source_file = .{ .path = "src/main.zig" },
         .target = target,
         .optimize = optimize,
     });
+
+    // 添加到顶级 install step 中作为依赖
+    // "Artifact" 是一个广泛用于软件开发和交付的术语，它强调了构建过程产生的最终输出物
+    // "Artifact" 通常指的是编译、链接和打包后的二进制文件或库文件。这可以是可执行文件（例如，一个可运行的程序）、库文件（例如，一个共享库或静态库）等
     b.installArtifact(exe);
     const run_cmd = b.addRunArtifact(exe);
+
+    // 注意：这个步骤不是必要的，显示声明运行依赖于构建
+    // 这会使运行是从构建输出目录（默认为 zig-out/bin ）运行而不是构建缓存中运行
+    // 不过，如果应用程序运行依赖于其他已存在的文件（例如某些 ini 配置文件）
+    // 这可以确保它们正确的运行
     run_cmd.step.dependOn(b.getInstallStep());
+    // 注意：此步骤不是必要的
+    // 此操作允许用户通过构建系统的命令传递参数，例如 zig build  -- arg1 arg2
+    // 当前是将参数传递给运行构建结果
     if (b.args) |args| {
         run_cmd.addArgs(args);
     }
+    // 指定一个 step 为 run
     const run_step = b.step("run", "Run the app");
+    // 指定该 step 依赖于 run_cmd，即实际的运行
     run_step.dependOn(&run_cmd.step);
+
     const unit_tests = b.addTest(.{
         .root_source_file = .{ .path = "src/main.zig" },
         .target = target,
@@ -61,3 +45,6 @@ pub fn build(b: *std.Build) void {
     const test_step = b.step("test", "Run unit tests");
     test_step.dependOn(&run_unit_tests.step);
 }
+
+// zig-cache : 缓存目录
+// zig-out : 生成目标  zig build --prefix 更改

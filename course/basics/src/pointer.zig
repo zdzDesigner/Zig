@@ -1,5 +1,5 @@
 const std = @import("std");
-const expect = @import("std").testing.expect;
+const expect = std.testing.expect;
 
 // Zig 中的普通指针不允许将 0 或 null 作为值。它们遵循语法 *T ，其中 T 是子类型。
 // 引用使用 &variable 完成，取消引用使用 variable.* 完成。
@@ -10,7 +10,9 @@ const expect = @import("std").testing.expect;
 pub fn size() void {
     // usize 和 isize 作为无符号和有符号整数给出，其大小与指针相同。
     std.log.info("usize sizeof:{}, *u8 sizeof:{}", .{ @sizeOf(usize), @sizeOf(*u8) });
-    std.log.info("*u16 sizeof:{}", .{@sizeOf(*u16)});
+    std.log.info("u16 sizeof:{}, *u16 sizeof:{}", .{ @sizeOf(u16), @sizeOf(*u16) });
+    std.log.info("u17 sizeof:{}, *u17 sizeof:{}", .{ @sizeOf(u17), @sizeOf(*u17) });
+    std.log.info("u18 sizeof:{}, *u18 sizeof:{}", .{ @sizeOf(u18), @sizeOf(*u18) });
     var arr = [_]u8{ 5, 4, 2, 6 };
     std.log.info("&arr:{}", .{@TypeOf(&arr)}); // &arr:*[4]u8
 }

@@ -1,4 +1,5 @@
-const expect = @import("std").testing.expect;
+const std = @import("std");
+const expect = std.testing.expect;
 
 pub fn localEnum() void {
     // const RET = enum {
@@ -8,6 +9,19 @@ pub fn localEnum() void {
     //         return self == Code.fail;
     //     }
     // };
+    const Small = enum {
+        one,
+        two,
+        three,
+        four,
+        five,
+        six,
+    };
+    std.log.info("Small.two:{d}", .{@intFromEnum(Small.two)}); // Small.two:1
+    std.log.info("{}", .{@TypeOf(Small.five)}); // enum.localEnum.Small
+
+    const which = .one; // 自动推导
+    _ = which;
 }
 
 test "test enum" {
@@ -19,7 +33,8 @@ test "test enum" {
     };
     // try expect(Code2.fail == 1);
     //  error: incompatible types: 'enum.test.test enum.Code' and 'comptime_int'
-    try expect(Code2.fail == 1);
+    try expect(@intFromEnum(Code2.fail) == 1);
+    try expect(Code2.fail == @as(Code2, @enumFromInt(1)));
 }
 test "test enum value" {
     const Code3 = enum(u16) {

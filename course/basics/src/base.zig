@@ -1,3 +1,4 @@
+const log = @import("std").log;
 const expect = @import("std").testing.expect;
 test "test undefined" {
     // undefined 可赋值给任何类型的变量, 这里"无法确认类型", 则类型为@TypeOf(undefined)
@@ -38,8 +39,20 @@ test "test for" {
             try expect(i == 1);
         }
     }
+    for (str[0..2], 0..) |char, i| {
+        if (i == 0) {
+            try expect(char == 'z');
+        }
+        if (char == 'd') {
+            try expect(i == 1);
+        }
+    }
 
-    for (str) |_| {}
+    // for (str) |char| {
+    //     log.info("{c}", char);
+    //     // _ = char;
+    //
+    // }
 }
 
 fn get_name() [1]u8 {
