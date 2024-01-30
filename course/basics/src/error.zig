@@ -35,7 +35,7 @@ fn failFn() error{Oops}!u16 {
 }
 
 test "test catch prevent" {
-    var val = failFn() catch |err| {
+    const val = failFn() catch |err| {
         try expect(err == error.Oops);
         return;
     };

@@ -1,13 +1,34 @@
 const std = @import("std");
 const expect = std.testing.expect;
 
-pub fn slice() void {
+pub fn logic() void {
+    slice();
+    array();
+}
+
+fn array() void {
+    var arr = [_]u8{ 1, 3, 4, 5 };
+    arr[0] = 33;
+
+    std.log.info("{any}", .{arr});
+    std.log.info("{}", .{@TypeOf(arr)}); // [4]u8
+}
+
+fn slice() void {
+    std.log.info("--------- slice ---------\n", .{});
     const a = [_]i32{ 1, 2, 3, 4, 5 };
-    var end: usize = 4;
+    var end: usize = 4; // var 编译时未知
+    end = 4;
     const b = a[1..end];
-    // std.debug.print("{any}", .{@TypeOf(b)});
-    std.debug.print("{}\n", .{@TypeOf(b)});
-    std.log.info("{any}", .{@TypeOf(b)});
+    std.log.info("{any}", .{@TypeOf(b)}); // []const i32  切片
+
+    const end2: usize = 4; // const 编译时已知
+    const b2 = a[1..end2];
+    std.log.info("{any}", .{@TypeOf(b2)}); // *const [3]i32
+
+    const c = a[1..3];
+    std.log.info("{any}", .{c});
+    std.log.info("{}", .{@TypeOf(c)});
 }
 
 // b 是一个长度为 3 的切片，并且是一个指向 a 的指针。
@@ -17,8 +38,8 @@ pub fn slice() void {
 
 test "arr pointer test" {
     const a = [_]u8{ 1, 2, 9, 1, 8 };
-    try expect(@TypeOf(a) ==  [5]u8);
-    var b = a[1..4];
+    try expect(@TypeOf(a) == [5]u8);
+    const b = a[1..4];
 
     try expect(a[3] == b[2]);
     try expect(@TypeOf(b) == *const [3]u8);
@@ -33,7 +54,7 @@ test "arr pointer test" {
 
 test "slice test" {
     const a = [_]i32{ 1, 2, 3, 4, 5 };
-    var end: usize = 4;
+    const end: usize = 4;
     const b = a[1..end];
     try expect(@TypeOf(b) == []const i32); // 切片
 }

@@ -35,6 +35,8 @@ test "for i" {
     try expect(sum == 14);
 }
 
+// inline 关键字会将 for 循环展开，这允许代码执行一些仅在编译时有效的操作
+// 转换为编译期计算
 test "for ." {
     inline for (.{ "xx", "bb" }, 0..) |val, i| {
         if (i == 0) {

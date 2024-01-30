@@ -11,7 +11,7 @@ pub fn deferReturn() u8 {
 }
 pub fn deferReturnPointer() *u8 {
     var val: u8 = 1;
-    var i: *u8 = &val;
+    const i: *u8 = &val;
     // defer {
     //     *i += 10; //  出错: 如何修改指针指向的值
     //     std.log.info("defer i:{d}", .{i});

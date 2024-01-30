@@ -38,9 +38,9 @@ pub fn main() void {
     std.log.info("{}", .{error.xx == error.xx}); // true
 
     pointerLogic.size();
-    slice.slice();
-    // structLogic.access();
-    stringLogic.u();
+    slice.logic();
+    structLogic.logic();
+    stringLogic.logic();
     // bulidinLogic.conv();
     forLogic.logic();
     typeLogic.logic();

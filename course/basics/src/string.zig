@@ -1,18 +1,29 @@
+const std = @import("std");
 const log = @import("std").log;
 const expect = @import("std").testing.expect;
 
-pub fn u() void {
-    const char = 'v';
+pub fn logic() void {
+    log.info("--------- string ----------", .{});
+    const char: u8 = '8';
     log.info("c:{c},u:{u},d:{d}", .{ char, char, char });
     // While we're on this subject, 'c' (ASCII encoded character)
     // would work in place for 'u' because the first 128 characters
     // of UTF-8 are the same as ASCII!
     const enname = "aaaa";
-    log.info("{any}", .{@TypeOf(enname)});
+    log.info("{any}", .{@TypeOf(enname)}); // *const [4:0]u8  哨兵数组
+    log.info("enname:{s}", .{enname});
+    log.info("len:{}", .{enname.len});
+    log.info("sentry:{}", .{enname[enname.len]});
 }
 
-test "test union" {}
+test "test custom string type" {
+    const String = []const u8;
+    const list = [_]String{
+        "aaa", "bbb",
+    };
 
+    try expect(std.mem.eql(u8, list[0], "aaa"));
+}
 
 // 字符串常量被存储在二进制文件的一个特殊位置，并且会去重。
 // 因此，指向字符串字面量的变量将是指向这个特殊位置的指针。
