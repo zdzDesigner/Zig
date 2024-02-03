@@ -9,8 +9,15 @@ const slice = @import("./slice.zig");
 const forLogic = @import("./for.zig");
 const typeLogic = @import("./type.zig");
 const enumLogic = @import("./enum.zig");
+const comptimeLogic = @import("./comptime.zig");
+const whileLogic = @import("./while.zig");
+const unionLogic = @import("./union.zig");
+const optionalLogic = @import("./optional.zig");
+const errorLogic = @import("./error.zig");
+const heapLogic = @import("./heap.zig");
+const httpLogic = @import("./lib/http.zig");
 
-pub fn main() void {
+pub fn main() !void {
     // std.log.info("undefined:{}", .{undefined});
     // error: unable to format type "@TypeOf(undefined)"
     //
@@ -37,7 +44,7 @@ pub fn main() void {
     std.log.info("{}", .{error.xx}); // error.xx
     std.log.info("{}", .{error.xx == error.xx}); // true
 
-    pointerLogic.size();
+    pointerLogic.logic();
     slice.logic();
     structLogic.logic();
     stringLogic.logic();
@@ -45,6 +52,13 @@ pub fn main() void {
     forLogic.logic();
     typeLogic.logic();
     enumLogic.localEnum();
+    comptimeLogic.logic();
+    whileLogic.logic();
+    unionLogic.logic();
+    optionalLogic.logic();
+    errorLogic.logic();
+    heapLogic.logic();
+    try httpLogic.httpServer();
 }
 
 // 导入测试

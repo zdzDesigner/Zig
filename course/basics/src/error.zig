@@ -1,7 +1,16 @@
+const std = @import("std");
 const expect = @import("std").testing.expect;
 
+pub fn logic() void {
+    std.log.info("-------- error --------", .{});
+
+    std.log.info("{}", .{@TypeOf(error{Err})}); // type
+}
+
+// error sets
+
 test "test error" {
-    // 这里的 error 不是类型, 是*类型生成器*
+    // 这里的 error 不是类型, 是错误类型集合: "类型生成器"
     const FileOpenError = error{ AccessDenied, OutOfMemory, FileNotFound };
     const AllocationError = error{OutOfMemory};
 

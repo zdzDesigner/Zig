@@ -3,10 +3,24 @@ const mem = std.mem;
 const expect = std.testing.expect;
 
 pub fn logic() void {
+    std.log.info("--------- for --------", .{});
     const items = [_]i32{ 3, 5, 1, 9 };
 
     for (items, 0..) |val, i| {
         std.debug.print("{} {}\n", .{ val, i });
+    }
+
+    const otheritems = [_]u8{ 4, 2, 1, 9 };
+
+    // `for` 在作用于多个序列上时，要求其长度相等。
+    for (items, otheritems) |a, a1| {
+        std.log.info("a:{},a1:{}", .{ a, a1 });
+    }
+
+
+    // for 左闭右开(两个点)  区分 switch 的三个点
+    for (0..4) |i| {
+        std.log.info("{}", .{i});
     }
 }
 

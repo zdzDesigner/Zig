@@ -7,13 +7,41 @@ const expect = std.testing.expect;
 // 有时，您可能有一个指向"未知数量元素"的指针。 [*]T 是解决方案，它的工作方式类似于 *T ，但也支持索引语法、指针算术和切片。
 // 与 *T 不同，它不能指向没有已知大小的类型。 *T 强制到 [*]T 。
 
-pub fn size() void {
+const User = struct {
+    id: u64,
+    power: i32,
+    name: []u8,
+};
+fn updateUser(user: User) void {
+    std.log.info("updateUser user address: {*}", .{&user}); // pointer.User@7ffefe11c0c0
+    user.name[0] = '!';
+}
+
+pub fn logic() void {
+    std.log.info("------- pointer -------", .{});
+    size();
+
+    var name = [4]u8{ 'a', 'b', 'c', 'd' };
+
+    const user = User{
+        .id = 1,
+        .power = 3,
+        .name = name[1..],
+    };
+
+    updateUser(user);
+    std.log.info("user address: {*}", .{&user}); // pointer.User@7ffefe11c148
+    std.log.info("update user: {}", .{user}); // 更改成功
+}
+
+fn size() void {
     // usize 和 isize 作为无符号和有符号整数给出，其大小与指针相同。
     std.log.info("usize sizeof:{}, *u8 sizeof:{}", .{ @sizeOf(usize), @sizeOf(*u8) });
     std.log.info("u16 sizeof:{}, *u16 sizeof:{}", .{ @sizeOf(u16), @sizeOf(*u16) });
     std.log.info("u17 sizeof:{}, *u17 sizeof:{}", .{ @sizeOf(u17), @sizeOf(*u17) });
     std.log.info("u18 sizeof:{}, *u18 sizeof:{}", .{ @sizeOf(u18), @sizeOf(*u18) });
     var arr = [_]u8{ 5, 4, 2, 6 };
+    std.log.info("arr:{}, address: {*}", .{ @TypeOf(arr), &arr }); // arr:*[4]u8, 栈里
     std.log.info("&arr:{}", .{@TypeOf(&arr)}); // &arr:*[4]u8
 }
 

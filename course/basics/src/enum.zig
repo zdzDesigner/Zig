@@ -2,6 +2,7 @@ const std = @import("std");
 const expect = std.testing.expect;
 
 pub fn localEnum() void {
+    std.log.info("--------- enum --------", .{});
     // const RET = enum {
     //     success,
     //     // error: use of undeclared identifier 'RET'
@@ -22,6 +23,9 @@ pub fn localEnum() void {
 
     const which = .one; // 自动推导
     _ = which;
+
+    std.log.info("{s}", .{@tagName(Small.six)}); // six
+    std.log.info("equal:{}", .{std.mem.eql(u8, @tagName(Small.six), "six")}); // true
 }
 
 test "test enum" {

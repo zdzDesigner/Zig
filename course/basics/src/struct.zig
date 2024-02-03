@@ -50,9 +50,20 @@ fn Table() type {
 pub fn logic() void {
     std.log.info("---------- struct --------", .{});
     access();
+    // const User = struct {
+    //     power: u64 = 0,
+    //     name: []const u8,
+    // }
     const user = User(){ .name = "zdz" };
-    std.log.info("user.name: {s}\n", .{user.name});
-    std.log.info("user.name type: {}\n", .{@TypeOf(user.name)});
+    std.log.info("user.name type: {}", .{@TypeOf(user.name)});
+    std.log.info("user.name: {s}", .{user.name});
+    std.log.info("user.name: {*}", .{user.name}); // u8@10e1152  ({*} 和 pointer.ptr的关系)
+    std.log.info("user.name.ptr: {*}", .{user.name.ptr}); // u8@10e1152
+    std.log.info("user.name.len: {}", .{user.name.len});
+    std.log.info("&user:{*}, &user.power:{*}, &user.name:{}", .{ &user, &user.power, &user.name });
+    // info: &user:struct.User()@10ddc00,
+    //       &user.power:u64@10ddc00,
+    //       &user.name:[]const u8@10ddc08
 
     const userInitial = UserInitial.init("zdz", 36);
     std.log.info("userInitial age: {}\n", .{userInitial.age});

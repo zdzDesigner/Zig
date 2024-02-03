@@ -5,6 +5,7 @@ pub fn Row(comptime num: usize) type {
     return [num]String;
 }
 
+// 分割符
 pub const Separator = struct {
     pub const Mode = enum {
         ascii,
@@ -36,7 +37,6 @@ pub const Separator = struct {
     };
 
     const Position = enum { First, Text, Sep, Last };
-
     fn get(mode: Mode, row_pos: Position, col_pos: Position) []const u8 {
         const sep_table = switch (mode) {
             .ascii => ascii,
@@ -53,7 +53,7 @@ pub fn Table(comptime len: usize) type {
         header: ?Row(len) = null,
         footer: ?Row(len) = null,
         rows: []const Row(len),
-        mode: Separator.Mode = .ascii,
+        mode: Separator.Mode = .ascii, // 根据左侧类型自动推导 省去 Separator.Mode.ascii
         padding: usize = 0,
 
         const Self = @This();

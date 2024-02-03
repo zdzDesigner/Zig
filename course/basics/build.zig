@@ -5,6 +5,11 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     // 标准构建模式
     const optimize = b.standardOptimizeOption(.{});
+
+    // 获取包
+    const limine = b.dependency("limine", .{});
+    const httpz = b.dependency("httpz", .{});
+
     // 添加一个二进制可执行程序构建
     const exe = b.addExecutable(.{
         .name = "test",
@@ -12,6 +17,11 @@ pub fn build(b: *std.Build) void {
         .target = target,
         .optimize = optimize,
     });
+
+    // 获取包中的模块
+    const limineModule = limine.module("limine");
+    exe.root_module.addImport("custom_import_limine", limineModule);
+    exe.root_module.addImport("httpz", httpz.module("httpz"));
 
     // 添加到顶级 install step 中作为依赖
     // "Artifact" 是一个广泛用于软件开发和交付的术语，它强调了构建过程产生的最终输出物
