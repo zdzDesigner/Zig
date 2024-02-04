@@ -7,6 +7,9 @@ pub fn logic() void {
     std.log.info("-------- heap --------", .{});
     base() catch {}; // 捕获错误联合
     oom() catch {};
+
+    // std.heap.ArenaAllocator
+    // std.heap.FixedBufferAllocator
 }
 
 fn base() !void {

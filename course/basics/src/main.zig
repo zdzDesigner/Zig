@@ -16,6 +16,7 @@ const optionalLogic = @import("./optional.zig");
 const errorLogic = @import("./error.zig");
 const heapLogic = @import("./heap.zig");
 const httpLogic = @import("./lib/http.zig");
+const ioLogic = @import("./io.zig");
 
 pub fn main() !void {
     // std.log.info("undefined:{}", .{undefined});
@@ -58,7 +59,8 @@ pub fn main() !void {
     optionalLogic.logic();
     errorLogic.logic();
     heapLogic.logic();
-    try httpLogic.httpServer();
+    try ioLogic.logic();
+    // try httpLogic.httpServer();
 }
 
 // 导入测试

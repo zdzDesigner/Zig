@@ -9,4 +9,6 @@ pub fn logic() void {
     while (i < 10) : (i += 2) {
         std.log.info("while sub else:{}", .{i});
     }
+
+    // while (true) {}
 }
