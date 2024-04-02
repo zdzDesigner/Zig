@@ -53,11 +53,13 @@ pub fn Table(comptime len: usize) type {
         header: ?Row(len) = null,
         footer: ?Row(len) = null,
         rows: []const Row(len),
+        // []const [len][]const u8
         mode: Separator.Mode = .ascii, // 根据左侧类型自动推导 省去 Separator.Mode.ascii
         padding: usize = 0,
 
         const Self = @This();
 
+        // 定界符
         fn writeRowDelimiter(self: Self, writer: anytype, row_pos: Separator.Position, col_lens: [len]usize) !void {
             inline for (0..len, col_lens) |col_idx, max_len| {
                 const first_col = col_idx == 0;
@@ -102,6 +104,7 @@ pub fn Table(comptime len: usize) type {
             try writer.writeAll("\n");
         }
 
+        // 计算列长度
         fn calculateColumnLens(self: Self) [len]usize {
             var lens = std.mem.zeroes([len]usize);
             if (self.header) |header| {
@@ -134,8 +137,6 @@ pub fn Table(comptime len: usize) type {
             options: std.fmt.FormatOptions,
             writer: anytype,
         ) !void {
-            _ = options;
-            _ = fmt;
             _ = options;
             _ = fmt;
 

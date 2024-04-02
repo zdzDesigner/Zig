@@ -5,10 +5,23 @@ pub fn logic() void {
     std.log.info("-------- error --------", .{});
 
     std.log.info("{}", .{@TypeOf(error{Err})}); // type
+    const Err = error{VErr};
+    std.log.info("@errorName:{s}", .{@errorName(Err.VErr)});
+}
+
+test "for result assignment error" {
+    const arr = [_]u8{ 1, 3, 5, 7 };
+    const val = for (arr) |item| {
+        if (item > 100) break item;
+        // if (item > 1) break item;
+    } else {
+        std.debug.print("== error ==\n", .{});
+        std.process.exit(1);
+    };
+    std.debug.print("{d}\n", .{val});
 }
 
 // error sets
-
 test "test error" {
     // 这里的 error 不是类型, 是错误类型集合: "类型生成器"
     const FileOpenError = error{ AccessDenied, OutOfMemory, FileNotFound };

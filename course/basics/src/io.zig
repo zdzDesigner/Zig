@@ -10,7 +10,7 @@ pub fn logic() !void {
     try cmd();
 }
 
-fn readBuf(buf: []u8) void { // ??? 隐士转换
+fn readBuf(buf: []u8) void { // ??? 隐士转换: 入参为切片=> 指针 + 长度
     std.log.info("{}", .{@TypeOf(buf)}); // []u8
     // _ = buf;
 }

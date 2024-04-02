@@ -6,6 +6,34 @@ pub fn logic() void {
     log.info("--------- string ----------", .{});
     string();
     array();
+    connect();
+    extend();
+}
+
+fn extend() void {
+    // 切片是指向数组的指针
+    const names: []const []const u8 = &.{ "zdz", "zdc" };
+    std.log.info("names len:{}", .{names.len});
+    std.log.info("names typeof:{}", .{@TypeOf(names)}); // []const []const u8
+    std.log.info("names pointer:{*}", .{names}); // []const u8@10f3140
+    std.log.info("names value:{any}", .{names}); // { { 122, 100, 122 }, { 122, 100, 99 } }
+
+    const names2 = &.{ "zdz", "zdc" };
+    std.log.info("names2 len:{}", .{names2.len});
+    std.log.info("names2 typeof:{}", .{@TypeOf(names2)}); // *const struct{comptime *const [3:0]u8 = "zdz", comptime *const [3:0]u8 = "zdc"}
+    std.log.info("names2 pointer:{*}", .{names2}); // { { 122, 100, 122 }, { 122, 100, 99 } }
+    std.log.info("names2 pointer2:{*}", .{&names2}); // *const struct{comptime *const [3:0]u8 = "zdz", comptime *const [3:0]u8 = "zdc"}@10f5620
+
+    const names3 = .{ "zdz", "zdc" };
+    std.log.info("names3 len:{}", .{names3.len});
+    std.log.info("names3 typeof:{}", .{@TypeOf(names3)}); // struct{comptime *const [3:0]u8 = "zdz", comptime *const [3:0]u8 = "zdc"}
+    std.log.info("names3 pointer:{*}", .{&names3});
+
+    // 这里的inline 和 "v:{s}" 是关键, 编译时推到
+    // inline for (.{ "zdz", "zdc" }) |v| {
+    inline for (names3) |v| {
+        std.log.info("v:{s}", .{v});
+    }
 }
 
 fn array() void {
@@ -37,17 +65,23 @@ fn string() void {
     const char: u8 = '8';
     log.info("c:{c},u:{u},d:{d}", .{ char, char, char });
 
-    const enname = "aaaa"; // 推导为哨兵数组
+    const enname = "aaaa"; // 常量区
     log.info("enname typeof:{any}", .{@TypeOf(enname)}); // *const [4:0]u8  哨兵数组
+    log.info("enname addr:{*}", .{&enname});
     log.info("enname:{s}", .{enname});
     log.info("enname.len:{}", .{enname.len});
     log.info("sentry enname:{}", .{enname[enname.len]});
 
-    const zhname: []const u8 = "bbbb";
+    const zhname: []const u8 = "bbbb"; // 常量区
     log.info("zhname typeof:{any}", .{@TypeOf(zhname)}); // []const u8
+    log.info("zhname addr:{*}", .{&zhname});
     log.info("zhname:{s}", .{zhname});
     log.info("enname.len:{}", .{zhname.len});
     // log.info("sentry enname:{}", .{zhname[zhname.len]}); // error: index 4 outside slice of length 4
+
+    var stack = [_]u8{ 'a', 'a', 'a' };
+    stack[1] = 'b';
+    log.info("stack addr:{*}", .{&stack});
 
     const list = [_][]const u8{
         "aaa", "bbb",
@@ -57,6 +91,11 @@ fn string() void {
     log.info("list[0].len : {}", .{list[0].len});
     // log.info("sentry list[0] : {}", .{list[0][list[0].len]}); //  error: index 3 outside slice of length 3
 
+}
+fn connect() void {
+    const names = "aa" ++ "bbb";
+
+    log.info("names:{s}", .{names}); //names:aabbb
 }
 
 test "test custom string type" {

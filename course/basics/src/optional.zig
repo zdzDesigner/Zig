@@ -19,4 +19,9 @@ pub fn logic() void {
     if (lang) |val| {
         std.log.info("unwrap lang::unprint to there :{}", .{val});
     }
+
+    const nonport: ?[]const u8 = null;
+
+    const port = nonport orelse "8080";
+    std.log.info("port:{s}", .{port});
 }

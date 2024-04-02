@@ -17,13 +17,15 @@ const errorLogic = @import("./error.zig");
 const heapLogic = @import("./heap.zig");
 const httpLogic = @import("./lib/http.zig");
 const ioLogic = @import("./io.zig");
+const buildinFn = @import("./buildin_fn.zig");
 
 pub fn main() !void {
+
     // std.log.info("undefined:{}", .{undefined});
     // error: unable to format type "@TypeOf(undefined)"
     //
     const maxage = undefined;
-    std.log.info("{}", .{@TypeOf(maxage)});
+    std.log.info("{}", .{@TypeOf(maxage)}); // @TypeOf(undefined)
     const memory: u32 = undefined;
     std.log.info("{}", .{@TypeOf(memory)});
     //
@@ -37,7 +39,7 @@ pub fn main() !void {
     const mybe_error: AllocationError!u8 = 3;
     std.log.info("mybe_error type: {}", .{@TypeOf(mybe_error)}); // error{xx}!u8
     std.log.info("error type:{}", .{@TypeOf(error{xx})}); // error type:type
-    std.log.info("{}", .{@TypeOf(error.xx)}); // error{xx}
+    // std.log.info("{}", .{@TypeOf(error.xx)}); // error{xx}
     std.log.info("{}", .{@intFromError(error.xx)}); // info: 11
     std.log.info("{}", .{@intFromError(error.bb)}); // info: 12
     std.log.info("{}", .{@intFromPtr(&mybe_error)});
@@ -49,17 +51,18 @@ pub fn main() !void {
     slice.logic();
     structLogic.logic();
     stringLogic.logic();
-    // bulidinLogic.conv();
-    forLogic.logic();
-    typeLogic.logic();
-    enumLogic.localEnum();
-    comptimeLogic.logic();
-    whileLogic.logic();
-    unionLogic.logic();
+    bulidinLogic.logic();
+    // forLogic.logic();
+    // enumLogic.localEnum();
+    // comptimeLogic.logic();
+    // whileLogic.logic();
+    // unionLogic.logic();
     optionalLogic.logic();
     errorLogic.logic();
     heapLogic.logic();
-    try ioLogic.logic();
+    buildinFn.logic();
+    typeLogic.logic();
+    // try ioLogic.logic();
     // try httpLogic.httpServer();
 }
 

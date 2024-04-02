@@ -17,10 +17,11 @@ fn base() !void {
     const allocator = gpa.allocator();
     // std.log.info("{},{}", .{ gpa, allocator });
 
-    var length: usize = 40;
-    length = 40;
+    // var length: usize = 40;
+    // length = 40;
 
-    var arr = try allocator.alloc(usize, length);
+    // var arr = try allocator.alloc(usize, length);
+    var arr = try allocator.alloc(usize, 40);
     defer allocator.free(arr);
 
     for (0..arr.len) |i| {
