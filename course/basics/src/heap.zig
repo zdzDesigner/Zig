@@ -1,5 +1,4 @@
 const std = @import("std");
-const expect = std.expect;
 const testing = std.testing;
 const Allocator = std.mem.Allocator;
 
@@ -100,4 +99,17 @@ test "IntList: add" {
     try testing.expectEqual(@as(usize, 5), list.index);
     try testing.expectEqual(@as(u8, list.bufs[0]), 'a');
     try testing.expectEqual(@as(u8, list.bufs[1]), 'b');
+}
+
+test "GPA" {
+    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    const allocator = gpa.allocator();
+    defer {
+        const leaked = gpa.deinit();
+        std.debug.print("leaked:{}\n", .{leaked == std.heap.Check.leak});
+        if (leaked == std.heap.Check.leak) std.testing.expect(false) catch @panic("TEST FAIL"); //fail test; can't try in defer as defer is executed after we return
+    }
+
+    const bytes = try allocator.alloc(u8, 100);
+    defer allocator.free(bytes);
 }
