@@ -2,36 +2,41 @@ const std = @import("std");
 
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
-    const optimize = b.standardOptimizeOption(.{
-        .preferred_optimize_mode = .ReleaseSmall,
-    });
+    const optimize = b.standardOptimizeOption(.{});
 
-    // 可执行文件
-    const exe = b.addExecutable(.{
-        .name = "32_c",
-        .root_source_file = .{ .path = "src/main.zig" },
+    const sub_mod = b.dependency("sub", .{
         .target = target,
         .optimize = optimize,
     });
 
-    // 头文件
-    exe.addIncludePath(.{ .path = "src" });
+    const lib = b.addStaticLibrary(.{
+        .name = "bus",
+        .root_source_file = .{ .path = "src/root.zig" },
+        .target = target,
+        .optimize = optimize,
+    });
+    b.installArtifact(lib);
 
-    // 链接标准 C 库
-    exe.linkLibC();
-
-    // Produce the actual executable artifact file.
+    const exe = b.addExecutable(.{
+        .name = "bus",
+        .root_source_file = .{ .path = "src/main.zig" },
+        .target = target,
+        .optimize = optimize,
+    });
+    exe.root_module.addImport("sub", sub_mod.module("sub"));
+    exe.addIncludePath(.{
+        .path = sub_mod.builder.pathFromRoot(
+            sub_mod.module("libsub.include").root_source_file.?.path,
+        ),
+    });
     b.installArtifact(exe);
 
-    // This allows you to run the produced execuatble
-    // with zig build.
     const run_cmd = b.addRunArtifact(exe);
-    // To run it, we depend on building and installing first.
     run_cmd.step.dependOn(b.getInstallStep());
 
-    // This allows the user to pass arguments to the application in the build
-    // command itself, like this: `zig build run -- arg1 arg2 etc`
-    if (b.args) |args| run_cmd.addArgs(args);
+    if (b.args) |args| {
+        run_cmd.addArgs(args);
+    }
 
     // This creates a build step. It will be visible in the `zig build --help` menu,
     // and can be selected like this: `zig build run`
@@ -39,5 +44,3 @@ pub fn build(b: *std.Build) void {
     const run_step = b.step("run", "Run the app");
     run_step.dependOn(&run_cmd.step);
 }
-
-// zig build -Doptimize=ReleaseSmall

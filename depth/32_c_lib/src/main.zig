@@ -14,5 +14,6 @@ pub fn main() !void {
     // std.debug.print("zig: a++ == {}\n", .{math.increment(a)});
     std.debug.print("lib zig: a++ == {}\n", .{increment(a)});
 
+    // link libc
     _ = std.c.printf("zig: a + b == %d\n", c);
 }
