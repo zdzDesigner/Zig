@@ -11,19 +11,31 @@ pub fn build(b: *std.Build) void {
         .link_libc = true,
     });
 
-    // sub_mod.addCSourceFile(.{
-    //     .file = .{ .path = "lib/sum.c" },
-    // });
+    sub_mod.addIncludePath(.{ .path = "include" });
     sub_mod.addCSourceFiles(.{
         .root = .{ .path = "lib" },
         // .files = ([_][]const u8{"sum.c"})[0..],
         // .files = &[_][]const u8{"sum.c"},
         .files = &.{"sum.c"},
     });
-    sub_mod.addIncludePath(
-        .{ .path = "include" },
-    );
 
+    // compile tool pure c =============
+    const exe_c = b.addExecutable(.{
+        .name = "sub_c",
+        .target = target,
+        .optimize = optimize,
+    });
+    exe_c.addCSourceFiles(.{
+        .files = &.{"src/main.c"},
+        .flags = &.{},
+    });
+
+    // exe_c.linkLibC(); // 无需主动引入( addCSourceFiles 这里会自动引入 )
+    exe_c.addIncludePath(.{ .path = "include" });
+    exe_c.root_module.addImport("sub", sub_mod);
+    b.installArtifact(exe_c);
+
+    // compile tool static library ===============
     const lib = b.addStaticLibrary(.{
         .name = "sub",
         .root_source_file = .{ .path = "src/root.zig" },

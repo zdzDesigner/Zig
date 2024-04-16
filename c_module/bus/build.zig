@@ -9,6 +9,24 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
 
+    // c=================
+    const math_exe = b.addExecutable(.{
+        .name = "math_c",
+        .target = target,
+        .optimize = optimize,
+    });
+    math_exe.addIncludePath(.{ .path = "lib" });
+    math_exe.addCSourceFiles(.{ .files = &.{ "src/main.c", "lib/math.c" } });
+    math_exe.root_module.addImport("sub", sub_mod.module("sub"));
+    math_exe.addIncludePath(.{
+        .path = sub_mod.builder.pathFromRoot(
+            sub_mod.module("libsub.include").root_source_file.?.path,
+        ),
+    });
+    b.installArtifact(math_exe);
+
+    // ====================
+
     const lib = b.addStaticLibrary(.{
         .name = "bus",
         .root_source_file = .{ .path = "src/root.zig" },
