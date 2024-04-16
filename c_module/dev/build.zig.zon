@@ -1,0 +1,16 @@
+.{
+    .name = "dev",
+    .version = "0.0.0",
+    .dependencies = .{
+        .bus = .{
+            .url = "",
+            // .hash = "12203a0a95939d4795ab088b5d2344de5a7b518920a9e7427da9dfae6ba1bf08a097",
+            // .hash = "12208c4d1ea99dfe82c0e01015d62254f2dca03a01ac1fbcf2d32645eddc319906cb",
+            .hash = "1220c42fafc33c6badf3ff043a19a985271234488c5bc35c354384c4fdb184437ac7",
+        },
+    },
+
+    .paths = .{
+        "",
+    },
+}

@@ -1,0 +1,4 @@
+## dependents
+
+`sub` => `bus` => `dev`
+

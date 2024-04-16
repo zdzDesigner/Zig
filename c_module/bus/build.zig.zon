@@ -1,0 +1,20 @@
+.{
+    .name = "bus",
+    .version = "0.0.0",
+
+    //.minimum_zig_version = "0.11.0",
+
+    .dependencies = .{
+        .sub = .{
+            .url = "",
+            // .hash = "12208103742953857754874b00205a30321e86ea68d64a22a81ae7fe80dd0b1fe131",
+            // .hash = "12201bcf8d4003e95c3c102d737e2e416ec611327825fbad72418d444af0796a22b8",
+            // .hash = "12208221143305627ae39a47ba2db1574d01299c29c15ce84ffa4b50ef1513b3fb96",
+            .hash = "1220bc82db14ea6929d08f5a603e37bcf2d903a9d5b85d99bb1012c5af38e8c808eb",
+        },
+    },
+
+    .paths = .{
+        "",
+    },
+}

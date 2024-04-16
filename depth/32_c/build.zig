@@ -6,7 +6,7 @@ pub fn build(b: *std.Build) void {
         .preferred_optimize_mode = .ReleaseSmall,
     });
 
-    // 目标?文件
+    // 可执行文件
     const exe = b.addExecutable(.{
         .name = "32_c",
         .root_source_file = .{ .path = "src/main.zig" },
