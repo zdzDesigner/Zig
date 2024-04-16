@@ -6,6 +6,8 @@ zig-out/
 *.elf
 *.bin
 *.o
+.xmake
+build
 
 Lib
 fork

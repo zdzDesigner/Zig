@@ -13,21 +13,63 @@ pub fn build(b: *std.Build) !void {
 
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     const allocator = gpa.allocator();
-    var options = std.Build.Module.AddCSourceFilesOptions{ .files = &.{} };
-    // const options = dirFiles(b, allocator, "src");
-    try dirFiles(b, allocator, &options, "src");
-    // var list = ArrayList([]const u8).init(allocator.allocator());
-    // defer list.deinit();
-    // try list.append("aaa");
-    // try list.append("bbb");
 
     // c exec ======================
     const c_exe = b.addExecutable(.{
         .name = "c_stm32",
         .target = target,
         .optimize = optimize,
+        .link_libc = true,
     });
-    c_exe.addCSourceFiles(options);
+
+    c_exe.defineCMacro("STM32F10X_LD", null);
+    c_exe.defineCMacro("USE_STDPERIPH_DRIVER", null);
+
+    const headers = &.{
+        "src",
+        "src/key",
+        "src/led",
+        "sys",
+        "sys/oledv2",
+        "sys/util",
+        "sys/sr04",
+        "sys/debug",
+        "sys/nrf24",
+        "lib/CMSIS",
+        "lib/STM32F10x_StdPeriph_Driver/inc",
+    };
+    inline for (headers) |header| {
+        std.debug.print("header:{s}\n", .{header});
+        c_exe.addIncludePath(.{ .path = header });
+    }
+
+    const sources = &.{
+        "src",
+        // "sys",
+        // "sys/debug",
+        // "sys/nrf24",
+        // "sys/util",
+        // "sys/sr04",
+        "lib/CMSIS",
+        "lib/STM32F10x_StdPeriph_Driver/src",
+    };
+    inline for (sources) |source| {
+        const arrlist = try dirFiles(b, allocator, source);
+        defer arrlist.deinit();
+        std.debug.print("arrlist:{s}\n", .{arrlist.items});
+
+        c_exe.addCSourceFiles(.{
+            .root = .{ .path = source },
+            .files = arrlist.items,
+            // .flags = &.{ "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections" },
+        });
+    }
+    c_exe.addAssemblyFile(.{ .path = "startup_stm32f103xb.s" });
+
+    c_exe.link_gc_sections = true;
+    c_exe.link_data_sections = true;
+    c_exe.link_function_sections = true;
+    // c_exe.linkLibC();
     b.installArtifact(c_exe);
 
     // ======================
@@ -51,48 +93,30 @@ pub fn build(b: *std.Build) !void {
     run_step.dependOn(&run_cmd.step);
 }
 
-fn dirFiles(b: *std.Build, allocator: std.mem.Allocator, optionsptr: *std.Build.Module.AddCSourceFilesOptions, filepath: []const u8) !void {
+// fn addCSourceFiles(b: *std.Build, allocator: std.mem.Allocator, comp: *std.Build.Step.Compile) void {
+//     const arrlist = try dirFiles(b, allocator, "src");
+//     defer arrlist.deinit();
+//     std.debug.print("arrlist:{s}\n", .{arrlist.items});
+//
+//     comp.addCSourceFiles(.{
+//         .root = .{ .path = "src" },
+//         .files = arrlist.items,
+//     });
+// }
+
+// !!! 这里有错误
+fn dirFiles(b: *std.Build, allocator: std.mem.Allocator, filepath: []const u8) !ArrayList([]const u8) {
     var list = ArrayList([]const u8).init(allocator);
 
     const dir = try std.fs.openDirAbsolute(b.pathFromRoot(filepath), .{ .iterate = true });
-    // const dir = std.fs.openDirAbsolute(b.pathFromRoot(filepath), .{}) catch @panic("OOM");
-    std.debug.print("dir:{}\n", .{dir});
+    // std.debug.print("dir:{}\n", .{dir});
     var iter = dir.iterate();
     while (try iter.next()) |entry| {
         // std.debug.print("kind:{any},name:{s}\n", .{ entry.kind, entry.name });
         if (entry.kind == .file and std.mem.eql(u8, std.fs.path.extension(entry.name), ".c")) {
-            try list.append(entry.name);
+            const name = try std.mem.Allocator.dupe(allocator, u8, entry.name);
+            try list.append(name);
             // std.debug.print("name:{s}\n", .{list.items});
-        }
-    }
-
-    optionsptr.*.root = .{ .path = filepath };
-    optionsptr.*.files = list.items;
-    // const options: std.Build.Module.AddCSourceFilesOptions = .{
-    //     .root = .{ .path = filepath },
-    //     .files = list.items,
-    // };
-    // // options.files = list.items;
-    // return options;
-}
-
-// !!! 这里有错误
-fn arrayListError(b: *std.Build, allocator: std.mem.Allocator) void {
-    const filenames = dirFiles_old(b, allocator, "src");
-
-    std.debug.print("list:{s}\n", .{filenames.items});
-}
-fn dirFiles_old(b: *std.Build, allocator: std.mem.Allocator, filepath: []const u8) ArrayList([]const u8) {
-    var list = ArrayList([]const u8).init(allocator);
-
-    const dir = std.fs.openDirAbsolute(b.pathFromRoot(filepath), .{ .iterate = true }) catch @panic("OOM");
-    std.debug.print("dir:{}\n", .{dir});
-    var iter = dir.iterate();
-    while (iter.next() catch @panic("OOM")) |entry| {
-        // std.debug.print("kind:{any},name:{s}\n", .{ entry.kind, entry.name });
-        if (entry.kind == .file and std.mem.eql(u8, std.fs.path.extension(entry.name), ".c")) {
-            list.append(entry.name) catch @panic("OOM");
-            std.debug.print("name:{s}\n", .{list.items});
         }
     }
     return list;
