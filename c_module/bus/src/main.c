@@ -1,4 +1,4 @@
-#include "math.h"
+#include "bus_math.h"
 #include <stdio.h>
 
 int main()

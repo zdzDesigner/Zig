@@ -4,6 +4,12 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
+    // dependents ==============
+    const bus_mod = b.dependency("bus", .{
+        .target = target,
+        .optimize = optimize,
+    });
+
     const lib = b.addStaticLibrary(.{
         .name = "dev",
         .root_source_file = .{ .path = "src/root.zig" },
@@ -12,12 +18,20 @@ pub fn build(b: *std.Build) void {
     });
     b.installArtifact(lib);
 
+    // ================
     const exe = b.addExecutable(.{
         .name = "dev",
         .root_source_file = .{ .path = "src/main.zig" },
         .target = target,
         .optimize = optimize,
     });
+    exe.root_module.addImport("bus", bus_mod.module("bus"));
+    // std.debug.print("include:{any}\n", .{bus_mod.module("bus").include_dirs.items.len});
+    for (bus_mod.module("bus").include_dirs.items) |item| {
+        std.debug.print("item:{s}\n", .{bus_mod.builder.pathFromRoot(item.path.path)});
+        exe.addIncludePath(.{ .path = bus_mod.builder.pathFromRoot(item.path.path) });
+    }
+    // exe.addIncludePath(.{ .path = bus_mod.builder.pathFromRoot(bus_mod.module("libbus.include").root_source_file.?.path) });
     b.installArtifact(exe);
     const run_cmd = b.addRunArtifact(exe);
 

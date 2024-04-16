@@ -4,7 +4,7 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
-    _ = b.addModule("libsub.include", .{ .root_source_file = .{ .path = b.pathFromRoot("include") } });
+    // _ = b.addModule("libsub.include", .{ .root_source_file = .{ .path = b.pathFromRoot("include") } });
     const sub_mod = b.addModule("sub", .{
         .target = target,
         .optimize = optimize,
