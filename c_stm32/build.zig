@@ -2,6 +2,7 @@ const std = @import("std");
 const ArrayList = std.ArrayList;
 
 pub fn build(b: *std.Build) !void {
+    b.verbose_link = true;
     // const target = b.standardTargetOptions(.{});
     const target = b.resolveTargetQuery(.{
         .cpu_arch = .thumb,
@@ -19,7 +20,7 @@ pub fn build(b: *std.Build) !void {
         .name = "c_stm32",
         .target = target,
         .optimize = optimize,
-        .link_libc = true,
+        // .link_libc = false,
     });
 
     c_exe.defineCMacro("STM32F10X_LD", null);
@@ -42,14 +43,19 @@ pub fn build(b: *std.Build) !void {
         std.debug.print("header:{s}\n", .{header});
         c_exe.addIncludePath(.{ .path = header });
     }
+    c_exe.addIncludePath(.{ .path = "/usr/arm-none-eabi/include" });
+    c_exe.addIncludePath(.{ .path = "/usr/arm-none-eabi/include/newlib-nano" });
+    c_exe.addObjectFile(.{ .path = "/usr/arm-none-eabi/lib/thumb/v7e-m+fp/hard/libnosys.a" });
+    c_exe.addObjectFile(.{ .path = "/usr/arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a" });
+    c_exe.addObjectFile(.{ .path = "/usr/arm-none-eabi/lib/thumb/v7e-m+fp/hard/libm.a" });
 
     const sources = &.{
         "src",
-        // "sys",
-        // "sys/debug",
-        // "sys/nrf24",
-        // "sys/util",
-        // "sys/sr04",
+        "sys",
+        "sys/debug",
+        "sys/nrf24",
+        "sys/util",
+        "sys/sr04",
         "lib/CMSIS",
         "lib/STM32F10x_StdPeriph_Driver/src",
     };
@@ -65,6 +71,7 @@ pub fn build(b: *std.Build) !void {
         });
     }
     c_exe.addAssemblyFile(.{ .path = "startup_stm32f103xb.s" });
+    // c_exe.setLinkerScriptPath(.{ .path = "STM32F103C8Tx_FLASH.ld" });
 
     c_exe.link_gc_sections = true;
     c_exe.link_data_sections = true;
