@@ -11,22 +11,21 @@ pub fn build(b: *std.Build) void {
     });
 
     // export ==============
-    // _ = b.addModule("libbus.include", .{ .root_source_file = .{ .path = "lib" } });
-    // _ = b.addModule("libbus.include", .{ .include_dirs = &.{"lib"} });
-
     const bus_mod = b.addModule("bus", .{
         .target = target,
         .optimize = optimize,
         .link_libc = true,
         .imports = &.{
+            // 导入依赖
             std.Build.Module.Import{ .name = "sub", .module = sub_mod.module("sub") },
         },
     });
     // bus_mod.addIncludePath(.{
     //     .path = sub_mod.builder.pathFromRoot(sub_mod.module("libsub.include").root_source_file.?.path),
     // });
+    // 导入头文件
     for (sub_mod.module("sub").include_dirs.items) |item| {
-        std.debug.print("x item:{s}\n", .{item.path.path});
+        // std.debug.print("x item:{s}\n", .{item.path.path});
         bus_mod.addIncludePath(.{ .path = sub_mod.builder.pathFromRoot(item.path.path) });
     }
 
@@ -64,6 +63,8 @@ pub fn build(b: *std.Build) void {
     });
     b.installArtifact(lib);
 
+    // ================
+
     const exe = b.addExecutable(.{
         .name = "bus",
         .root_source_file = .{ .path = "src/main.zig" },
@@ -76,13 +77,9 @@ pub fn build(b: *std.Build) void {
         std.debug.print("item:{s}\n", .{sub_mod.builder.pathFromRoot(item.path.path)});
         exe.addIncludePath(.{ .path = sub_mod.builder.pathFromRoot(item.path.path) });
     }
-    // exe.addIncludePath(.{
-    //     .path = sub_mod.builder.pathFromRoot(
-    //         sub_mod.module("libsub.include").root_source_file.?.path,
-    //     ),
-    // });
     b.installArtifact(exe);
 
+    // ================
     const run_cmd = b.addRunArtifact(exe);
     run_cmd.step.dependOn(b.getInstallStep());
 
