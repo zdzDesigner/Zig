@@ -20,9 +20,6 @@ pub fn build(b: *std.Build) void {
             std.Build.Module.Import{ .name = "sub", .module = sub_mod.module("sub") },
         },
     });
-    // bus_mod.addIncludePath(.{
-    //     .path = sub_mod.builder.pathFromRoot(sub_mod.module("libsub.include").root_source_file.?.path),
-    // });
     // 导入头文件
     for (sub_mod.module("sub").include_dirs.items) |item| {
         // std.debug.print("x item:{s}\n", .{item.path.path});
@@ -40,11 +37,8 @@ pub fn build(b: *std.Build) void {
         .target = target,
         .optimize = optimize,
     });
-    // math_exe.addIncludePath(.{
-    //     .path = sub_mod.builder.pathFromRoot(sub_mod.module("libsub.include").root_source_file.?.path),
-    // });
     for (sub_mod.module("sub").include_dirs.items) |item| {
-        std.debug.print("item:{s}\n", .{sub_mod.builder.pathFromRoot(item.path.path)});
+        // std.debug.print("item:{s}\n", .{sub_mod.builder.pathFromRoot(item.path.path)});
         math_exe.addIncludePath(.{ .path = sub_mod.builder.pathFromRoot(item.path.path) });
     }
 
@@ -53,8 +47,7 @@ pub fn build(b: *std.Build) void {
     math_exe.root_module.addImport("sub", sub_mod.module("sub"));
     b.installArtifact(math_exe);
 
-    // ====================
-
+    // zig static ====================
     const lib = b.addStaticLibrary(.{
         .name = "bus",
         .root_source_file = .{ .path = "src/root.zig" },
@@ -63,23 +56,22 @@ pub fn build(b: *std.Build) void {
     });
     b.installArtifact(lib);
 
-    // ================
-
+    // zig exe ================
     const exe = b.addExecutable(.{
         .name = "bus",
         .root_source_file = .{ .path = "src/main.zig" },
         .target = target,
         .optimize = optimize,
     });
-    // exe.root_module.addImport("sub", sub_mod.module("sub"));
-    exe.root_module.addImport("sub", bus_mod);
     for (sub_mod.module("sub").include_dirs.items) |item| {
-        std.debug.print("item:{s}\n", .{sub_mod.builder.pathFromRoot(item.path.path)});
+        // std.debug.print("item:{s}\n", .{sub_mod.builder.pathFromRoot(item.path.path)});
         exe.addIncludePath(.{ .path = sub_mod.builder.pathFromRoot(item.path.path) });
     }
+    exe.addIncludePath(.{ .path = "lib" });
+    exe.root_module.addImport("bus", bus_mod);
     b.installArtifact(exe);
 
-    // ================
+    // ===========================================
     const run_cmd = b.addRunArtifact(exe);
     run_cmd.step.dependOn(b.getInstallStep());
 

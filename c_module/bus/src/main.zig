@@ -1,9 +1,11 @@
 const std = @import("std");
 const sub = @cImport(@cInclude("sum.h"));
+const bus = @cImport(@cInclude("bus_math.h"));
 
 pub fn main() void {
     const val = sub.sum(2, 3);
     std.debug.print("val:{}\n", .{val});
+    std.debug.print("fib:{}\n", .{bus.fib(10)});
 }
 
 test "simple test" {

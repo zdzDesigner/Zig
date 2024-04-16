@@ -1,0 +1,206 @@
+[
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/src/key/key.c.o", "src/key/key.c"],
+  "file": "src/key/key.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/src/stm32f10x_it.c.o", "src/stm32f10x_it.c"],
+  "file": "src/stm32f10x_it.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/src/main.c.o", "src/main.c"],
+  "file": "src/main.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/src/led/led2.c.o", "src/led/led2.c"],
+  "file": "src/led/led2.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/src/led/led.c.o", "src/led/led.c"],
+  "file": "src/led/led.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/sys/sr04/sr04.c.o", "sys/sr04/sr04.c"],
+  "file": "sys/sr04/sr04.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/sys/debug/debug.c.o", "sys/debug/debug.c"],
+  "file": "sys/debug/debug.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/sys/usart2.c.o", "sys/usart2.c"],
+  "file": "sys/usart2.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/sys/util/avg.c.o", "sys/util/avg.c"],
+  "file": "sys/util/avg.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/sys/util/scale.c.o", "sys/util/scale.c"],
+  "file": "sys/util/scale.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/sys/util/util.c.o", "sys/util/util.c"],
+  "file": "sys/util/util.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/sys/i2c.c.o", "sys/i2c.c"],
+  "file": "sys/i2c.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/sys/nrf24/nrf24.c.o", "sys/nrf24/nrf24.c"],
+  "file": "sys/nrf24/nrf24.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/sys/exti.c.o", "sys/exti.c"],
+  "file": "sys/exti.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/sys/spi_single.c.o", "sys/spi_single.c"],
+  "file": "sys/spi_single.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/sys/usart.c.o", "sys/usart.c"],
+  "file": "sys/usart.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/sys/dma.c.o", "sys/dma.c"],
+  "file": "sys/dma.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/sys/delay.c.o", "sys/delay.c"],
+  "file": "sys/delay.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/sys/time2.c.o", "sys/time2.c"],
+  "file": "sys/time2.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/sys/wifi.c.o", "sys/wifi.c"],
+  "file": "sys/wifi.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/sys/pwm.c.o", "sys/pwm.c"],
+  "file": "sys/pwm.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/sys/printf.c.o", "sys/printf.c"],
+  "file": "sys/printf.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/sys/tool.c.o", "sys/tool.c"],
+  "file": "sys/tool.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/sys/dac.c.o", "sys/dac.c"],
+  "file": "sys/dac.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/sys/spi.c.o", "sys/spi.c"],
+  "file": "sys/spi.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/sys/adc.c.o", "sys/adc.c"],
+  "file": "sys/adc.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/sys/spi_duplex.c.o", "sys/spi_duplex.c"],
+  "file": "sys/spi_duplex.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/sys/oledv2/oled.c.o", "sys/oledv2/oled.c"],
+  "file": "sys/oledv2/oled.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/lib/CMSIS/system_stm32f10x.c.o", "lib/CMSIS/system_stm32f10x.c"],
+  "file": "lib/CMSIS/system_stm32f10x.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_gpio.c.o", "lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_gpio.c"],
+  "file": "lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_gpio.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_tim.c.o", "lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_tim.c"],
+  "file": "lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_tim.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_adc.c.o", "lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_adc.c"],
+  "file": "lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_adc.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_dma.c.o", "lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_dma.c"],
+  "file": "lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_dma.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_dac.c.o", "lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_dac.c"],
+  "file": "lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_dac.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_spi.c.o", "lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_spi.c"],
+  "file": "lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_spi.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_rcc.c.o", "lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_rcc.c"],
+  "file": "lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_rcc.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_usart.c.o", "lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_usart.c"],
+  "file": "lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_usart.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/lib/STM32F10x_StdPeriph_Driver/src/misc.c.o", "lib/STM32F10x_StdPeriph_Driver/src/misc.c"],
+  "file": "lib/STM32F10x_StdPeriph_Driver/src/misc.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_i2c.c.o", "lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_i2c.c"],
+  "file": "lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_i2c.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-DNDEBUG", "-o", "build/.objs/stm32/linux/x86_64/release/lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_exti.c.o", "lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_exti.c"],
+  "file": "lib/STM32F10x_StdPeriph_Driver/src/stm32f10x_exti.c"
+},
+{
+  "directory": "/home/zdz/Documents/Try/IOT/STM32/course/project",
+  "arguments": ["/usr/bin/arm-none-eabi-gcc", "-c", "-fvisibility=hidden", "-O3", "-Isrc", "-Isrc/key", "-Isrc/led", "-Isys", "-Isys/oledv2", "-Isys/util", "-Isys/sr04", "-Isys/debug", "-Isys/nrf24", "-Ilib/CMSIS", "-Ilib/STM32F10x_StdPeriph_Driver/inc", "-DSTM32F10X_LD", "-DUSE_STDPERIPH_DRIVER", "-Og", "-mthumb", "-mcpu=cortex-m0plus", "-x", "assembler-with-cpp", "-Wall", "-fdata-sections", "-ffunction-sections", "-g", "-gdwarf-2", "-o", "build/.objs/stm32/linux/x86_64/release/startup_stm32f103xb.s.o", "startup_stm32f103xb.s"],
+  "file": "startup_stm32f103xb.s"
+}]
