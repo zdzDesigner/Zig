@@ -31,7 +31,7 @@ fn min() void {
 //      names: []const u8@1105780 指针
 //      Lang: Enum
 //      conv: fn () void
-// v = V{.name = "xxxx"} 实例化后的成员
+// v = V{.name = "xxxx"} 初始化后的成员
 //      name:[]const u8
 //      index: u32
 //      ... 可以调用 V 中@hasDecl带有@This的方法
