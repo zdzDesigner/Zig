@@ -2,8 +2,9 @@ const std = @import("std");
 const iterator = @import("util/iterator.zig");
 
 pub fn main() !void {
-    const str_iter = iterator.GenIterator([]const u8).init(&.{ "aaa", "bbb" });
+    var str_iter = iterator.GenIterator([]const u8).init(&.{ "aaa", "bbb" });
     std.debug.print("iter:{}\n", .{str_iter});
+    std.debug.print("{s}\n", .{str_iter.next().?});
 
     const int_iter = iterator.GenIterator(u32).init(&[_]u32{ 1, 2 });
     std.debug.print("iter:{}\n", .{int_iter});

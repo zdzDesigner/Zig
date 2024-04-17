@@ -3,7 +3,6 @@ const std = @import("std");
 pub fn logic() void {
     std.log.info("----------- buildin fn -------", .{});
     min();
-    declAndField();
     typeInfo();
     as();
 }
@@ -21,42 +20,110 @@ fn min() void {
 
 }
 
+// struct 包含声明(declaration) 和 属性(field)
+// std.buildin.Type.Struct
+//      fields:[]const StructField
+//      decls: []const Declaration
+// filed 就是其内部的成员
+// V struct 声明后的成员(类别C结构体)
+//      PubLang: Enum
+//      getname: fn () []const u8
+//      names: []const u8@1105780 指针
+//      Lang: Enum
+//      conv: fn () void
+// v = V{.name = "xxxx"} 实例化后的成员
+//      name:[]const u8
+//      index: u32
+//      ... 可以调用 V 中@hasDecl带有@This的方法
 const V = struct {
-    name: []const u8,
+    name: []const u8, // filed
+    index: u32 = 0, // filed
 
-    pub const PubLang = enum { ZH };
-    pub fn getname() []const u8 {
+    // const Self = @This();
+    pub const PubLang = enum { ZH }; // decl
+    pub fn getname() []const u8 { // decl
+        std.debug.print("V getname run\n", .{});
         return "";
     }
 
+    const names: []const []const u8 = &.{};
     const Lang = enum { ZH };
-    fn conv() void {}
+    fn conv(this: @This()) void {
+        _ = this;
+        std.debug.print("V conv run\n", .{});
+    }
 };
 
-// first argument expected type 'type'
-// hasDecl, hasField 第一个参数 type 'type'
-fn declAndField() void {
-    std.log.info("V.name:{}", .{@hasDecl(V, "name")}); // false
-    // first argument expected type 'type'
-    std.log.info("V.name:{}", .{@hasField(V, "name")}); // true
+// hasDecl, hasField 第一个参数是类型('type')
+test "hasDecl:" {
+    // std.debug.print("@typeInfo:{}\n", .{@typeInfo(V)}); // false
+    {
+        std.debug.print("==============:\n", .{});
+        std.debug.print("@typeInfo(@TypeOf(V)):{}\n", .{@typeInfo(@TypeOf(V))});
+        std.debug.print("{any}\n", .{std.builtin.Type.Type});
+        std.debug.print("{any}\n", .{@typeInfo(@TypeOf(V)) == std.builtin.Type.Type}); // true
+        std.debug.print("@TypeOf(@field(V,'Lang')):{any}\n", .{@TypeOf(@field(V, "Lang"))}); // type: std.buildin.Type.Enum
+        switch (@typeInfo(@TypeOf(V))) { // Type
+            .Type => {
+                std.debug.print("is type\n", .{}); // right
+            },
+            else => {
+                std.debug.print("is error\n", .{});
+            },
+        }
+        switch (@typeInfo(V)) { // Struct
+            .Struct => |t| {
+                std.debug.print("t.decls:{any}\n", .{t.decls});
+                for (t.decls) |decl| { // 返回 pub 标识的声明
+                    std.debug.print("decl:{s}\n", .{decl.name});
+                }
+
+                inline for (t.fields) |field| {
+                    std.debug.print("field:{s}\n", .{field.name});
+                }
+            },
+            else => {
+                std.debug.print("error:\n", .{});
+            },
+        }
+        std.debug.print("==============:\n", .{});
+    }
 
     // 在当前目录可以访问
-    std.log.info("V.conv:{}", .{@hasDecl(V, "conv")}); // true
-
+    std.debug.print("@hasDecl(V,conv):{}\n", .{@hasDecl(V, "conv")}); // true
     // 全局可访问
-    std.log.info("V.getname:{}", .{@hasDecl(V, "getname")}); // true
+    std.debug.print("@hasDecl(V,'getname'):{}\n", .{@hasDecl(V, "getname")}); // true
+    std.debug.print("@hasField(V,'name'):{}\n", .{@hasField(V, "name")}); // true
+    std.debug.print("@hasField(V,'index'):{}\n", .{@hasField(V, "index")}); // true
+    std.debug.print("@hasField(V,'Lang') :{}\n", .{@hasField(V, "Lang")}); // false
 
+    // error: struct 'buildin_fn.V' has no member named 'name'
+    // 对的, name 是 V 实例化后v 的成员
+    // std.debug.print("@field(V,'name'):{}\n", .{@field(V, "name")});
+
+    std.debug.print("@field(V,'PubLang'):{}\n", .{@field(V, "PubLang")}); // V.PubLang
+    _ = @field(V, "conv"); // fn () void
+
+    std.debug.print("@field(V,'names'):{s}\n", .{@field(V, "names")}); // []const u8@1105780
+
+    std.debug.print("@field(V,'Lang'):{}\n", .{@field(V, "Lang")}); // V.Lang
+    std.debug.print("@field(V, 'Lang') == V.Lang:{}\n", .{@field(V, "Lang") == V.Lang}); // true
+    std.debug.print("Lang:{}\n", .{V.Lang.ZH}); // V.Lang.ZH
+    // std.debug.print("@typeInfo(@field(V, \"Lang\")):{any}\n", .{@typeInfo(@field(V, "Lang"))}); // true
+    {
+        // switch () {}
+
+    }
+    //
     const v = V{ .name = "zdz" };
-    std.log.info("@field(v,'name'):{s}", .{@field(v, "name")}); // zdz
+    std.debug.print("@field(v,'name'):{s}\n", .{@field(v, "name")}); // zdz
+    std.debug.print("@field(v,'index'):{}\n", .{@field(v, "index")}); // 0
+    // error: no field or member function named 'conv' in 'buildin_fn.V'
+    v.conv();
+    // _ = v.getname();
 
-    std.log.info("@field(V,'Lang'):{}", .{@field(V, "Lang")}); // buildin_fn.V.Lang
-
-    std.log.info("Lang:{any}", .{V.Lang}); // buildin_fn.V.Lang
-    std.log.info("PubLang:{any}", .{V.PubLang}); // buildin_fn.V.PubLang
-    std.log.info("Lang:{}", .{V.Lang.ZH}); // buildin_fn.V.Lang.ZH
-
-    std.log.info("name ptr:{*}", .{&v.name}); // []const u8@111ab68
-    std.log.info("name ptr:{*}", .{@fieldParentPtr(V, "name", &v.name)}); // buildin_fn.V@111ab68
+    std.debug.print("name ptr:{*}\n", .{&v.name}); // []const u8@111ab68
+    // std.debug.print("name ptr:{any}\n", .{@fieldParentPtr(V, &v.name)}); // buildin_fn.V@111ab68
 
 }
 
