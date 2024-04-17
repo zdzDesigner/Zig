@@ -16,8 +16,9 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
         .link_libc = true,
         .imports = &.{
-            // 导入依赖
-            std.Build.Module.Import{ .name = "sub", .module = sub_mod.module("sub") },
+            // 导入依赖 std.Build.Module.Import
+            // std.Build.Module.Import{ .name = "sub", .module = sub_mod.module("sub") },
+            .{ .name = "sub", .module = sub_mod.module("sub") },
         },
     });
     // 导入头文件
