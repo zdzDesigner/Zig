@@ -10,7 +10,9 @@ pub fn build(b: *std.Build) !void {
         .os_tag = .freestanding,
         .abi = .eabi,
     });
-    const optimize = b.standardOptimizeOption(.{});
+    const optimize = b.standardOptimizeOption(.{
+        .preferred_optimize_mode = .ReleaseSmall,
+    });
 
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     const allocator = gpa.allocator();
