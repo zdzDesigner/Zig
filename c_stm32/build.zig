@@ -43,11 +43,9 @@ pub fn build(b: *std.Build) !void {
         std.debug.print("header:{s}\n", .{header});
         c_exe.addIncludePath(.{ .path = header });
     }
-    c_exe.addIncludePath(.{ .path = "/usr/arm-none-eabi/include" });
-    c_exe.addIncludePath(.{ .path = "/usr/arm-none-eabi/include/newlib-nano" });
-    c_exe.addObjectFile(.{ .path = "/usr/arm-none-eabi/lib/thumb/v7e-m+fp/hard/libnosys.a" });
-    c_exe.addObjectFile(.{ .path = "/usr/arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a" });
-    c_exe.addObjectFile(.{ .path = "/usr/arm-none-eabi/lib/thumb/v7e-m+fp/hard/libm.a" });
+    // c_exe.addIncludePath(.{ .path = "/usr/arm-none-eabi/include" });
+    // c_exe.addObjectFile(.{ .path = "/usr/arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a" });
+    // c_exe.addObjectFile(.{ .path = "/usr/arm-none-eabi/lib/thumb/v7e-m+fp/hard/libm.a" });
 
     const sources = &.{
         "src",
