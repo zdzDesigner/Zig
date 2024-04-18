@@ -25,7 +25,7 @@ fn min() void {
 //      fields:[]const StructField
 //      decls: []const Declaration
 // filed 就是其内部的成员
-// V struct 声明后的成员(类别C结构体)
+// V struct 声明后的成员(类比C结构体)
 //      PubLang: Enum
 //      getname: fn () []const u8
 //      names: []const u8@1105780 指针
@@ -53,6 +53,39 @@ const V = struct {
         std.debug.print("V conv run\n", .{});
     }
 };
+
+const Point = struct {
+    x: u32,
+    y: u32,
+
+    pub var z: u32 = 1;
+};
+
+test {
+    std.testing.refAllDecls(@This()); // ? 具体作用
+}
+// 编译时通过字符串执行字段访问
+test "field access by string" {
+    const expect = std.testing.expect;
+    var p = Point{ .x = 0, .y = 0 };
+
+    @field(p, "x") = 4;
+    @field(p, "y") = @field(p, "x") + 1;
+
+    try expect(@field(p, "x") == 4);
+    try expect(@field(p, "y") == 5);
+
+    std.debug.print("p.y:{}\n", .{p.y});
+}
+
+test "decl access by string" {
+    const expect = std.testing.expect;
+
+    try expect(@field(Point, "z") == 1);
+
+    @field(Point, "z") = 2;
+    try expect(@field(Point, "z") == 2);
+}
 
 // hasDecl, hasField 第一个参数是类型('type')
 test "hasDecl:" {
@@ -116,11 +149,14 @@ test "hasDecl:" {
     }
     //
     const v = V{ .name = "zdz" };
+
     std.debug.print("@field(v,'name'):{s}\n", .{@field(v, "name")}); // zdz
     std.debug.print("@field(v,'index'):{}\n", .{@field(v, "index")}); // 0
-    // error: no field or member function named 'conv' in 'buildin_fn.V'
-    v.conv();
-    // _ = v.getname();
+
+    v.conv(); // ok
+    V.conv(v); // ok
+    // _ = v.getname(); // not @This()  !!! error: no field or member function named 'getname' in 'buildin_fn.V'
+    _ = V.getname(); // ok
 
     std.debug.print("name ptr:{*}\n", .{&v.name}); // []const u8@111ab68
     // std.debug.print("name ptr:{any}\n", .{@fieldParentPtr(V, &v.name)}); // buildin_fn.V@111ab68
