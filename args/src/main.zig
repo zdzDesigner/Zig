@@ -5,9 +5,12 @@ pub fn main() !void {
     var str_iter = iterator.GenIterator([]const u8).init(&.{ "aaa", "bbb" });
     std.debug.print("iter:{}\n", .{str_iter});
     std.debug.print("{s}\n", .{str_iter.next().?});
+    std.debug.print("{s}\n", .{str_iter.next().?});
 
-    const int_iter = iterator.GenIterator(u32).init(&[_]u32{ 1, 2 });
+    var int_iter = iterator.GenIterator(u32).init(&[_]u32{ 1, 2 });
     std.debug.print("iter:{}\n", .{int_iter});
+    std.debug.print(":{}\n", .{int_iter.next().?});
+    std.debug.print(":{}\n", .{int_iter.next().?});
 
     // !!! error: values of type '[]const comptime_int' must be comptime-known, but index value is runtime-known
     // const int_iter2 = iterator.GenIterator(comptime_int).init(&[_]comptime_int{ 1, 2 });

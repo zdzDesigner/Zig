@@ -121,7 +121,8 @@ fn dirFiles(b: *std.Build, allocator: std.mem.Allocator, filepath: []const u8) !
     while (try iter.next()) |entry| {
         // std.debug.print("kind:{any},name:{s}\n", .{ entry.kind, entry.name });
         if (entry.kind == .file and std.mem.eql(u8, std.fs.path.extension(entry.name), ".c")) {
-            const name = try std.mem.Allocator.dupe(allocator, u8, entry.name);
+            // const name = try std.mem.Allocator.dupe(allocator, u8, entry.name);
+            const name = try allocator.dupe(u8, entry.name);
             try list.append(name);
             // std.debug.print("name:{s}\n", .{list.items});
         }
