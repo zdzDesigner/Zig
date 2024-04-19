@@ -109,3 +109,8 @@ test "test anyerror" {
     try expect(err == error.AccessDenied);
     try expect(@TypeOf(err) == anyerror);
 }
+
+const ErrorManager = struct {};
+const Error = struct {};
+
+test "error " {}

@@ -44,6 +44,19 @@ const Product = struct {
         try writer.writeAll("}\n");
     }
 };
+
+// 打印所有属性
+const T = struct {
+    name: []const u8,
+    pub fn format(
+        self: @This(),
+        comptime _: []const u8,
+        _: std.fmt.FormatOptions,
+        _: anytype,
+    ) !void {
+        try std.json.stringify(&self, .{}, std.io.getStdOut().writer());
+    }
+};
 test "format:" {
     const p = Product{
         .id = 1,
@@ -58,4 +71,6 @@ test "format:" {
 
     // Now you can print with {} format specifier.
     std.debug.print("{}\n", .{p});
+
+    std.debug.print("{}\n", .{T{ .name = "xxx" }});
 }
