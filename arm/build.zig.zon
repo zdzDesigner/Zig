@@ -1,0 +1,15 @@
+.{
+    .name = "arm",
+    .version = "0.0.0",
+
+    .dependencies = .{
+        .zigstr = .{
+            .url = "",
+            .hash = "122009787f1d72042155f76475c1d3c851b79ffc033c4efb46f677d57c9fec7c9823",
+        },
+    },
+
+    .paths = .{
+        "",
+    },
+}

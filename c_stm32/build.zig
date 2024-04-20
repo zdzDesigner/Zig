@@ -30,9 +30,9 @@ pub fn build(b: *std.Build) !void {
 
     const headers = &.{
         "src",
+        "sys",
         "src/key",
         "src/led",
-        "sys",
         "sys/oledv2",
         "sys/util",
         "sys/sr04",
@@ -40,6 +40,7 @@ pub fn build(b: *std.Build) !void {
         "sys/nrf24",
         "lib/CMSIS",
         "lib/STM32F10x_StdPeriph_Driver/inc",
+        "/home/zdz/Application/gcc-arm-none-eabi-9-2019-q4-major/lib/gcc/arm-none-eabi/9.2.1/include",
     };
     inline for (headers) |header| {
         std.debug.print("header:{s}\n", .{header});
@@ -51,11 +52,11 @@ pub fn build(b: *std.Build) !void {
 
     const sources = &.{
         "src",
-        "sys",
-        "sys/debug",
-        "sys/nrf24",
-        "sys/util",
-        "sys/sr04",
+        // "sys",
+        // "sys/debug",
+        // "sys/nrf24",
+        // "sys/util",
+        // "sys/sr04",
         "lib/CMSIS",
         "lib/STM32F10x_StdPeriph_Driver/src",
     };
@@ -71,6 +72,7 @@ pub fn build(b: *std.Build) !void {
         });
     }
     c_exe.addAssemblyFile(.{ .path = "startup_stm32f103xb.s" });
+
     // c_exe.setLinkerScriptPath(.{ .path = "STM32F103C8Tx_FLASH.ld" });
 
     c_exe.link_gc_sections = true;
