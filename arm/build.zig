@@ -4,12 +4,12 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{
         .default_target = .{
             .cpu_arch = .arm,
-            // .cpu_model = .{ .explicit = &std.Target.arm.cpu.baseline },
-            // .os_tag = .freestanding,
+            .cpu_model = .{ .explicit = &std.Target.arm.cpu.baseline },
+            // .os_tag = .freestanding, // 裸机; 非裸机报错 warning: cannot find entry symbol _start; not setting start address
             .abi = .eabi,
         },
     });
-    const optimize = b.standardOptimizeOption(.{});
+    const optimize = b.standardOptimizeOption(.{ .preferred_optimize_mode = .ReleaseSmall });
 
     const zigstr = b.dependency("zigstr", .{
         .target = target,

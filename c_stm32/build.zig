@@ -2,13 +2,14 @@ const std = @import("std");
 const ArrayList = std.ArrayList;
 
 pub fn build(b: *std.Build) !void {
-    b.verbose_link = true;
+    // b.verbose_link = true;
     // const target = b.standardTargetOptions(.{});
     const target = b.resolveTargetQuery(.{
         .cpu_arch = .thumb,
         .cpu_model = .{ .explicit = &std.Target.arm.cpu.cortex_m3 },
         .os_tag = .freestanding,
-        .abi = .eabi,
+        // .abi = .eabi,
+        .abi = .musleabihf,
     });
     const optimize = b.standardOptimizeOption(.{
         .preferred_optimize_mode = .ReleaseSmall,
@@ -29,18 +30,18 @@ pub fn build(b: *std.Build) !void {
     c_exe.defineCMacro("USE_STDPERIPH_DRIVER", null);
 
     const headers = &.{
-        "src",
-        "sys",
-        "src/key",
-        "src/led",
-        "sys/oledv2",
-        "sys/util",
-        "sys/sr04",
-        "sys/debug",
-        "sys/nrf24",
-        "lib/CMSIS",
-        "lib/STM32F10x_StdPeriph_Driver/inc",
-        "/home/zdz/Application/gcc-arm-none-eabi-9-2019-q4-major/lib/gcc/arm-none-eabi/9.2.1/include",
+        // "src",
+        // "sys",
+        // "src/key",
+        // "src/led",
+        // "sys/oledv2",
+        // "sys/util",
+        // "sys/sr04",
+        // "sys/debug",
+        // "sys/nrf24",
+        // "lib/CMSIS",
+        // "lib/STM32F10x_StdPeriph_Driver/inc",
+        // "/home/zdz/Application/gcc-arm-none-eabi-9-2019-q4-major/lib/gcc/arm-none-eabi/9.2.1/include",
     };
     inline for (headers) |header| {
         std.debug.print("header:{s}\n", .{header});
@@ -51,14 +52,14 @@ pub fn build(b: *std.Build) !void {
     // c_exe.addObjectFile(.{ .path = "/usr/arm-none-eabi/lib/thumb/v7e-m+fp/hard/libm.a" });
 
     const sources = &.{
-        "src",
+        "src/main.c",
         // "sys",
         // "sys/debug",
         // "sys/nrf24",
         // "sys/util",
         // "sys/sr04",
-        "lib/CMSIS",
-        "lib/STM32F10x_StdPeriph_Driver/src",
+        // "lib/CMSIS",
+        // "lib/STM32F10x_StdPeriph_Driver/src",
     };
     inline for (sources) |source| {
         const arrlist = try dirFiles(b, allocator, source);
@@ -68,16 +69,16 @@ pub fn build(b: *std.Build) !void {
         c_exe.addCSourceFiles(.{
             .root = .{ .path = source },
             .files = arrlist.items,
-            // .flags = &.{ "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections" },
+            .flags = &.{ "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections" },
         });
     }
-    c_exe.addAssemblyFile(.{ .path = "startup_stm32f103xb.s" });
+    // c_exe.addAssemblyFile(.{ .path = "startup_stm32f103xb.s" });
 
     // c_exe.setLinkerScriptPath(.{ .path = "STM32F103C8Tx_FLASH.ld" });
 
-    c_exe.link_gc_sections = true;
-    c_exe.link_data_sections = true;
-    c_exe.link_function_sections = true;
+    // c_exe.link_gc_sections = true;
+    // c_exe.link_data_sections = true;
+    // c_exe.link_function_sections = true;
     // c_exe.linkLibC();
     b.installArtifact(c_exe);
 
@@ -90,16 +91,16 @@ pub fn build(b: *std.Build) !void {
     });
 
     b.installArtifact(exe);
+    //
+    // const run_cmd = b.addRunArtifact(exe);
+    // run_cmd.step.dependOn(b.getInstallStep());
+    //
+    // if (b.args) |args| {
+    //     run_cmd.addArgs(args);
+    // }
 
-    const run_cmd = b.addRunArtifact(exe);
-    run_cmd.step.dependOn(b.getInstallStep());
-
-    if (b.args) |args| {
-        run_cmd.addArgs(args);
-    }
-
-    const run_step = b.step("run", "Run the app");
-    run_step.dependOn(&run_cmd.step);
+    // const run_step = b.step("run", "Run the app");
+    // run_step.dependOn(&run_cmd.step);
 }
 
 // fn addCSourceFiles(b: *std.Build, allocator: std.mem.Allocator, comp: *std.Build.Step.Compile) void {

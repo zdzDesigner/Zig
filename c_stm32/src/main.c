@@ -1,5 +1,5 @@
 // // #include "led.h"
-#include "printf.h"
+// #include "printf.h"
 // #include "delay.h"
 // #include "nrf24/nrf24.h"
 // #include "usart.h"

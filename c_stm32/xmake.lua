@@ -30,7 +30,7 @@ target("stm32", function()
     "./sys/debug",
     "./sys/nrf24",
     "./lib/CMSIS",
-    "./lib/STM32F10x_StdPeriph_Driver/inc",
+    "./lib/STM32F10x_StdPeriph_Driver/inc"
   )
   -- ./prj/MDK-ARM/PRESSURE_CONTROL_PY_V1.uvprojx
   -- PY32F002Ax5,USE_FULL_LL_DRIVER,USE_HAL_DRIVER
