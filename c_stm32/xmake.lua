@@ -3,9 +3,12 @@ add_rules("mode.debug")
 -- 编译工具链
 toolchain("arm-none-eabi", function()
   set_kind("standalone")
-  set_toolset("cc", "arm-none-eabi-gcc")
-  set_toolset("as", "arm-none-eabi-gcc")
-  set_toolset("ld", "arm-none-eabi-gcc")
+  -- set_toolset("cc", "arm-none-eabi-gcc")
+  -- set_toolset("as", "arm-none-eabi-gcc")
+  -- set_toolset("ld", "arm-none-eabi-gcc")
+  set_toolset("cc", "clang")
+  set_toolset("as", "clang")
+  set_toolset("ld", "clang")
 end)
 -- 编译目标
 target("stm32", function()
@@ -40,6 +43,7 @@ target("stm32", function()
     "USE_STDPERIPH_DRIVER"
   )
   add_cflags( -- 编译阶段
+    "-target arm-none-eabi",
     "-Og",
     "-mthumb",
     -- "-mcpu=cortex-m0",
