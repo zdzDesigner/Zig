@@ -10,11 +10,11 @@ pub fn main() !void {
     std.log.info("chosen:{}", .{numChosen(3, 1)});
     std.log.info("chosen:{}", .{numChosen(4, 1)});
     std.log.info("chosen:{}", .{numChosen(4, 2)});
-    // std.log.info("chosen:{}", .{numChosen(2, 4)}); // assert
+    // std.log.info("chosen:{}", .{numChosen(2, 4)}); // !!!error assert
     std.log.info("chosen:{}", .{numChosen(4, 3)});
     std.log.info("chosen type:{}", .{ChosenType(3, 2)});
-    std.log.info("chosen type:{}", .{ChosenType(3, 1)});
-    std.log.info("choose:[_]u8{1,2,3,4},2::{}", .{choose(&[_]u8{ 1, 2, 3, 4 }, 2)});
+    // std.log.info("chosen type:{}", .{ChosenType(3, 1)});
+    std.log.info("2::{any}", .{choose(&[_]u8{ 1, 2, 3, 4 }, 2)});
 }
 
 pub fn factorial(comptime n: u8) comptime_int {
@@ -47,9 +47,24 @@ pub fn choose(comptime l: []const u8, comptime k: u8) ChosenType(l.len, k) {
         }
         return ret;
     }
-    // !!TODO  这里有编译问题
-    const c = choose(l[1..], k - 1);
-    var i = 0;
+    // 方案一: runtime
+    // const c = choose(l[1..], k - 1);
+    // var i: u32 = 0;
+    // for (0..(l.len - 1)) |m| {
+    //     for (0..c.len) |n| {
+    //         if (l[m] < c[n][0]) {
+    //             ret[i][0] = l[m];
+    //             for (0..c[n].len) |j| {
+    //                 ret[i][j + 1] = c[n][j];
+    //             }
+    //             i += 1;
+    //         }
+    //     }
+    // }
+
+    // 方案二:comptime
+    const c = comptime choose(l[1..], k - 1);
+    comptime var i = 0;
     inline for (0..(l.len - 1)) |m| {
         inline for (0..c.len) |n| {
             if (l[m] < c[n][0]) {

@@ -1,5 +1,5 @@
 .{
-    .name = "comptime",
+    .name = "arm",
     .version = "0.0.0",
 
     .dependencies = .{

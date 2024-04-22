@@ -12,6 +12,10 @@ pub fn main() !void {
     std.debug.print(":{}\n", .{int_iter.next().?});
     std.debug.print(":{}\n", .{int_iter.next().?});
 
+    const str_iter2 = iterator.GenIterator([]const u8).init(&.{ "aaa", "bbb" });
+    std.debug.print("iter:{}\n", .{str_iter2});
+    std.debug.print("slice:{s}\n", .{str_iter2.list.ptr[0..1]});
+
     // !!! error: values of type '[]const comptime_int' must be comptime-known, but index value is runtime-known
     // const int_iter2 = iterator.GenIterator(comptime_int).init(&[_]comptime_int{ 1, 2 });
     // std.debug.print("iter:{}\n", .{int_iter2});

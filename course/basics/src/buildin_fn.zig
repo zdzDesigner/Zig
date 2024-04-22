@@ -20,6 +20,16 @@ fn min() void {
 
 }
 
+test "alignment:" {
+    const c: u8 = 'a';
+    std.debug.print("c alignment:{}\n", .{@alignOf(@TypeOf(c))}); // 1
+    const str: []const u8 = "xxxx";
+    std.debug.print("str alignment:{}\n", .{@alignOf(@TypeOf(str))}); // 8 指针
+    std.debug.print("V alignment:{}\n", .{@alignOf(V)}); // 8 指针
+    const list_str: []const []const u8 = &.{ "aaa", "bbb" };
+    std.debug.print("list_str alignment:{}\n", .{@alignOf(@TypeOf(list_str))}); // 8 指针
+}
+
 // struct 包含声明(declaration) 和 属性(field)
 // std.buildin.Type.Struct
 //      fields:[]const StructField
