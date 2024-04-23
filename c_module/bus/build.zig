@@ -5,28 +5,28 @@ pub fn build(b: *std.Build) void {
     const optimize = b.standardOptimizeOption(.{});
 
     // dependents =========
-    const sub_mod = b.dependency("sub", .{
+    const sub_mod = b.dependency("sub", .{ // zon 中的名字
         .target = target,
         .optimize = optimize,
     });
 
     // export ==============
-    const bus_mod = b.addModule("bus", .{
+    const bus_mod = b.addModule("busmod", .{
         .target = target,
         .optimize = optimize,
         .link_libc = true,
         .imports = &.{
             // 导入依赖 std.Build.Module.Import
             // std.Build.Module.Import{ .name = "sub", .module = sub_mod.module("sub") },
-            .{ .name = "sub", .module = sub_mod.module("sub") },
+            .{ .name = "submod", .module = sub_mod.module("submod") },
         },
     });
     // 导入头文件
-    for (sub_mod.module("sub").include_dirs.items) |item| {
+    for (sub_mod.module("submod").include_dirs.items) |item| {
         // std.debug.print("x item:{s}\n", .{item.path.path});
         bus_mod.addIncludePath(.{ .path = sub_mod.builder.pathFromRoot(item.path.path) });
     }
-
+    // sub_mod.module("submod")
     bus_mod.addIncludePath(.{ .path = "lib" });
     bus_mod.addCSourceFiles(.{
         .files = &.{"lib/math.c"},
@@ -37,15 +37,15 @@ pub fn build(b: *std.Build) void {
         .name = "math_c",
         .target = target,
         .optimize = optimize,
+        .link_libc = true,
     });
-    for (sub_mod.module("sub").include_dirs.items) |item| {
-        // std.debug.print("item:{s}\n", .{sub_mod.builder.pathFromRoot(item.path.path)});
+    for (sub_mod.module("submod").include_dirs.items) |item| {
         math_exe.addIncludePath(.{ .path = sub_mod.builder.pathFromRoot(item.path.path) });
     }
-
     math_exe.addIncludePath(.{ .path = "lib" });
     math_exe.addCSourceFiles(.{ .files = &.{ "src/main.c", "lib/math.c" } });
-    math_exe.root_module.addImport("sub", sub_mod.module("sub"));
+    math_exe.linkLibrary(sub_mod.artifact("sub")); // 加载静态库
+    // math_exe.root_module.addImport("submod", sub_mod.module("submod")); // 加载源码
     b.installArtifact(math_exe);
 
     // zig static ====================
@@ -64,12 +64,12 @@ pub fn build(b: *std.Build) void {
         .target = target,
         .optimize = optimize,
     });
-    for (sub_mod.module("sub").include_dirs.items) |item| {
+    for (sub_mod.module("submod").include_dirs.items) |item| {
         // std.debug.print("item:{s}\n", .{sub_mod.builder.pathFromRoot(item.path.path)});
         exe.addIncludePath(.{ .path = sub_mod.builder.pathFromRoot(item.path.path) });
     }
     exe.addIncludePath(.{ .path = "lib" });
-    exe.root_module.addImport("bus", bus_mod);
+    exe.root_module.addImport("busmod", bus_mod);
     b.installArtifact(exe);
 
     // ===========================================
