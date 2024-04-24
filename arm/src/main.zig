@@ -1,7 +1,24 @@
 const std = @import("std");
-// const zigstr = @import("zigstr");
+const config = @import("config");
+const zigstr = @import("zigstr");
+const lib = @import("lib");
+const add = @cImport(@cInclude("add.h"));
+
+const sections = struct {
+    extern var __bss_size: u8;
+};
 
 pub fn main() !void {
+    std.debug.print("config:{any}\n", .{@TypeOf(config.isarm)});
+    if (config.isarm) netPatch();
+
+    // 导入符号表
+    std.debug.print("sections:{any}\n", .{sections.__bss_size});
+    std.debug.print("add:{}\n", .{lib.add(@intCast(3), @intCast(4))});
+    std.debug.print("mutil:{}\n", .{add.multi(3, 4)});
+}
+
+fn netPatch() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     var arena = std.heap.ArenaAllocator.init(gpa.allocator());
     defer arena.deinit();
@@ -19,6 +36,7 @@ pub fn main() !void {
     // ifconfig eth0 169.254.108.227 netmask 255.255.255.0
     std.debug.print("ret.out:{s}", .{ret.stdout});
     // try callPgm("git status", "");
+
 }
 
 // callPgm( pgm, module)  ex: APPTERM (libVte)   module ex: Exemple

@@ -1,7 +1,9 @@
 const std = @import("std");
 const testing = std.testing;
 
-export fn add(a: i32, b: i32) i32 {
+pub var __bss_size: u8 = 3; // !!!zig 无法导出,从C 或 ld 导出
+
+pub export fn add(a: i32, b: i32) i32 {
     return a + b;
 }
 

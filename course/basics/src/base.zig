@@ -1,3 +1,4 @@
+const std = @import("std");
 const log = @import("std").log;
 const expect = @import("std").testing.expect;
 test "test undefined" {
@@ -7,6 +8,12 @@ test "test undefined" {
     // error: 无法对比
     const maxage = undefined;
     try expect(@TypeOf(maxage) == @TypeOf(undefined));
+
+    const str: [4]u8 = undefined;
+    std.debug.print("str.len:{d}\n", .{str.len}); // 4
+    std.debug.print("str.len:{}\n", .{str[0] == 0}); // true
+    std.debug.print("str.len:{}\n", .{str[3] == 0}); // true
+
 }
 
 test "test @TypeOf" {

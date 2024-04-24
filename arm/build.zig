@@ -1,12 +1,20 @@
 const std = @import("std");
 
 pub fn build(b: *std.Build) void {
+    const isarm = b.option(bool, "isarm", "arm platform") orelse false;
+    const options = b.addOptions();
+    options.addOption(bool, "isarm", isarm);
+
     const target = b.standardTargetOptions(.{
-        .default_target = .{
-            .cpu_arch = .arm,
-            .cpu_model = .{ .explicit = &std.Target.arm.cpu.baseline },
-            // .os_tag = .freestanding, // 裸机; 非裸机报错 warning: cannot find entry symbol _start; not setting start address
-            .abi = .eabi,
+        .default_target = if (isarm) blk: {
+            break :blk .{
+                .cpu_arch = .arm,
+                .cpu_model = .{ .explicit = &std.Target.arm.cpu.baseline },
+                // .os_tag = .freestanding, // 裸机; 非裸机报错 warning: cannot find entry symbol _start; not setting start address
+                .abi = .eabi,
+            };
+        } else blk: {
+            break :blk .{};
         },
     });
     const optimize = b.standardOptimizeOption(.{ .preferred_optimize_mode = .ReleaseSmall });
@@ -16,13 +24,22 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
 
-    const lib = b.addStaticLibrary(.{
-        .name = "arm",
+    // const lib = b.addStaticLibrary(.{
+    //     .name = "arm",
+    //     .root_source_file = .{ .path = "src/root.zig" },
+    //     .target = target,
+    //     .optimize = optimize,
+    // });
+    // b.installArtifact(lib);
+    // exe.linkLibrary(lib);
+
+    const lib = b.addModule("lib", .{
         .root_source_file = .{ .path = "src/root.zig" },
         .target = target,
         .optimize = optimize,
     });
-    b.installArtifact(lib);
+    // const arm = b.addModule("arm", .{ .target = target, .optimize = optimize });
+    // arm.addObject(lib);
 
     const exe = b.addExecutable(.{
         .name = "arm",
@@ -30,7 +47,12 @@ pub fn build(b: *std.Build) void {
         .target = target,
         .optimize = optimize,
     });
+
+    exe.addIncludePath(.{ .path = "lib" });
+    exe.addCSourceFiles(.{ .files = &.{"lib/add.c"} });
+    exe.root_module.addOptions("config", options);
     exe.root_module.addImport("zigstr", zigstr.module("zigstr"));
+    exe.root_module.addImport("lib", lib);
 
     b.installArtifact(exe);
 
