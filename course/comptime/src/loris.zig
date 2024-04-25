@@ -63,6 +63,7 @@ fn readLine(allocator: std.mem.Allocator) !i32 {
     var buf = std.ArrayList(u8).init(allocator);
     defer buf.deinit();
     const reader = std.io.getStdIn().reader();
+    // std.io.getStdOut()
     // reader.readUntilDelimiter("", '\n');
     while (reader.streamUntilDelimiter(buf.writer(), '\n', null) != error.NoEofError) {
         std.debug.print("input:{s}\n", .{buf.items});
