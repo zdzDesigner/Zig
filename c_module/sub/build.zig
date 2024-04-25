@@ -5,7 +5,7 @@ pub fn build(b: *std.Build) void {
     const optimize = b.standardOptimizeOption(.{});
 
     // _ = b.addModule("libsub.include", .{ .root_source_file = .{ .path = b.pathFromRoot("include") } });
-    const sub_mod = b.addModule("sub", .{
+    const sub_mod = b.addModule("submod", .{
         .target = target,
         .optimize = optimize,
         .link_libc = true,
@@ -18,6 +18,22 @@ pub fn build(b: *std.Build) void {
         // .files = &[_][]const u8{"sum.c"},
         .files = &.{"sum.c"},
     });
+
+    // compile tool static library ===============
+    const lib = b.addStaticLibrary(.{
+        .name = "sub",
+        .target = target,
+        .optimize = optimize,
+    });
+    lib.addIncludePath(.{ .path = "include" });
+    lib.installHeadersDirectory(.{ .path = "./include" }, "sum", .{});
+    lib.addCSourceFiles(.{
+        .root = .{ .path = "lib" },
+        // .files = ([_][]const u8{"sum.c"})[0..],
+        // .files = &[_][]const u8{"sum.c"},
+        .files = &.{"sum.c"},
+    });
+    b.installArtifact(lib);
 
     // compile tool pure c =============
     const exe_c = b.addExecutable(.{
@@ -35,17 +51,10 @@ pub fn build(b: *std.Build) void {
     exe_c.root_module.addImport("sub", sub_mod);
     b.installArtifact(exe_c);
 
-    // compile tool static library ===============
-    const lib = b.addStaticLibrary(.{
-        .name = "sub",
-        .root_source_file = .{ .path = "src/root.zig" },
-        .target = target,
-        .optimize = optimize,
-    });
-    b.installArtifact(lib);
+    // zig ================
 
     const exe = b.addExecutable(.{
-        .name = "sub",
+        .name = "subexe",
         .root_source_file = .{ .path = "src/main.zig" },
         .target = target,
         .optimize = optimize,
