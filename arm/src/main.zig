@@ -1,7 +1,7 @@
 const std = @import("std");
 const config = @import("config");
 const zigstr = @import("zigstr");
-const libmod = @import("libmod");
+const rootmod = @import("rootmod");
 const add = @cImport(@cInclude("add.h"));
 
 const sections = struct {
@@ -18,7 +18,7 @@ pub fn main() !void {
     std.debug.print("__bss_size:{any}\n", .{sections.__bss_size});
     std.debug.print("__data_size:{any}\n", .{sections.__data_size});
     std.debug.print("__text_size:{any}\n", .{sections.__text_size});
-    std.debug.print("add:{}\n", .{libmod.add(@intCast(3), @intCast(4))});
+    std.debug.print("add:{}\n", .{rootmod.add(@intCast(3), @intCast(4))});
     std.debug.print("mutil:{}\n", .{add.multi(3, 4)});
 }
 

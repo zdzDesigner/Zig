@@ -24,6 +24,7 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
 
+    // 通过静态文件导出符号表
     const static = b.addStaticLibrary(.{
         .name = "libstatic",
         .root_source_file = .{ .path = "src/static.zig" },
@@ -32,13 +33,12 @@ pub fn build(b: *std.Build) void {
     });
     b.installArtifact(static);
 
-    const libmod = b.addModule("libmod", .{
+    // 通过内置模块导出符号表
+    const rootmod = b.addModule("rootmod", .{
         .root_source_file = .{ .path = "src/root.zig" },
         .target = target,
         .optimize = optimize,
     });
-    // const arm = b.addModule("arm", .{ .target = target, .optimize = optimize });
-    // arm.addObject(lib);
 
     const exe = b.addExecutable(.{
         .name = "arm",
@@ -48,11 +48,11 @@ pub fn build(b: *std.Build) void {
     });
 
     exe.addIncludePath(.{ .path = "lib" });
-    exe.addCSourceFiles(.{ .files = &.{"lib/add.c"} });
+    exe.addCSourceFiles(.{ .files = &.{"lib/add.c"} }); // 通过C文件导出符号表
     exe.linkLibrary(static);
     exe.root_module.addOptions("config", options);
     exe.root_module.addImport("zigstr", zigstr.module("zigstr"));
-    exe.root_module.addImport("libmod", libmod);
+    exe.root_module.addImport("rootmod", rootmod);
 
     b.installArtifact(exe);
 
