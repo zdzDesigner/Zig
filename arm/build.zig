@@ -24,16 +24,15 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
 
-    // const lib = b.addStaticLibrary(.{
-    //     .name = "arm",
-    //     .root_source_file = .{ .path = "src/root.zig" },
-    //     .target = target,
-    //     .optimize = optimize,
-    // });
-    // b.installArtifact(lib);
-    // exe.linkLibrary(lib);
+    const static = b.addStaticLibrary(.{
+        .name = "libstatic",
+        .root_source_file = .{ .path = "src/static.zig" },
+        .target = target,
+        .optimize = optimize,
+    });
+    b.installArtifact(static);
 
-    const lib = b.addModule("lib", .{
+    const libmod = b.addModule("libmod", .{
         .root_source_file = .{ .path = "src/root.zig" },
         .target = target,
         .optimize = optimize,
@@ -50,9 +49,10 @@ pub fn build(b: *std.Build) void {
 
     exe.addIncludePath(.{ .path = "lib" });
     exe.addCSourceFiles(.{ .files = &.{"lib/add.c"} });
+    exe.linkLibrary(static);
     exe.root_module.addOptions("config", options);
     exe.root_module.addImport("zigstr", zigstr.module("zigstr"));
-    exe.root_module.addImport("lib", lib);
+    exe.root_module.addImport("libmod", libmod);
 
     b.installArtifact(exe);
 

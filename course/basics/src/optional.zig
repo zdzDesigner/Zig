@@ -25,3 +25,13 @@ pub fn logic() void {
     const port = nonport orelse "8080";
     std.log.info("port:{s}", .{port});
 }
+
+test "optional::if:" {
+    const isok: ?bool = null;
+
+    const val: []const u8 = if (isok != null and isok.?) "vv" else "xx";
+    std.debug.print("val:{s}\n", .{val});
+
+    const isgo: bool = isok orelse false;
+    std.debug.print("isgo:{}\n", .{isgo});
+}

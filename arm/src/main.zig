@@ -1,11 +1,13 @@
 const std = @import("std");
 const config = @import("config");
 const zigstr = @import("zigstr");
-const lib = @import("lib");
+const libmod = @import("libmod");
 const add = @cImport(@cInclude("add.h"));
 
 const sections = struct {
     extern var __bss_size: u8;
+    extern var __data_size: u8;
+    extern var __text_size: u8;
 };
 
 pub fn main() !void {
@@ -13,8 +15,10 @@ pub fn main() !void {
     if (config.isarm) netPatch();
 
     // 导入符号表
-    std.debug.print("sections:{any}\n", .{sections.__bss_size});
-    std.debug.print("add:{}\n", .{lib.add(@intCast(3), @intCast(4))});
+    std.debug.print("__bss_size:{any}\n", .{sections.__bss_size});
+    std.debug.print("__data_size:{any}\n", .{sections.__data_size});
+    std.debug.print("__text_size:{any}\n", .{sections.__text_size});
+    std.debug.print("add:{}\n", .{libmod.add(@intCast(3), @intCast(4))});
     std.debug.print("mutil:{}\n", .{add.multi(3, 4)});
 }
 
