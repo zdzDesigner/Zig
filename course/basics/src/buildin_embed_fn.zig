@@ -33,3 +33,7 @@ test "packed:" {
 
     std.debug.print("div:{}\n", .{div}); // Divide{ .first = 0, .seconed = 15, .three = 195 }
 }
+
+test "@as" {
+    std.debug.print("@as(u5,12):{}\n", .{@as(u5, 12) << 2});
+}
