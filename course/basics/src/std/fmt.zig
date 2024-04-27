@@ -15,3 +15,17 @@ test "parseInt" {
     std.debug.print("parseInt:{any}\n", .{std.fmt.parseInt(u32, "0xA", 0)}); // 10
     std.debug.print("parseInt:{any}\n", .{std.fmt.parseInt(u32, "0xa", 0)}); // 10
 }
+
+test "tostring:" {
+    std.debug.print("comptimePrint:{s}\n", .{std.fmt.comptimePrint("aa:{}", .{99})});
+}
+
+// 无需堆上分配
+inline fn intToStr(comptime size: comptime_int, comptime format: []const u8, val: anytype) []const u8 {
+    var buf: [size]u8 = undefined;
+    return std.fmt.bufPrint(&buf, format, .{val}) catch "\r\n";
+}
+
+test "int to str:" {
+    std.debug.print("intToStr:{s}\n", .{intToStr(20, "ddd{}\r\n", 8)});
+}

@@ -1,0 +1,7 @@
+reset
+erase
+loadfile ./zig-out/bin/stm32-zig-blinky_irq.bin 0x08000000
+;loadfile ./zig-out/bin/stm32-zig-blinky.bin 0x08000000
+r
+g
+qc
