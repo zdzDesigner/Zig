@@ -38,9 +38,19 @@ pub fn openHSE() void {
 
     flash.setPrefetchBuffer(1); // open PrefetchBuffer(预取缓存)
     flash.detLatency(0b010); // SYSCLK周期与闪存访问时间的比例: 2兼容性高
-    RCC.CFGR.modify(.{ .HPRE = 0 }); // 1分频
-    // RCC.CFGR.modify(.{ .HPRE = 0 }); // 1分频
+    // RCC.CFGR.modify(.{ .HPRE = 0, .PPRE2 = 0, .PPRE1 = 0 }); // AHB1分频
+    RCC.CFGR.modify(.{ .HPRE = 0 }); // AHB1分频
+    RCC.CFGR.modify(.{ .PPRE2 = 0 }); // APB21分频
+    RCC.CFGR.modify(.{ .PPRE1 = 0 }); // APB21分频
 
+    // 10000 PLLSRC, PLLXTPRE and PLLMUL
+    // 设置PLL时钟来源为HSE，设置PLL倍频因子
+    RCC.CFGR.modify(.{ .PLLSRC = 0, .PLLXTPRE = 0, .PLLMUL = 0b1110 }); // 分频
+    RCC.CR.modify(.{ .PLLON = 1 });
+    while (RCC.CR.read().PLLON != 1) {}
+
+    RCC.CFGR.modify(.{ .SW = 0b10 });
+    while (RCC.CFGR.read().SWS != 0b10) {}
 }
 
 pub const HSE_CONF = enum {
