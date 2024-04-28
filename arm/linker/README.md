@@ -1,7 +1,9 @@
 ## 链接过程
+- 成员
+1. add.o
+2. liblibstatic.a.o
 
 ### 符号决议
-
 - lib/add.c
 ```c
 int __bss_size = 30;
@@ -30,6 +32,7 @@ export const __text_size: u8 = 120;
 0000000000000000 r Target.Cpu.Feature.Set.empty
 0000000000000028 r Target.x86.cpu.skylake
 00000000000000ab R __text_size
+00000000010be1c0 W __moddi3      弱符号, 可以覆盖(Cortex 中断符号)
 ```
 
 

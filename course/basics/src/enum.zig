@@ -77,3 +77,29 @@ test "test enum function" {
     try expect(Code.isFail(.fail));
     try expect(!Code.isFail(.server_panic));
 }
+
+const RCC = enum {
+    ON,
+    OFF,
+    Bypass,
+};
+
+fn setRCC(val: RCC) void {
+    switch (val) {
+        .ON => {
+            std.debug.print("ON\n", .{});
+        },
+        .OFF => {
+            std.debug.print("OFF\n", .{});
+        },
+        else => {
+            std.debug.print("Nathing\n", .{});
+        },
+    }
+}
+
+test "switch:" {
+    setRCC(RCC.OFF);
+    setRCC(RCC.ON);
+    setRCC(RCC.Bypass);
+}

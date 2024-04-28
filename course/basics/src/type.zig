@@ -84,3 +84,10 @@ fn argsCheck(args: anytype) void {
 
     std.log.info("fields_info:{any}", .{fields_info});
 }
+
+test "compare u1 and comptime_int:" {
+    const v: u1 = 0;
+    std.debug.print("u1 == comptime_int:{}\n", .{v == 0});
+    const v2: u8 = 20;
+    std.debug.print("u2 == comptime_int:{}\n", .{v2 == 20});
+}

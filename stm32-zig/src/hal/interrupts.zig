@@ -112,7 +112,7 @@ pub const NVICPriorityGroup = enum(u3) {
     g3 = 4,
     g4 = 3,
 };
-
+// NVIC_PriorityGroupConfig
 pub fn setNVICPriorityGroup(group: NVICPriorityGroup) void {
     SCB.AIRCR.modify(.{
         .PRIGROUP = @intFromEnum(group),

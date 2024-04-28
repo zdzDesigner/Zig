@@ -1,4 +1,5 @@
 const chip = @import("chip");
+const flash = @import("flash.zig");
 const RCC = chip.peripherals.RCC;
 
 // RCC_DeInit
@@ -32,7 +33,14 @@ pub fn reset() void { // 复位
 }
 
 pub fn openHSE() void {
-    hseConfig(.ON);
+    setHSE(.ON);
+    if (!isokHSE()) return; // you can write to log
+
+    flash.setPrefetchBuffer(1); // open PrefetchBuffer(预取缓存)
+    flash.detLatency(0b010); // SYSCLK周期与闪存访问时间的比例: 2兼容性高
+    RCC.CFGR.modify(.{ .HPRE = 0 }); // 1分频
+    // RCC.CFGR.modify(.{ .HPRE = 0 }); // 1分频
+
 }
 
 pub const HSE_CONF = enum {
@@ -41,7 +49,7 @@ pub const HSE_CONF = enum {
     Bypass,
 };
 // RCC_HSEConfig
-pub inline fn hseConfig(conf: HSE_CONF) void {
+pub inline fn setHSE(conf: HSE_CONF) void {
     // Reset HSEON and HSEBYP bits before configuring the HSE ------------------
     RCC.CR.modify(.{
         .HSEON = 0,
@@ -60,3 +68,13 @@ pub inline fn hseConfig(conf: HSE_CONF) void {
         else => {},
     }
 }
+
+// wait HSE startup
+fn isokHSE() bool {
+    var i: u32 = 0;
+    while (RCC.CR.read().HSERDY == 0 and i != 0x0500) : (i += 1) {}
+    return RCC.CR.read().HSERDY == 0;
+}
+
+// fn getFLAG() bool {
+// }
