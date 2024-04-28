@@ -24,6 +24,10 @@ pub fn main() void {
         uart.transmitBlocking("======================\r\n", null) catch unreachable;
         uart.transmitBlocking(strings.intToStr(20, "RCC.CR.HSION:{}\r\n", RCC.CR.read().HSION), null) catch unreachable;
         uart.transmitBlocking(strings.intToStr(20, "RCC.CR.HSEON:{}\r\n", RCC.CR.read().HSEON), null) catch unreachable;
+        uart.transmitBlocking(strings.intToStr(20, "RCC.CR.PLLON:{}\r\n", RCC.CR.read().PLLON), null) catch unreachable;
+        uart.transmitBlocking(strings.intToStr(20, "RCC.CFGR.SWS:{}\r\n", RCC.CFGR.read().SWS), null) catch unreachable;
+        uart.transmitBlocking(strings.intToStr(20, "RCC.CR.HSERDY:{}\r\n", RCC.CR.read().HSERDY), null) catch unreachable;
+
         // uart.transmitBlocking(strings.intToStr(20, "RCC.CR:{}\r\n", RCC.CR.read()), null) catch unreachable;
         // CFGR
 
