@@ -17,6 +17,7 @@ pub fn init() void {
     const FLASH = chip.peripherals.FLASH;
     rcc.reset(); // debug purposes
     // rcc.openHSE();
+    clocks.Config.apply(.{ .sys = clocks.HSE.oscillator(null) }, .{}) catch undefined;
     FLASH.ACR.modify(.{ .PRFTBE = 1 });
     interrupts.setNVICPriorityGroup(.g4);
     configTick();

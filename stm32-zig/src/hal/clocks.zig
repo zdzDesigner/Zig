@@ -11,14 +11,14 @@ const peripherals = chip.peripherals;
 const RCC = peripherals.RCC;
 const FLASH = peripherals.FLASH;
 
-const MHz = 1_000_000;
+pub const MHz = 1_000_000;
 
 const AHB_PRESCALE_TABLE: []const u5 = &.{ 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 6, 7, 8, 9 };
 const APB_PRESCALE_TABLE: []const u5 = &.{ 0, 0, 0, 0, 1, 2, 3, 4 };
 
 // System core clk start with HSI as source
+// 启动时钟HSI
 var system_core_clock_frequency: u32 = 8 * MHz;
-// var system_core_clock_frequency: u32 = 72 * MHz;
 
 pub fn systemCoreClockFrequency() u32 {
     return system_core_clock_frequency;
@@ -285,9 +285,11 @@ const CheckedConfig = struct {
 
         {
             // Make sure sys source is on
-            const delay = time.timeout_ms(timeouts.sys);
+            // const delay = time.timeout_ms(timeouts.sys);
+            _ = time.delay_ms(timeouts.sys);
             while (!config.sys.isOn()) {
-                if (delay.isReached()) return ConfigError.TimeoutSys;
+                // if (delay.isReached()) return ConfigError.TimeoutSys;
+                return ConfigError.TimeoutSys;
             }
         }
 
@@ -305,9 +307,11 @@ const CheckedConfig = struct {
         if (RCC.CFGR.read().SWS != source_num) {
             RCC.CFGR.modify(.{ .SW = source_num });
             // Make sure sys source is selected
-            const delay = time.timeout_ms(timeouts.sys);
+            // const delay = time.timeout_ms(timeouts.sys);
+            _ = time.delay_ms(timeouts.sys);
             while (RCC.CFGR.read().SWS != source_num) {
-                if (delay.isReached()) return ConfigError.TimeoutSys;
+                // if (delay.isReached()) return ConfigError.TimeoutSys;
+                return ConfigError.TimeoutSys;
             }
         }
 
@@ -351,9 +355,11 @@ pub const HSI = struct {
             .HSION = 1,
         });
 
-        const delay = time.timeout_ms(timeout);
+        // const delay = time.timeout_ms(timeout);
+        _ = time.delay_ms(timeout);
         while (!isOn()) {
-            if (delay.isReached()) return ConfigError.TimeoutHSI;
+            // if (delay.isReached()) return ConfigError.TimeoutHSI;
+            return ConfigError.TimeoutHSI;
         }
     }
 
@@ -362,9 +368,11 @@ pub const HSI = struct {
             .HSION = 0,
         });
 
-        const delay = time.timeout_ms(timeout);
+        // const delay = time.timeout_ms(timeout);
+        _ = time.delay_ms(timeout);
         while (isOn()) {
-            if (delay.isReached()) return ConfigError.TimeoutHSI;
+            // if (delay.isReached()) return ConfigError.TimeoutHSI;
+            return ConfigError.TimeoutHSI;
         }
     }
 
@@ -389,9 +397,11 @@ pub const HSE = struct {
             .HSEON = 1,
         });
 
-        const delay = time.timeout_ms(timeout);
+        // const delay = time.timeout_ms(timeout);
+        _ = time.delay_ms(timeout);
         while (!isOn()) {
-            if (delay.isReached()) return ConfigError.TimeoutHSE;
+            // if (delay.isReached()) return ConfigError.TimeoutHSE;
+            return ConfigError.TimeoutHSE;
         }
     }
 
@@ -400,9 +410,11 @@ pub const HSE = struct {
             .HSEON = 0,
         });
 
-        const delay = time.timeout_ms(timeout);
+        // const delay = time.timeout_ms(timeout);
+        _ = time.delay_ms(timeout);
         while (isOn()) {
-            if (delay.isReached()) return ConfigError.TimeoutHSE;
+            // if (delay.isReached()) return ConfigError.TimeoutHSE;
+            return ConfigError.TimeoutHSE;
         }
     }
 
@@ -477,18 +489,22 @@ pub const PLL = struct {
 
         RCC.CR.modify(.{ .PLLON = 1 });
 
-        const delay = time.timeout_ms(timeout);
+        // const delay = time.timeout_ms(timeout);
+        _ = time.delay_ms(timeout);
         while (!isOn()) {
-            if (delay.isReached()) return ConfigError.TimeoutPLL;
+            // if (delay.isReached()) return ConfigError.TimeoutPLL;
+            return ConfigError.TimeoutPLL;
         }
     }
 
     pub inline fn turnOff(timeout: u32) !void {
         RCC.CR.modify(.{ .PLLON = 0 });
 
-        const delay = time.timeout_ms(timeout);
+        // const delay = time.timeout_ms(timeout);
+        _ = time.delay_ms(timeout);
         while (isOn()) {
-            if (delay.isReached()) return ConfigError.TimeoutPLL;
+            // if (delay.isReached()) return ConfigError.TimeoutPLL;
+            return ConfigError.TimeoutPLL;
         }
     }
 
