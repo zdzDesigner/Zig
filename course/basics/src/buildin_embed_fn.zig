@@ -21,12 +21,13 @@ test "@ptrCast:" {
     std.debug.print("IntT:{},size:{}\n", .{ IntT, @bitSizeOf(IntT) }); // IntT:u32,size:32
 
     var shpr1 = SHPR1{ .PRI_4 = 4, .PRI_5 = 5, .PRI_6 = 6 };
-    const v: *[12]u8 = @ptrCast(&shpr1);
+    const v: *[12]u8 = @ptrCast(&shpr1); // 指针投影, 修改成员值
     std.debug.print("v:{any}\n", .{v}); // v:{ 4, 5, 6, 0, 124, 142, 159, 24, 253, 127, 0, 0 }
     std.debug.print("equal:{}\n", .{v.*[0] == shpr1.PRI_4});
     shpr1.PRI_4 = 200;
     std.debug.print("v[0]:{}\n", .{v.*[0]}); // 200
-
+    v.*[0] = 100;
+    std.debug.print("shpr1.PRI_4:{}\n", .{shpr1.PRI_4}); // 100
 }
 
 test "packed:" {
@@ -36,6 +37,7 @@ test "packed:" {
         c: u2,
     };
 
+    // 位移
     std.debug.print("offset:{}\n", .{@bitOffsetOf(BitField, "a")}); // 0
     std.debug.print("offset:{}\n", .{@bitOffsetOf(BitField, "b")}); // 3
     std.debug.print("offset:{}\n", .{@bitOffsetOf(BitField, "c")}); // 6

@@ -170,4 +170,5 @@ fn calculateBRR(baud: u32, pclk: u32) u32 {
     const brr = pclk / baud;
     const rounding = ((pclk % baud) + (baud / 2)) / baud;
     return brr + rounding;
+    // return ((pclk / baud) * 10 + 5) / 10;
 }

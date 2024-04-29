@@ -16,7 +16,7 @@ pub const VectorTable = @import("vector_table.zig").VectorTable;
 pub fn init() void {
     const FLASH = chip.peripherals.FLASH;
     rcc.reset(); // debug purposes
-    rcc.openHSE();
+    // rcc.openHSE();
     FLASH.ACR.modify(.{ .PRFTBE = 1 });
     interrupts.setNVICPriorityGroup(.g4);
     configTick();

@@ -153,10 +153,6 @@ test "hasDecl:" {
     std.debug.print("@field(V, 'Lang') == V.Lang:{}\n", .{@field(V, "Lang") == V.Lang}); // true
     std.debug.print("Lang:{}\n", .{V.Lang.ZH}); // V.Lang.ZH
     // std.debug.print("@typeInfo(@field(V, \"Lang\")):{any}\n", .{@typeInfo(@field(V, "Lang"))}); // true
-    {
-        // switch () {}
-
-    }
     //
     const v = V{ .name = "zdz" };
 

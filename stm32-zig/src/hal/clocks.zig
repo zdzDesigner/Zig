@@ -18,6 +18,7 @@ const APB_PRESCALE_TABLE: []const u5 = &.{ 0, 0, 0, 0, 1, 2, 3, 4 };
 
 // System core clk start with HSI as source
 var system_core_clock_frequency: u32 = 8 * MHz;
+// var system_core_clock_frequency: u32 = 72 * MHz;
 
 pub fn systemCoreClockFrequency() u32 {
     return system_core_clock_frequency;

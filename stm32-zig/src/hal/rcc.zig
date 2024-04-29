@@ -38,7 +38,8 @@ pub fn openHSE() void {
 
     flash.setPrefetchBuffer(1); // open PrefetchBuffer(预取缓存)
     flash.detLatency(0b010); // SYSCLK周期与闪存访问时间的比例: 2兼容性高
-    // RCC.CFGR.modify(.{ .HPRE = 0, .PPRE1 = 0 ,.PPRE2 = 0 }); // AHB1分频
+    // RCC.CFGR.modify(.{ .HPRE = 0, .PPRE1 = 0b100, .PPRE2 = 0 }); // AHB1分频
+    // RCC.CFGR.modify(.{ .HPRE = 0, .PPRE1 = 0, .PPRE2 = 0 }); // AHB1分频
     RCC.CFGR.modify(.{ .HPRE = 0 }); // AHB:1分频
     RCC.CFGR.modify(.{ .PPRE1 = 0 }); // APB1:1分频
     RCC.CFGR.modify(.{ .PPRE2 = 0 }); // APB2:1分频

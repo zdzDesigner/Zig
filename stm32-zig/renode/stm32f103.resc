@@ -1,0 +1,30 @@
+using sysbus
+
+# Creating machines
+mach create
+
+# 加载 stm32 配置
+# machine LoadPlatformDescription @platforms/cpus/stm32f103.repl
+machine LoadPlatformDescription @renode/stm32f103.repl
+
+# 加载平台描述节点
+# machine LoadPlatformDescriptionFromString "button: Miscellaneous.Button @ gpioPortC 13 { IRQ -> gpioPortC@13 }"
+
+
+# 指定二进制程序
+$bin=@zig-out/bin/stm32-zig-uart.elf
+
+
+# 分析外设
+:showAnalyzer usart1
+
+
+# 定义 reset 宏
+macro reset
+"""
+    sysbus LoadELF $bin
+"""
+
+# 执行 rest 宏
+runMacro $reset
+

@@ -87,7 +87,21 @@ fn argsCheck(args: anytype) void {
 
 test "compare u1 and comptime_int:" {
     const v: u1 = 0;
-    std.debug.print("u1 == comptime_int:{}\n", .{v == 0});
+    std.debug.print("u1 == comptime_int:{}\n", .{v == 0}); // true
     const v2: u8 = 20;
-    std.debug.print("u2 == comptime_int:{}\n", .{v2 == 20});
+    std.debug.print("u2 == comptime_int:{}\n", .{v2 == 20}); // true
+}
+
+test "@Type" {
+    // std.builtin.Type
+    const T = @Type(.{
+        .Int = .{
+            .signedness = .signed,
+            .bits = 32,
+        },
+    });
+    std.debug.print("T:{}, @TypeOf(T):{}\n", .{ T, @TypeOf(T) });
+    std.debug.print("i32:{},@TypeOf(i32):{} \n", .{ i32, @TypeOf(i32) });
+
+    std.debug.print("T==i32:{}\n", .{T == i32}); // true
 }
