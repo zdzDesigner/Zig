@@ -38,7 +38,8 @@ pub fn init() void {
     const FLASH = chip.peripherals.FLASH;
     rcc.reset(); // debug purposes
     // rcc.openHSE();
-    clocks.Config.apply(.{ .sys = clocks.HSE.oscillator(null), .pll = .{ .multiplier = 9, .frequency = 72 * clocks.MHz, .source = .{ .hse = clocks.HSE{} } }, .pclk2_frequency = 8 * clocks.MHz }, .{}) catch undefined;
+    const pll = clocks.PLL{ .multiplier = 9, .frequency = 72 * clocks.MHz, .source = .{ .hse = clocks.HSE{} } };
+    clocks.Config.apply(.{ .sys = clocks.PLL.asOscillator(pll), .pll = pll }, .{}) catch undefined;
     FLASH.ACR.modify(.{ .PRFTBE = 1 });
     interrupts.setNVICPriorityGroup(.g4);
     configTick();

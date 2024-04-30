@@ -274,21 +274,16 @@ const CheckedConfig = struct {
         if (config.hse) |_| try HSE.turnOn(timeouts.hse) else try HSE.turnOff(timeouts.hse);
         if (config.pll) |o| try o.turnOn(timeouts.pll) else try PLL.turnOff(timeouts.pll);
 
-        const v = config.latency > FLASH.ACR.read().LATENCY;
-        if (v) {
-            // if (config.latency > FLASH.ACR.read().LATENCY) {
+        if (config.latency > FLASH.ACR.read().LATENCY) {
             FLASH.ACR.modify(.{ .LATENCY = config.latency });
             if (FLASH.ACR.read().LATENCY != config.latency) return ConfigError.FailedToSetLatency;
         }
 
         {
             // Make sure sys source is on
-            // const delay = time.timeout_ms(timeouts.sys);
-            // _ = time.delay_ms(timeouts.sys);
             const delay = time.absolute();
             while (!config.sys.isOn()) {
                 if (delay.isReached(timeouts.sys)) return ConfigError.TimeoutSys;
-                // return ConfigError.TimeoutSys;
             }
         }
 
@@ -306,12 +301,9 @@ const CheckedConfig = struct {
         if (RCC.CFGR.read().SWS != source_num) {
             RCC.CFGR.modify(.{ .SW = source_num });
             // Make sure sys source is selected
-            // const delay = time.timeout_ms(timeouts.sys);
-            // _ = time.delay_ms(timeouts.sys);
             const delay = time.absolute();
             while (RCC.CFGR.read().SWS != source_num) {
                 if (delay.isReached(timeouts.sys)) return ConfigError.TimeoutSys;
-                // return ConfigError.TimeoutSys;
             }
         }
 
@@ -355,12 +347,9 @@ pub const HSI = struct {
             .HSION = 1,
         });
 
-        // const delay = time.timeout_ms(timeout);
-        // _ = time.delay_ms(timeout);
         const delay = time.absolute();
         while (!isOn()) {
             if (delay.isReached(timeout)) return ConfigError.TimeoutHSI;
-            // return ConfigError.TimeoutHSI;
         }
     }
 
@@ -369,12 +358,9 @@ pub const HSI = struct {
             .HSION = 0,
         });
 
-        // const delay = time.timeout_ms(timeout);
-        // _ = time.delay_ms(timeout);
         const delay = time.absolute();
         while (isOn()) {
             if (delay.isReached(timeout)) return ConfigError.TimeoutHSI;
-            // return ConfigError.TimeoutHSI;
         }
     }
 
@@ -403,14 +389,9 @@ pub const HSE = struct {
             @compileError(comptimePrint("APB1 frequency is too high. Max frequency: 36 MHz, got {} MHz", .{"xx"}));
         }
 
-        // const delay = time.timeout_ms(timeout);
-        // _ = time.delay_ms(timeout);
         const delay = time.absolute();
-        // while (!isOn()) {
         while (RCC.CR.read().HSERDY != 1) {
-            // while (false) {
             if (delay.isReached(timeout)) return ConfigError.TimeoutHSE;
-            // return ConfigError.TimeoutHSE;
         }
     }
 
@@ -419,19 +400,14 @@ pub const HSE = struct {
             .HSEON = 0,
         });
 
-        // const delay = time.timeout_ms(timeout);
-        // _ = time.delay_ms(timeout);
         const delay = time.absolute();
         while (isOn()) {
             if (delay.isReached(timeout)) return ConfigError.TimeoutHSE;
-            // return ConfigError.TimeoutHSE;
         }
     }
 
     pub inline fn isOn() bool {
-        const ison = RCC.CR.read().HSERDY == 1;
-        return ison;
-        // return RCC.CR.read().HSERDY == 1;
+        return RCC.CR.read().HSERDY == 1;
     }
 };
 
@@ -498,24 +474,18 @@ pub const PLL = struct {
 
         RCC.CR.modify(.{ .PLLON = 1 });
 
-        // const delay = time.timeout_ms(timeout);
-        // _ = time.delay_ms(timeout);
         const delay = time.absolute();
         while (!isOn()) {
             if (delay.isReached(timeout)) return ConfigError.TimeoutPLL;
-            // return ConfigError.TimeoutPLL;
         }
     }
 
     pub inline fn turnOff(timeout: u32) !void {
         RCC.CR.modify(.{ .PLLON = 0 });
 
-        // const delay = time.timeout_ms(timeout);
-        // _ = time.delay_ms(timeout);
         const delay = time.absolute();
         while (isOn()) {
             if (delay.isReached(timeout)) return ConfigError.TimeoutPLL;
-            // return ConfigError.TimeoutPLL;
         }
     }
 
