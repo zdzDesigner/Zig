@@ -46,10 +46,14 @@ pub const ConfigError = error{
 };
 
 pub const Timeouts = struct {
-    sys: u32 = 5000,
+    sys: u32 = 5,
     hsi: u32 = 2,
-    hse: u32 = 1000,
+    hse: u32 = 3,
     pll: u32 = 2,
+    // sys: u32 = 5000,
+    // hsi: u32 = 2,
+    // hse: u32 = 1000,
+    // pll: u32 = 2,
 };
 
 pub const Config = struct {
@@ -286,10 +290,11 @@ const CheckedConfig = struct {
         {
             // Make sure sys source is on
             // const delay = time.timeout_ms(timeouts.sys);
-            _ = time.delay_ms(timeouts.sys);
+            // _ = time.delay_ms(timeouts.sys);
+            const delay = time.absolute();
             while (!config.sys.isOn()) {
-                // if (delay.isReached()) return ConfigError.TimeoutSys;
-                return ConfigError.TimeoutSys;
+                if (delay.isReached(timeouts.sys)) return ConfigError.TimeoutSys;
+                // return ConfigError.TimeoutSys;
             }
         }
 
@@ -308,10 +313,11 @@ const CheckedConfig = struct {
             RCC.CFGR.modify(.{ .SW = source_num });
             // Make sure sys source is selected
             // const delay = time.timeout_ms(timeouts.sys);
-            _ = time.delay_ms(timeouts.sys);
+            // _ = time.delay_ms(timeouts.sys);
+            const delay = time.absolute();
             while (RCC.CFGR.read().SWS != source_num) {
-                // if (delay.isReached()) return ConfigError.TimeoutSys;
-                return ConfigError.TimeoutSys;
+                if (delay.isReached(timeouts.sys)) return ConfigError.TimeoutSys;
+                // return ConfigError.TimeoutSys;
             }
         }
 
@@ -356,10 +362,11 @@ pub const HSI = struct {
         });
 
         // const delay = time.timeout_ms(timeout);
-        _ = time.delay_ms(timeout);
+        // _ = time.delay_ms(timeout);
+        const delay = time.absolute();
         while (!isOn()) {
-            // if (delay.isReached()) return ConfigError.TimeoutHSI;
-            return ConfigError.TimeoutHSI;
+            if (delay.isReached(timeout)) return ConfigError.TimeoutHSI;
+            // return ConfigError.TimeoutHSI;
         }
     }
 
@@ -369,10 +376,11 @@ pub const HSI = struct {
         });
 
         // const delay = time.timeout_ms(timeout);
-        _ = time.delay_ms(timeout);
+        // _ = time.delay_ms(timeout);
+        const delay = time.absolute();
         while (isOn()) {
-            // if (delay.isReached()) return ConfigError.TimeoutHSI;
-            return ConfigError.TimeoutHSI;
+            if (delay.isReached(timeout)) return ConfigError.TimeoutHSI;
+            // return ConfigError.TimeoutHSI;
         }
     }
 
@@ -398,10 +406,11 @@ pub const HSE = struct {
         });
 
         // const delay = time.timeout_ms(timeout);
-        _ = time.delay_ms(timeout);
+        // _ = time.delay_ms(timeout);
+        const delay = time.absolute();
         while (!isOn()) {
-            // if (delay.isReached()) return ConfigError.TimeoutHSE;
-            return ConfigError.TimeoutHSE;
+            if (delay.isReached(timeout)) return ConfigError.TimeoutHSE;
+            // return ConfigError.TimeoutHSE;
         }
     }
 
@@ -411,10 +420,11 @@ pub const HSE = struct {
         });
 
         // const delay = time.timeout_ms(timeout);
-        _ = time.delay_ms(timeout);
+        // _ = time.delay_ms(timeout);
+        const delay = time.absolute();
         while (isOn()) {
-            // if (delay.isReached()) return ConfigError.TimeoutHSE;
-            return ConfigError.TimeoutHSE;
+            if (delay.isReached(timeout)) return ConfigError.TimeoutHSE;
+            // return ConfigError.TimeoutHSE;
         }
     }
 
@@ -490,10 +500,11 @@ pub const PLL = struct {
         RCC.CR.modify(.{ .PLLON = 1 });
 
         // const delay = time.timeout_ms(timeout);
-        _ = time.delay_ms(timeout);
+        // _ = time.delay_ms(timeout);
+        const delay = time.absolute();
         while (!isOn()) {
-            // if (delay.isReached()) return ConfigError.TimeoutPLL;
-            return ConfigError.TimeoutPLL;
+            if (delay.isReached(timeout)) return ConfigError.TimeoutPLL;
+            // return ConfigError.TimeoutPLL;
         }
     }
 
@@ -501,10 +512,11 @@ pub const PLL = struct {
         RCC.CR.modify(.{ .PLLON = 0 });
 
         // const delay = time.timeout_ms(timeout);
-        _ = time.delay_ms(timeout);
+        // _ = time.delay_ms(timeout);
+        const delay = time.absolute();
         while (isOn()) {
-            // if (delay.isReached()) return ConfigError.TimeoutPLL;
-            return ConfigError.TimeoutPLL;
+            if (delay.isReached(timeout)) return ConfigError.TimeoutPLL;
+            // return ConfigError.TimeoutPLL;
         }
     }
 
