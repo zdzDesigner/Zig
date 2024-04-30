@@ -12,3 +12,10 @@ pub fn logic() void {
 
     // while (true) {}
 }
+
+test "while::true:" {
+    while (false) {
+        std.debug.print("is while conent\n", .{});
+    }
+    std.debug.print("is while out\n", .{});
+}

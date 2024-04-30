@@ -94,13 +94,14 @@ pub fn apply(self: Self, config: Config) void {
         .IREN = 0,
     });
 
+    // clock_freq = 500000
     const clock_freq = switch (@intFromPtr(self.registers)) {
         @intFromPtr(USART1.registers) => clocks.pclk2ClockFrequency(),
         else => unreachable,
     };
 
-    self.registers.BRR.raw = calculateBRR(config.baudrate, clock_freq);
-
+    // config.baudrate = 115200
+    self.registers.BRR.raw = calculateBRR(config.baudrate, clock_freq); // 4
     self.registers.CR1.modify(.{ .UE = 1 });
 }
 pub fn flush(self: Self, timeout: ?u32) error{Timeout}!void {

@@ -18,7 +18,7 @@ pub fn delay_ms(ms: u32) void {
 }
 
 pub fn absolute() Absolute {
-    return @enumFromInt(hal.getTick());
+    return @enumFromInt(hal.getTick()); // 记录初始时间
 }
 
 pub const Absolute = enum(u32) {
@@ -26,7 +26,7 @@ pub const Absolute = enum(u32) {
 
     pub inline fn isReached(self: Absolute, timeout: ?u32) bool {
         const n = timeout orelse return false;
-        return hal.getTick() - self.to_ms() > n;
+        return hal.getTick() - self.to_ms() > n; // 实时时间 - 初始时间 > timeout
     }
 
     pub inline fn to_ms(self: Absolute) u32 {

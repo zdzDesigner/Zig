@@ -1,6 +1,7 @@
 const std = @import("std");
 
 const chip = @import("chip");
+const comptimePrint = std.fmt.comptimePrint;
 
 const rcc = @import("rcc.zig");
 pub const GPIO = @import("GPIO.zig");
@@ -13,11 +14,31 @@ pub const dma = @import("dma.zig");
 
 pub const VectorTable = @import("vector_table.zig").VectorTable;
 
+pub fn init_test() void {
+    const RCC = chip.peripherals.RCC;
+    var hseon: u1 = 0;
+    if (RCC.CR.read().HSEON == 0) {
+        hseon = 0;
+    } else {
+        hseon = 1;
+    }
+
+    RCC.CR.modify(.{ .HSEON = 1 });
+    var i: u32 = 0;
+    while (RCC.CR.read().HSERDY == 0 and i < 100) : (i += 1) {
+        hseon = 0;
+    }
+    hseon = 1;
+    if (RCC.CR.read().HSERDY == 0) {
+        hseon = 0;
+    }
+    hseon = 1;
+}
 pub fn init() void {
     const FLASH = chip.peripherals.FLASH;
     rcc.reset(); // debug purposes
     // rcc.openHSE();
-    clocks.Config.apply(.{ .sys = clocks.HSE.oscillator(null) }, .{}) catch undefined;
+    clocks.Config.apply(.{ .sys = clocks.HSE.oscillator(null), .pll = .{ .multiplier = 9, .frequency = 72 * clocks.MHz, .source = .{ .hse = clocks.HSE{} } }, .pclk2_frequency = 8 * clocks.MHz }, .{}) catch undefined;
     FLASH.ACR.modify(.{ .PRFTBE = 1 });
     interrupts.setNVICPriorityGroup(.g4);
     configTick();

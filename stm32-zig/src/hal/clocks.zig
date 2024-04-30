@@ -19,19 +19,15 @@ const APB_PRESCALE_TABLE: []const u5 = &.{ 0, 0, 0, 0, 1, 2, 3, 4 };
 // System core clk start with HSI as source
 // 启动时钟HSI
 var system_core_clock_frequency: u32 = 8 * MHz;
-
 pub fn systemCoreClockFrequency() u32 {
     return system_core_clock_frequency;
 }
-
 pub fn hclkClockFrequency() u32 {
     return system_core_clock_frequency;
 }
-
 pub fn pclk1ClockFrequency() u32 {
     return system_core_clock_frequency >> APB_PRESCALE_TABLE[RCC.CFGR.read().PPRE1];
 }
-
 pub fn pclk2ClockFrequency() u32 {
     return system_core_clock_frequency >> APB_PRESCALE_TABLE[RCC.CFGR.read().PPRE2];
 }
@@ -46,23 +42,19 @@ pub const ConfigError = error{
 };
 
 pub const Timeouts = struct {
-    sys: u32 = 5,
+    sys: u32 = 5000,
     hsi: u32 = 2,
-    hse: u32 = 3,
+    hse: u32 = 1000,
     pll: u32 = 2,
-    // sys: u32 = 5000,
-    // hsi: u32 = 2,
-    // hse: u32 = 1000,
-    // pll: u32 = 2,
 };
 
 pub const Config = struct {
     sys: Oscillator = HSI.oscillator(null),
     pll: ?PLL = null,
-    hclk_frequency: ?u32 = null,
-    pclk1_frequency: ?u32 = null,
-    pclk2_frequency: ?u32 = null,
-    adc_frequency: ?u32 = null,
+    hclk_frequency: ?u32 = null, // AHB
+    pclk1_frequency: ?u32 = null, // APB1
+    pclk2_frequency: ?u32 = null, // APB2
+    adc_frequency: ?u32 = null, // ADC
 
     pub inline fn apply(comptime config: Config, comptime timeouts: Timeouts) ConfigError!void {
         const checked = comptime config.check();
@@ -72,6 +64,7 @@ pub const Config = struct {
     fn check(comptime config: Config) CheckedConfig {
         const sys_freq = config.sys.frequency();
         if (sys_freq > 72 * MHz) {
+            // 编译器检查
             @compileError(comptimePrint("Sys frequency is too high. Max frequency: 72 MHz, got {} MHz", .{sys_freq / MHz}));
         }
 
@@ -163,23 +156,22 @@ pub const Config = struct {
             "Valid frequenies are: \n";
 
         inline for (0..10) |i| {
-            if (i != 5) {
-                const value = sys_freq >> i;
-                msg = msg ++ comptimePrint("\t{} Hz\n", .{value});
-                if (value == ahb_freq) {
-                    return switch (i) {
-                        0 => 0b0000,
-                        1 => 0b1000,
-                        2 => 0b1001,
-                        3 => 0b1011,
-                        4 => 0b1011,
-                        6 => 0b1100,
-                        7 => 0b1101,
-                        8 => 0b1101,
-                        9 => 0b1111,
-                        else => unreachable,
-                    };
-                }
+            if (i == 5) continue;
+            const value = sys_freq >> i;
+            msg = msg ++ comptimePrint("\t{} Hz\n", .{value});
+            if (value == ahb_freq) {
+                return switch (i) {
+                    0 => 0b0000,
+                    1 => 0b1000,
+                    2 => 0b1001,
+                    3 => 0b1011,
+                    4 => 0b1011,
+                    6 => 0b1100,
+                    7 => 0b1101,
+                    8 => 0b1101,
+                    9 => 0b1111,
+                    else => unreachable,
+                };
             }
         }
 
@@ -282,7 +274,9 @@ const CheckedConfig = struct {
         if (config.hse) |_| try HSE.turnOn(timeouts.hse) else try HSE.turnOff(timeouts.hse);
         if (config.pll) |o| try o.turnOn(timeouts.pll) else try PLL.turnOff(timeouts.pll);
 
-        if (config.latency > FLASH.ACR.read().LATENCY) {
+        const v = config.latency > FLASH.ACR.read().LATENCY;
+        if (v) {
+            // if (config.latency > FLASH.ACR.read().LATENCY) {
             FLASH.ACR.modify(.{ .LATENCY = config.latency });
             if (FLASH.ACR.read().LATENCY != config.latency) return ConfigError.FailedToSetLatency;
         }
@@ -405,10 +399,16 @@ pub const HSE = struct {
             .HSEON = 1,
         });
 
+        if (false) {
+            @compileError(comptimePrint("APB1 frequency is too high. Max frequency: 36 MHz, got {} MHz", .{"xx"}));
+        }
+
         // const delay = time.timeout_ms(timeout);
         // _ = time.delay_ms(timeout);
         const delay = time.absolute();
-        while (!isOn()) {
+        // while (!isOn()) {
+        while (RCC.CR.read().HSERDY != 1) {
+            // while (false) {
             if (delay.isReached(timeout)) return ConfigError.TimeoutHSE;
             // return ConfigError.TimeoutHSE;
         }
@@ -428,8 +428,10 @@ pub const HSE = struct {
         }
     }
 
-    pub fn isOn() bool {
-        return RCC.CR.read().HSERDY == 1;
+    pub inline fn isOn() bool {
+        const ison = RCC.CR.read().HSERDY == 1;
+        return ison;
+        // return RCC.CR.read().HSERDY == 1;
     }
 };
 
@@ -451,10 +453,7 @@ pub const PLL = struct {
     }
 
     pub fn fromHSE(frequency: u32, hse: HSE, div2: bool) PLL {
-        const s: Source = if (div2)
-            .{ .hse_div2 = hse }
-        else
-            .{ .hse = hse };
+        const s: Source = if (div2) .{ .hse_div2 = hse } else .{ .hse = hse };
 
         return .{
             .oscillator = s,
@@ -520,7 +519,7 @@ pub const PLL = struct {
         }
     }
 
-    pub inline fn isOn() bool {
+    pub fn isOn() bool {
         return RCC.CR.read().PLLRDY == 1;
     }
 

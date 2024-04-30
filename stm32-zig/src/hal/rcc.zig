@@ -2,6 +2,8 @@ const chip = @import("chip");
 const flash = @import("flash.zig");
 const RCC = chip.peripherals.RCC;
 
+// const Self = @This();
+// registers: *volatile RCC,
 // RCC_DeInit
 pub fn reset() void { // 复位
     RCC.CR.modify(.{ .HSION = 1 });
@@ -36,8 +38,8 @@ pub fn openHSE() void {
     setHSE(.ON);
     if (!isokHSE()) return; // you can write to log
 
-    // flash.setPrefetchBuffer(1); // open PrefetchBuffer(预取缓存)
-    // flash.detLatency(0b010); // SYSCLK周期与闪存访问时间的比例: 2兼容性高
+    flash.setPrefetchBuffer(1); // open PrefetchBuffer(预取缓存)
+    flash.detLatency(0b010); // SYSCLK周期与闪存访问时间的比例: 2兼容性高(强相关:RCC.CFGR.modify(.{ .SW = 0b10 }))
     RCC.CFGR.modify(.{ .HPRE = 0, .PPRE1 = 0b100, .PPRE2 = 0 }); // AHB1分频
     // RCC.CFGR.modify(.{ .HPRE = 0, .PPRE1 = 0, .PPRE2 = 0 }); // AHB1分频
     // RCC.CFGR.modify(.{ .HPRE = 0 }); // AHB:1分频
@@ -51,8 +53,14 @@ pub fn openHSE() void {
     RCC.CR.modify(.{ .PLLON = 1 });
     while (RCC.CR.read().PLLON != 1) {}
 
-    RCC.CFGR.modify(.{ .SW = 0b10 });
-    while (RCC.CFGR.read().SWS != 0b10) {}
+    if (RCC.CFGR.read().SWS != 0b10) {
+        RCC.CFGR.modify(.{ .SW = 0b10 });
+    }
+
+    var i: u32 = 0;
+    // while (RCC.CFGR.read().SWS != 0b10 and i != 0x0500) : (i += 1) {}
+
+    i = 200;
 }
 
 pub const HSE_CONF = enum {

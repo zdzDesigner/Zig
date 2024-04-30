@@ -107,3 +107,10 @@ test "List alloc" {
     try testing.expectEqual(list.bufs[0], 0);
     try testing.expectEqual(list.bufs[1], 1);
 }
+
+test "compileError:" {
+    if (true) {
+        // 编译器检查
+        @compileError(std.fmt.comptimePrint("compile time check: ", .{}));
+    }
+}

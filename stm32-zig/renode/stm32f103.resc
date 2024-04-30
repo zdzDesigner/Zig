@@ -28,3 +28,7 @@ macro reset
 # 执行 rest 宏
 runMacro $reset
 
+
+# 开启 GDB 调试
+machine StartGdbServer 3333 true
+
