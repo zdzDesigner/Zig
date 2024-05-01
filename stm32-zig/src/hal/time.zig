@@ -4,10 +4,15 @@ const clocks = @import("clocks.zig");
 
 const hal = @import("hal.zig");
 
-const SCALE = if (@import("builtin").mode == .Debug) 20 else 1;
+// const SCALE = if (@import("builtin").mode == .Debug) 20 else 1;
+const SCALE = 1;
+pub inline fn uscount(us: u32) u32 {
+    return us * (clocks.systemCoreClockFrequency() / 1_000_000) / SCALE;
+}
 
 pub fn delay_us(us: u32) void {
-    var wait_loop_index = us * (clocks.systemCoreClockFrequency() / 1_000_000) / SCALE;
+    // var wait_loop_index = us * (clocks.systemCoreClockFrequency() / 1_000_000) / SCALE;
+    var wait_loop_index = uscount(us);
     while (wait_loop_index != 0) {
         wait_loop_index -= 1;
     }

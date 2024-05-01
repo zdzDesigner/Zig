@@ -37,9 +37,9 @@ pub fn init_test() void {
 pub fn init() void {
     const FLASH = chip.peripherals.FLASH;
     rcc.reset(); // debug purposes
-    // rcc.openHSE();
-    const pll = clocks.PLL{ .multiplier = 9, .frequency = 72 * clocks.MHz, .source = .{ .hse = clocks.HSE{} } };
-    clocks.Config.apply(.{ .sys = clocks.PLL.asOscillator(pll), .pll = pll }, .{}) catch undefined;
+    rcc.openHSE();
+    // const pll = clocks.PLL{ .multiplier = 9, .frequency = 72 * clocks.MHz, .source = .{ .hse = clocks.HSE{} } };
+    // clocks.Config.apply(.{ .sys = clocks.PLL.asOscillator(pll), .pll = pll }, .{}) catch undefined;
     FLASH.ACR.modify(.{ .PRFTBE = 1 });
     interrupts.setNVICPriorityGroup(.g4);
     configTick();
@@ -49,22 +49,33 @@ pub fn configTick() void {
     const TICK = chip.peripherals.STK;
 
     // MAX clock frequency is 72 MHz. Div by 1000 uses less than 24 bits
-    const ticks: u24 = @truncate(clocks.systemCoreClockFrequency() / 1000);
+    const ticks: u24 = @truncate(clocks.systemCoreClockFrequency()); // 72是1us
+    // const ticks: u24 = 7200000; // 72是1us
+    tick = @as(u32, ticks - 1);
 
-    TICK.LOAD_.modify(.{ .RELOAD = ticks });
+    TICK.LOAD.modify(.{ .RELOAD = ticks - 1 });
 
     interrupts.CortexM3Interrupt.setPriority(.SysTick, .{ .preemptive = 15, .sub = 0 });
 
     TICK.VAL.raw = 0;
-    TICK.CTRL.raw = 0b111;
+    // TICK.CTRL.raw = 0b011; // 开启中断, 外部时钟源
+    TICK.CTRL.modify(.{ .ENABLE = 1, .TICKINT = 1, .CLKSOURCE = 0 });
+    // TICK.CTRL.modify(.{ .ENABLE = 1, .TICKINT = 1, .CLKSOURCE = 1 });
 }
 
 var tick: u32 = 0;
-
+pub fn isTick(timeout: u32) bool {
+    // return tick % time.uscount(timeout) == 0;
+    return tick % timeout == 0;
+}
 pub fn getTick() u32 {
     return tick;
 }
 
 pub fn incrementTick() void {
-    tick +%= 1;
+    if (tick != 0) {
+        tick -= 1;
+    } else {
+        tick = 7200;
+    }
 }

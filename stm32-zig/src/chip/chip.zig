@@ -1475,7 +1475,7 @@ pub const types = struct {
                 padding: u15,
             }),
             ///  SysTick reload value register
-            LOAD_: mmio.Mmio(packed struct(u32) {
+            LOAD: mmio.Mmio(packed struct(u32) {
                 ///  RELOAD value
                 RELOAD: u24,
                 padding: u8,

@@ -1,5 +1,4 @@
 const std = @import("std");
-
 const chip = @import("chip");
 
 const SCB = chip.peripherals.SCB;

@@ -30,6 +30,16 @@ test "alignment:" {
     std.debug.print("list_str alignment:{}\n", .{@alignOf(@TypeOf(list_str))}); // 8 指针
 }
 
+fn add(a: i32, b: i32) i32 {
+    return a + b;
+}
+test "@call:" {
+    // @call(modifier: std.builtin.CallModifier, function: anytype, args: anytype) anytype
+    std.debug.print("@call::add:{}\n", .{@call(.auto, add, .{ 2, 3 })}); // 5
+    // always_inline: 保证调用将内联在调用点。如果这是不可能的，则会发出编译错误。
+    std.debug.print("@call::add:{}\n", .{@call(.always_inline, add, .{ 2, 3 })}); // 5
+}
+
 // struct 包含声明(declaration) 和 属性(field)
 // std.buildin.Type.Struct
 //      fields:[]const StructField
