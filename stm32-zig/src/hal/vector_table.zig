@@ -205,10 +205,15 @@ fn makeIRQ(comptime name: []const u8) fn () callconv(.C) ReturnType(name) {
 
     const AppVectorTable = app.VectorTable;
 
-    return if (@hasDecl(AppVectorTable, name))
-        @field(AppVectorTable, name)
-    else
-        @field(HalVectorTable, name);
+    return if (@hasDecl(AppVectorTable, name)) @field(AppVectorTable, name) else @field(HalVectorTable, name);
+    // return switch (std.meta.eql(u8, )name == "SysTick") {
+    //     true => fn () callconv(.C) ReturnType(name){
+    //
+    // },
+    //     else => {
+    //         if (@hasDecl(AppVectorTable, name)) @field(AppVectorTable, name) else @field(HalVectorTable, name);
+    //     },
+    // };
 }
 
 fn ReturnType(comptime name: []const u8) type {

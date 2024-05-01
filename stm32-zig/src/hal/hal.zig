@@ -1,4 +1,5 @@
 const std = @import("std");
+const assert = std.debug.assert;
 
 const chip = @import("chip");
 const comptimePrint = std.fmt.comptimePrint;
@@ -37,9 +38,9 @@ pub fn init_test() void {
 pub fn init() void {
     const FLASH = chip.peripherals.FLASH;
     rcc.reset(); // debug purposes
-    rcc.openHSE();
-    // const pll = clocks.PLL{ .multiplier = 9, .frequency = 72 * clocks.MHz, .source = .{ .hse = clocks.HSE{} } };
-    // clocks.Config.apply(.{ .sys = clocks.PLL.asOscillator(pll), .pll = pll }, .{}) catch undefined;
+    // rcc.openHSE(rcc.rcc_reg);
+    const pll = clocks.PLL{ .multiplier = 9, .frequency = 72 * clocks.MHz, .source = .{ .hse = clocks.HSE{} } };
+    clocks.Config.apply(.{ .sys = clocks.PLL.asOscillator(pll), .pll = pll, .pclk2_frequency = 72 * clocks.MHz }, .{}) catch undefined;
     FLASH.ACR.modify(.{ .PRFTBE = 1 });
     interrupts.setNVICPriorityGroup(.g4);
     configTick();
@@ -49,8 +50,9 @@ pub fn configTick() void {
     const TICK = chip.peripherals.STK;
 
     // MAX clock frequency is 72 MHz. Div by 1000 uses less than 24 bits
-    const ticks: u24 = @truncate(clocks.systemCoreClockFrequency()); // 72是1us
-    // const ticks: u24 = 7200000; // 72是1us
+    const ticks: u24 = @truncate(clocks.systemCoreClockFrequency() / 1000); // 72是1us
+    // const ticks: u24 = 72000; // 72是1us  (rcc.openHSE)
+
     tick = @as(u32, ticks - 1);
 
     TICK.LOAD.modify(.{ .RELOAD = ticks - 1 });
@@ -59,8 +61,9 @@ pub fn configTick() void {
 
     TICK.VAL.raw = 0;
     // TICK.CTRL.raw = 0b011; // 开启中断, 外部时钟源
-    TICK.CTRL.modify(.{ .ENABLE = 1, .TICKINT = 1, .CLKSOURCE = 0 });
-    // TICK.CTRL.modify(.{ .ENABLE = 1, .TICKINT = 1, .CLKSOURCE = 1 });
+    // TICK.CTRL.modify(.{ .ENABLE = 1, .TICKINT = 1, .CLKSOURCE = 0 });
+    TICK.CTRL.modify(.{ .ENABLE = 1, .TICKINT = 1, .CLKSOURCE = 1 });
+    // CLKSOURCE: 0: AHB/8, 1: Processor clock (AHB)
 }
 
 var tick: u32 = 0;
@@ -73,9 +76,9 @@ pub fn getTick() u32 {
 }
 
 pub fn incrementTick() void {
-    if (tick != 0) {
-        tick -= 1;
-    } else {
-        tick = 7200;
-    }
+    // tick = if (tick != 0) (tick - 1) else (72000 - 1);
+    tick = switch (tick) {
+        0 => 72000 - 1,
+        else => tick - 1,
+    };
 }

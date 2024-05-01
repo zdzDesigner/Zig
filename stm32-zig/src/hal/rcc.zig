@@ -1,9 +1,16 @@
+const std = @import("std");
 const chip = @import("chip");
 const flash = @import("flash.zig");
+const Reg = *volatile chip.types.peripherals.RCC;
 const RCC = chip.peripherals.RCC;
+// const isdebug = @import("builtin").mode == .Debug;
+pub const rcc_reg: Reg = RCC;
+// inline fn debug() void {
+//     const reg: *volatile Reg = RCC;
+//     _ = reg.CIR;
+// }
 
 // const Self = @This();
-// registers: *volatile RCC,
 // RCC_DeInit
 pub fn reset() void { // 复位
     RCC.CR.modify(.{ .HSION = 1 });
@@ -34,7 +41,13 @@ pub fn reset() void { // 复位
     RCC.CIR.raw = 0x009F0000;
 }
 
-pub fn openHSE() void {
+pub fn openHSE(reg: Reg) void {
+    {
+        _ = reg;
+    }
+    // std.debug.assert(rcc_reg == RCC);
+    // debug();
+    // @call(.always_inline, debug, .{});
     setHSE(.ON);
     if (!isokHSE()) return; // you can write to log
 
@@ -50,7 +63,7 @@ pub fn openHSE() void {
 
     // 10000 PLLSRC, PLLXTPRE and PLLMUL
     // 设置PLL时钟来源为HSE，设置PLL倍频因子
-    RCC.CFGR.modify(.{ .PLLSRC = 0, .PLLXTPRE = 0, .PLLMUL = 0b1110 }); // 分频
+    RCC.CFGR.modify(.{ .PLLSRC = 1, .PLLXTPRE = 0, .PLLMUL = 0b0111 }); // 分频
     RCC.CR.modify(.{ .PLLON = 1 });
     while (RCC.CR.read().PLLON != 1) {}
 
