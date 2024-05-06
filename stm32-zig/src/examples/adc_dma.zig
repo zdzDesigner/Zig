@@ -11,6 +11,7 @@ pub fn main() void {
 
     const adc1 = adc.ADC1.withDMA();
     adc1.apply(.{
+        .mode = .continuous,
         .channels = &.{
             // adc.Channel.A0,
             // adc.Channel.A1,
@@ -21,7 +22,7 @@ pub fn main() void {
             // adc.Channel.A2.withSamplingCycles(.@"7.5"),
             // ===========
             adc.Channel.A4,
-            adc.Channel.A5,
+            // adc.Channel.A5,
         },
     }) catch @panic("Failed to enable ADC");
 
@@ -31,15 +32,15 @@ pub fn main() void {
     x.asInput(.analog);
     // y.asInput(.analog);
 
-    // var buf: [2]u16 = undefined;
-    var buf: [1]u16 = undefined;
+    var buf: [12]u16 = undefined;
+    // var buf: [1]u16 = undefined;
     while (true) {
         const transfer = adc1.start(&buf) catch continue;
-        transfer.wait(1000) catch unreachable;
-        // transfer.wait(null) catch continue;
+        // transfer.wait(1000) catch unreachable;
+        transfer.wait(null) catch continue;
 
         uart.transmitBlocking(strings.intToStr(10, "x:{}\r\n", buf[0]), null) catch unreachable;
         // uart.transmitBlocking(strings.intToStr(10, "y:{}\r\n", buf[1]), null) catch unreachable;
-        hal.time.delay_ms(300);
+        hal.time.delay_ms(100);
     }
 }

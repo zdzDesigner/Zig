@@ -4,6 +4,7 @@ const examples = &.{
     "blinky",
     "blinky_irq",
     "adc",
+    "adc_temp",
     "adc_dma",
     "button",
     "button_irq",
