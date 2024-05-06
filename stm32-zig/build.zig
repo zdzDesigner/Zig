@@ -8,6 +8,7 @@ const examples = &.{
     "button",
     "button_irq",
     "uart",
+    "uart_irq",
 };
 
 pub fn build(b: *std.Build) void {
@@ -18,7 +19,7 @@ pub fn build(b: *std.Build) void {
         .abi = .eabi,
     });
     const optimize = b.standardOptimizeOption(.{
-        .preferred_optimize_mode = .ReleaseSafe,
+        // .preferred_optimize_mode = .ReleaseSafe,
         // .preferred_optimize_mode = .ReleaseSmall,
     });
 
@@ -94,6 +95,7 @@ pub fn build(b: *std.Build) void {
 
         hal.addImport("chip", &elf.root_module);
         hal.addImport("app", app);
+        hal.addImport("util", util);
 
         app.addImport("chip", &elf.root_module);
         app.addImport("hal", hal);

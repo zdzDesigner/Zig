@@ -6,7 +6,7 @@ const comptimePrint = std.fmt.comptimePrint;
 
 const rcc = @import("rcc.zig");
 pub const GPIO = @import("GPIO.zig");
-pub const adc = @import("adc.zig");
+pub const ADC = @import("ADC.zig");
 pub const clocks = @import("clocks.zig");
 pub const time = @import("time.zig");
 pub const interrupts = @import("interrupts.zig");
@@ -41,6 +41,7 @@ pub fn init() void {
     // rcc.openHSE(rcc.rcc_reg);
     const pll = clocks.PLL{ .multiplier = 9, .frequency = 72 * clocks.MHz, .source = .{ .hse = clocks.HSE{} } };
     clocks.Config.apply(.{ .sys = clocks.PLL.asOscillator(pll), .pll = pll, .pclk2_frequency = 72 * clocks.MHz }, .{}) catch undefined;
+    // clocks.Config.apply(.{ .sys = clocks.PLL.asOscillator(pll), .pclk2_frequency = 72 * clocks.MHz }, .{}) catch undefined;
     FLASH.ACR.modify(.{ .PRFTBE = 1 });
     interrupts.setNVICPriorityGroup(.g4);
     configTick();
@@ -67,16 +68,14 @@ pub fn configTick() void {
 }
 
 var tick: u32 = 0;
-pub fn isTick(timeout: u32) bool {
-    // return tick % time.uscount(timeout) == 0;
-    return tick % timeout == 0;
+pub fn isTick(delay_count: u32) bool {
+    return tick % delay_count == 0;
 }
 pub fn getTick() u32 {
     return tick;
 }
 
 pub fn incrementTick() void {
-    // tick = if (tick != 0) (tick - 1) else (72000 - 1);
     tick = switch (tick) {
         0 => 72000 - 1,
         else => tick - 1,

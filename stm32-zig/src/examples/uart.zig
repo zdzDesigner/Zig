@@ -61,8 +61,28 @@ pub fn main() void {
     //     uart.transmitBlocking(strings.intToStr(20, "encodeU16:{}\r\n", pri.encodeU16()), null) catch unreachable;
     //     time.delay_ms(1000);
     // }
+    //
+    //
 
-    // var buf: [10]u8 = undefined;
-    // uart.readBlocking(&buf, null) catch unreachable;
+    // read buf ============
+    while (true) {
+        // uart.readBlocking(buffer: []u8, timeout: ?u32)
+        var buf: [1]u8 = undefined;
+        uart.readBlocking(&buf, null) catch unreachable;
+        if (buf[0] == '\r' or buf[0] == '\n') { // 13 or 10
+            uart.transmitBlocking(strings.intToStr(30, "{s}\r\n", ""), null) catch unreachable;
+        } else {
+            uart.transmitBlocking(strings.intToStr(30, "{s}", buf), null) catch unreachable;
+        }
+    }
+}
 
+fn writeResponse() !void {
+    var buf: [1]u8 = undefined;
+    uart.readBlocking(&buf, null) catch unreachable;
+    if (buf[0] == '\r' or buf[0] == '\n') { // 13 or 10
+        uart.transmitBlocking(strings.intToStr(30, "{s}\r\n", ""), null) catch unreachable;
+    } else {
+        uart.transmitBlocking(strings.intToStr(30, "{s}", buf), null) catch unreachable;
+    }
 }

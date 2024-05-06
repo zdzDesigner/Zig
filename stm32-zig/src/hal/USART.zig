@@ -1,8 +1,8 @@
 const chip = @import("chip");
-
 const clocks = @import("clocks.zig");
 const GPIO = @import("GPIO.zig");
 const time = @import("time.zig");
+const interrupts = @import("interrupts.zig");
 
 const RCC = chip.peripherals.RCC;
 const AFIO = chip.peripherals.AFIO;
@@ -24,7 +24,9 @@ pub const Config = struct {
     stop_bits: StopBits = .@"1",
     parity: Parity = .none,
     receiver: bool = true,
+    receiver_irq: bool = false,
     transmitter: bool = true,
+    transmitter_irq: bool = false,
     remap: Remap = .none,
 
     pub const DataBits = enum { b8, b9 };
@@ -71,6 +73,12 @@ pub fn apply(self: Self, config: Config) void {
         rx.asInput(.floating);
     }
 
+    // TODO:: 抽离(测试:当前具体指定USART1)中断
+    if (config.transmitter_irq or config.receiver_irq) {
+        interrupts.DeviceInterrupt.enable(interrupts.DeviceInterrupt.USART1);
+        interrupts.DeviceInterrupt.setPriority(interrupts.DeviceInterrupt.USART1, .{ .preemptive = 1, .sub = 1 });
+    }
+
     self.registers.CR2.modify(.{
         .STOP = @intFromEnum(config.stop_bits),
         .LINEN = 0,
@@ -78,11 +86,13 @@ pub fn apply(self: Self, config: Config) void {
     });
 
     self.registers.CR1.modify(.{
-        .M = @intFromEnum(config.data_bits),
-        .PCE = @intFromBool(config.parity != .none),
-        .PS = if (config.parity == .odd) @as(u1, 1) else @as(u1, 0),
-        .TE = @intFromBool(config.transmitter),
-        .RE = @intFromBool(config.receiver),
+        .M = @intFromEnum(config.data_bits), // 数据字的长度
+        .PCE = @intFromBool(config.parity != .none), // 使能奇偶检测
+        .PS = if (config.parity == .odd) @as(u1, 1) else @as(u1, 0), // 奇偶检测
+        .TE = @intFromBool(config.transmitter), // 发送使能
+        .RE = @intFromBool(config.receiver), // 接收使能
+        .RXNEIE = @intFromBool(config.receiver_irq),
+        .TCIE = @intFromBool(config.transmitter_irq),
     });
 
     // TODO
@@ -106,11 +116,15 @@ pub fn apply(self: Self, config: Config) void {
     self.registers.CR1.modify(.{ .UE = 1 });
 }
 pub fn flush(self: Self, timeout: ?u32) error{Timeout}!void {
-    const delay = time.timeout_ms(timeout);
+    const delay = time.absolute(timeout);
 
     while (!self.registers.SR.read().TC) {
         if (delay.isReached()) return error.Timeout;
     }
+}
+
+pub fn isHasRead(self: Self) bool {
+    return self.registers.SR.read().RXNE != 0;
 }
 
 /// For now 9 bit data without parity bit will not work :)
@@ -122,13 +136,14 @@ pub fn transmitBlocking(self: Self, buffer: []const u8, timeout: ?u32) error{Tim
         // I may be able to remove this one?
         if (delay.isReached(timeout)) return error.Timeout;
 
-        while (regs.SR.read().TXE != 1) {
+        while (regs.SR.read().TXE != 1) { // 等待TDR数据发送出去(未发送出去会报错)
             // Or maybe this one is not needed?
-            if (delay.isReached(timeout)) return error.Timeout;
+            // if (delay.isReached(timeout)) return error.Timeout;
         }
 
         regs.DR.modify(.{ .DR = b });
     }
+    while (regs.SR.read().TC != 1) {} // 确保最后一个字符发出去
 }
 
 pub const ReadError = error{

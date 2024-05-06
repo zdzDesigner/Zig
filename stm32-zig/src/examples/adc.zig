@@ -1,8 +1,9 @@
 const std = @import("std");
 const hal = @import("hal");
+const time = hal.time;
 const strings = @import("util");
 const GPIO = hal.GPIO;
-const adc = hal.adc;
+const adc = hal.ADC;
 const USART = hal.USART;
 
 pub fn main() void {
@@ -32,6 +33,6 @@ pub fn main() void {
         const value = adc1.waitAndRead(1000) catch continue;
         uart.transmitBlocking(strings.intToStr(10, "{}\r\n", value), null) catch unreachable;
         // led.write(@intFromBool(value < 1000));
-        hal.time.delay_ms(1000);
+        time.delay_ms(300);
     }
 }

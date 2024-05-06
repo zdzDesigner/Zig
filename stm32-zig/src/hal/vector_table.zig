@@ -36,6 +36,7 @@ pub const VectorTable = struct {
     pub const DMA1_Channel5 = makeIRQ("DMA1_Channel5");
     pub const DMA1_Channel6 = makeIRQ("DMA1_Channel6");
     pub const DMA1_Channel7 = makeIRQ("DMA1_Channel7");
+    pub const USART1 = makeIRQ("USART1");
 };
 
 const EXTI = chip.peripherals.EXTI;
@@ -57,6 +58,8 @@ const HalVectorTable = struct {
     pub fn HardFault() callconv(.C) noreturn {
         @panic("HardFault");
     }
+
+    pub fn USART1() callconv(.C) void {}
 
     pub fn EXTI0() callconv(.C) void {
         if (@hasDecl(Callbacks, "GPIO0")) {
