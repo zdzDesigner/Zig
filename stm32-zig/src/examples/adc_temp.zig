@@ -31,6 +31,10 @@ pub fn main() void {
         const value = adc1.waitAndRead(1000) catch continue;
         var v = @as(f16, @floatFromInt(value)) * 3.3 / 4096;
         v = ((1.43 - v) * 1000 / 43) + 25;
+        // 测试 d 打印
+        uart.transmitBlocking(strings.intToStr2(30, "Vref:{d}\r\n", .{v}), null) catch unreachable;
+        uart.transmitBlocking(strings.intToStr2(30, "Vref:{d}\r\n", .{@trunc(v * 100) / 100}), null) catch unreachable;
+
         const inum = @as(i16, @intFromFloat(v));
         const fnum = @as(i16, @intFromFloat((v - @as(f16, @floatFromInt(inum))) * 100));
         uart.transmitBlocking(strings.intToStr2(30, "Vref:{}.{}\r\n", .{ inum, fnum }), null) catch unreachable;

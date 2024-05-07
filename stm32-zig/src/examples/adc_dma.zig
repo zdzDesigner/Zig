@@ -5,6 +5,11 @@ const adc = hal.ADC;
 const dma = hal.dma;
 const uart = hal.USART.USART1;
 
+var buf: [12]u16 = undefined;
+fn completion() void {
+    uart.transmitBlocking(strings.intToStr(10, "x:{}\r\n", buf[0]), null) catch unreachable;
+}
+
 pub fn main() void {
     hal.init();
     uart.apply(.{});
@@ -32,14 +37,13 @@ pub fn main() void {
     x.asInput(.analog);
     // y.asInput(.analog);
 
-    var buf: [12]u16 = undefined;
     // var buf: [1]u16 = undefined;
     while (true) {
-        const transfer = adc1.start(&buf) catch continue;
+        const transfer = adc1.start(&buf, .{ .priority = .high, .callbacks = .{ .on_completion = completion } }) catch continue;
         // transfer.wait(1000) catch unreachable;
         transfer.wait(null) catch continue;
 
-        uart.transmitBlocking(strings.intToStr(10, "x:{}\r\n", buf[0]), null) catch unreachable;
+        // uart.transmitBlocking(strings.intToStr(10, "x:{}\r\n", buf[0]), null) catch unreachable;
         // uart.transmitBlocking(strings.intToStr(10, "y:{}\r\n", buf[1]), null) catch unreachable;
         hal.time.delay_ms(100);
     }

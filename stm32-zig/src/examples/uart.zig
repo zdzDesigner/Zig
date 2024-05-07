@@ -12,7 +12,7 @@ var count: u32 = 0;
 pub const VectorTable = struct {
     pub fn SysTick() callconv(.C) void {
         count += 1;
-        if (hal.isTick(1000)) {
+        if (hal.isCycTick(1000)) {
             // const pri = hal.interrupts.Priority{ .preemptive = 15, .sub = 0 };
             // uart.transmitBlocking(strings.intToStr(20, "encode:{}\r\n", pri.encode()), null) catch unreachable;
             // uart.transmitBlocking(strings.intToStr(20, "encodeU16:{}\r\n", pri.encodeU16()), null) catch unreachable;

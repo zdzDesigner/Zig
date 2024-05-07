@@ -4,6 +4,7 @@ const chip = @import("chip");
 
 const GPIO = @import("GPIO.zig");
 const time = @import("time.zig");
+const dma = @import("dma.zig");
 
 pub const Registers = chip.types.peripherals.ADC1;
 
@@ -350,8 +351,6 @@ fn enableGPIOs(channels: []const Channel) void {
 }
 
 fn WithDMA(comptime adc: ADC) type {
-    const dma = @import("dma.zig");
-
     if (adc.registers == ADC2.registers) @compileError("ADC2 doesn't support DMA");
 
     return struct {
@@ -380,13 +379,13 @@ fn WithDMA(comptime adc: ADC) type {
             adc.registers.CR2.modify(.{ .DMA = 0 });
         }
 
-        pub inline fn start(_: Self, buffer: []u16) dma.Error!dma.Transfer {
+        pub inline fn start(_: Self, buffer: []u16, options: dma.TransferOptions) dma.Error!dma.Transfer {
             const l = adc.registers.SQR1.read().L;
             std.debug.assert(buffer.len >= l);
 
             adc.registers.SR.modify(.{ .EOC = 0 });
             adc.registers.CR2.modify(.{ .DMA = 1 });
-            const transfer = try dma.read(u16, .adc1, buffer, .{});
+            const transfer = try dma.read(u16, .adc1, buffer, options);
 
             adc.start();
 

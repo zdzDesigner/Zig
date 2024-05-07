@@ -20,6 +20,12 @@ fn min() void {
 
 }
 
+test "@trunc:" {
+    const v = @trunc(3.14);
+    std.debug.print("@trunc::v:{d}\n", .{v});
+    std.debug.print("@trunc::v:{}\n", .{3.14});
+}
+
 test "alignment:" {
     const c: u8 = 'a';
     std.debug.print("c alignment:{}\n", .{@alignOf(@TypeOf(c))}); // 1
@@ -85,7 +91,7 @@ test {
     std.testing.refAllDecls(@This()); // ? 具体作用
 }
 // 编译时通过字符串执行字段访问
-test "field access by string" {
+test "@field::field access by string:" {
     const expect = std.testing.expect;
     var p = Point{ .x = 0, .y = 0 };
 
@@ -96,6 +102,21 @@ test "field access by string" {
     try expect(@field(p, "y") == 5);
 
     std.debug.print("p.y:{}\n", .{p.y});
+    updateWithField(@intFromPtr(&p), p);
+}
+
+fn updateWithField(_: u64, fields: anytype) void {
+    inline for (@typeInfo(@TypeOf(fields)).Struct.fields) |field| {
+        std.debug.print("typeInfo::fields:{s}\n", .{field.name});
+        // @field(@ptrFromInt(ptr), field.name) = @field(fields, field.name);
+    }
+}
+
+test "math::" {
+    std.debug.print("@min:{}\n", .{@min(3, 1)}); // 1
+    std.debug.print("@max:{}\n", .{@max(2, 3)}); // 3
+    std.debug.print("@mod:{}\n", .{@mod(10, 3)}); // 1
+    std.debug.print("@mod:{}\n", .{@mod(30, 3)}); // 0
 }
 
 test "decl access by string" {

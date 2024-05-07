@@ -51,10 +51,10 @@ pub fn configTick() void {
     const TICK = chip.peripherals.STK;
 
     // MAX clock frequency is 72 MHz. Div by 1000 uses less than 24 bits
-    const ticks: u24 = @truncate(clocks.systemCoreClockFrequency() / 1000); // 72是1us
+    const ticks: u24 = @truncate(clocks.systemCoreClockFrequency() / 1000); // 72是1us, 1ms中断一次
     // const ticks: u24 = 72000; // 72是1us  (rcc.openHSE)
 
-    tick = @as(u32, ticks - 1);
+    // tick = @as(u32, ticks - 1);
 
     TICK.LOAD.modify(.{ .RELOAD = ticks - 1 });
 
@@ -68,7 +68,7 @@ pub fn configTick() void {
 }
 
 var tick: u32 = 0;
-pub fn isTick(delay_count: u32) bool {
+pub fn isCycTick(delay_count: u32) bool {
     return tick % delay_count == 0;
 }
 pub fn getTick() u32 {
@@ -76,8 +76,9 @@ pub fn getTick() u32 {
 }
 
 pub fn incrementTick() void {
-    tick = switch (tick) {
-        0 => 72000 - 1,
-        else => tick - 1,
-    };
+    tick +%= 1;
+    // tick = switch (tick) {
+    //     0 => 72000 - 1,
+    //     else => tick - 1,
+    // };
 }

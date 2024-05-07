@@ -13,3 +13,8 @@ test "maxInt and minInt" {
     std.debug.print("maxInt:{any}\n", .{std.math.maxInt(u32)});
     std.debug.print("minInt:{any}\n", .{std.math.minInt(u32)});
 }
+
+test "modf:" {
+    const v = std.math.modf(3.14);
+    std.debug.print("modf::v:ipart:{d},fpart:{d}\n", .{ v.ipart, v.fpart });
+}

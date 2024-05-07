@@ -1,6 +1,16 @@
 const std = @import("std");
 const expect = std.testing.expect;
 
+const absolute = enum(u32) {
+    _,
+    fn get(v: absolute) u32 {
+        return @intFromEnum(v);
+    }
+};
+test "enum(_):" {
+    std.debug.print("enum(_):{}\n", .{absolute.get(@enumFromInt(30))});
+}
+
 pub fn localEnum() void {
     std.log.info("--------- enum --------", .{});
     // const RET = enum {
