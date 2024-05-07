@@ -9,7 +9,7 @@ const uart = hal.USART.USART1;
 // const SCALE = if (@import("builtin").mode == .Debug) 20 else 1;
 const SCALE = 1;
 pub inline fn uscount(us: u32) u32 {
-    return us * (clocks.systemCoreClockFrequency() / 1_000_000) / SCALE;
+    return us * (clocks.systemCoreClockFrequency() / 1_000_000 / 9) / SCALE;
 }
 
 // TODO:: 查询法

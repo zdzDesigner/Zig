@@ -7,6 +7,9 @@ const time = @import("time.zig");
 // Blue pill only has C 1
 const DMA1 = chip.peripherals.DMA1;
 const RCC = chip.peripherals.RCC;
+// test =======
+const strings = @import("util");
+const uart = @import("USART.zig").USART1;
 
 var callbacks: [7]Callbacks = [_]Callbacks{.{}} ** 7;
 var running: [7]bool = [_]bool{false} ** 7;
@@ -208,7 +211,10 @@ pub const Channel = enum(u3) {
         options: TransferOptions,
     ) Error!Transfer {
         const index = @intFromEnum(channel);
-        if (running[index]) return Error.Busy;
+
+        uart.transmitBlocking(strings.intToStr(30, "channel index:{}\r\n", index), null) catch unreachable;
+        uart.transmitBlocking(strings.intToStr(30, "on_completion:{}\r\n", @intFromBool(options.callbacks.on_completion != null)), null) catch unreachable;
+        // if (running[index]) return Error.Busy;
 
         running[index] = true;
         callbacks[index] = options.callbacks;
@@ -220,9 +226,12 @@ pub const Channel = enum(u3) {
         DMA1.IFCR.raw = @as(u32, 0b1111) << pos;
 
         registers.CR.modify(.{
-            .TCIE = @intFromBool(options.callbacks.on_completion != null),
-            .HTIE = @intFromBool(options.callbacks.on_half != null),
-            .TEIE = @intFromBool(options.callbacks.on_error != null),
+            // .TCIE = @intFromBool(options.callbacks.on_completion != null),
+            // .HTIE = @intFromBool(options.callbacks.on_half != null),
+            // .TEIE = @intFromBool(options.callbacks.on_error != null),
+            .TCIE = 1,
+            .HTIE = 1,
+            .TEIE = 1,
             // .CIRC = @intFromBool(options.circular),
             .CIRC = 0,
             .MINC = @intFromBool(mem_inc),
@@ -260,6 +269,7 @@ pub const Channel = enum(u3) {
 
 pub fn channel1IRQ() callconv(.C) void {
     const cbs = callbacks[0];
+    uart.transmitBlocking(strings.intToStr(30, "=============x:{}\r\n", 0), null) catch unreachable;
     if (DMA1.ISR.read().TCIF1 == 1) {
         // Clear bit flag
         DMA1.IFCR.modify(.{ .CTCIF1 = 1 });
@@ -272,6 +282,7 @@ pub fn channel1IRQ() callconv(.C) void {
 
 pub fn channel2IRQ() callconv(.C) void {
     const cbs = callbacks[1];
+    uart.transmitBlocking(strings.intToStr(30, "=============x:{}\r\n", 0), null) catch unreachable;
     if (DMA1.ISR.read().TCIF2 == 1) {
         // Clear bit flag
         DMA1.IFCR.modify(.{ .CTCIF2 = 1 });
@@ -284,6 +295,7 @@ pub fn channel2IRQ() callconv(.C) void {
 
 pub fn channel3IRQ() callconv(.C) void {
     const cbs = callbacks[2];
+    uart.transmitBlocking(strings.intToStr(30, "=============x:{}\r\n", 0), null) catch unreachable;
     if (DMA1.ISR.read().TCIF3 == 1) {
         // Clear bit flag
         DMA1.IFCR.modify(.{ .CTCIF3 = 1 });
@@ -296,6 +308,7 @@ pub fn channel3IRQ() callconv(.C) void {
 
 pub fn channel4IRQ() callconv(.C) void {
     const cbs = callbacks[3];
+    uart.transmitBlocking(strings.intToStr(30, "=============x:{}\r\n", 0), null) catch unreachable;
     if (DMA1.ISR.read().TCIF4 == 1) {
         // Clear bit flag
         DMA1.IFCR.modify(.{ .CTCIF4 = 1 });
@@ -308,6 +321,7 @@ pub fn channel4IRQ() callconv(.C) void {
 
 pub fn channel5IRQ() callconv(.C) void {
     const cbs = callbacks[4];
+    uart.transmitBlocking(strings.intToStr(30, "=============x:{}\r\n", 0), null) catch unreachable;
     if (DMA1.ISR.read().TCIF5 == 1) {
         // Clear bit flag
         DMA1.IFCR.modify(.{ .CTCIF5 = 1 });
@@ -320,6 +334,7 @@ pub fn channel5IRQ() callconv(.C) void {
 
 pub fn channel6IRQ() callconv(.C) void {
     const cbs = callbacks[5];
+    uart.transmitBlocking(strings.intToStr(30, "=============x:{}\r\n", 0), null) catch unreachable;
     if (DMA1.ISR.read().TCIF6 == 1) {
         // Clear bit flag
         DMA1.IFCR.modify(.{ .CTCIF6 = 1 });
@@ -332,6 +347,7 @@ pub fn channel6IRQ() callconv(.C) void {
 
 pub fn channel7IRQ() callconv(.C) void {
     const cbs = callbacks[6];
+    uart.transmitBlocking(strings.intToStr(30, "=============x:{}\r\n", 0), null) catch unreachable;
     if (DMA1.ISR.read().TCIF7) {
         // Clear bit flag
         DMA1.IFCR.modify(.{ .CTCIF7 = 1 });

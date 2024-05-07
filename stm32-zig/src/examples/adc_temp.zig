@@ -1,6 +1,7 @@
 const std = @import("std");
 const hal = @import("hal");
 const time = hal.time;
+const clocks = hal.clocks;
 const strings = @import("util");
 const GPIO = hal.GPIO;
 const adc = hal.ADC;
@@ -33,7 +34,9 @@ pub fn main() void {
         v = ((1.43 - v) * 1000 / 43) + 25;
         // 测试 d 打印
         uart.transmitBlocking(strings.intToStr2(30, "Vref:{d}\r\n", .{v}), null) catch unreachable;
-        uart.transmitBlocking(strings.intToStr2(30, "Vref:{d}\r\n", .{@trunc(v * 100) / 100}), null) catch unreachable;
+        uart.transmitBlocking(strings.intToStr2(30, "xx:Vref:{d}\r\n", .{@trunc(v * 100) / 100}), null) catch unreachable;
+        uart.transmitBlocking(strings.intToStr2(30, "hz:{d}\r\n", .{time.uscount(300 * 1000)}), null) catch unreachable;
+        uart.transmitBlocking(strings.intToStr2(30, "hz:{d}\r\n", .{clocks.systemCoreClockFrequency()}), null) catch unreachable;
 
         const inum = @as(i16, @intFromFloat(v));
         const fnum = @as(i16, @intFromFloat((v - @as(f16, @floatFromInt(inum))) * 100));
