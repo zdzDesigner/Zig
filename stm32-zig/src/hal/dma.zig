@@ -214,7 +214,7 @@ pub const Channel = enum(u3) {
 
         uart.transmitBlocking(strings.intToStr(30, "channel index:{}\r\n", index), null) catch unreachable;
         uart.transmitBlocking(strings.intToStr(30, "on_completion:{}\r\n", @intFromBool(options.callbacks.on_completion != null)), null) catch unreachable;
-        // if (running[index]) return Error.Busy;
+        if (running[index]) return Error.Busy;
 
         running[index] = true;
         callbacks[index] = options.callbacks;
@@ -269,7 +269,7 @@ pub const Channel = enum(u3) {
 
 pub fn channel1IRQ() callconv(.C) void {
     const cbs = callbacks[0];
-    uart.transmitBlocking(strings.intToStr(30, "=============x:{}\r\n", 0), null) catch unreachable;
+    uart.transmitBlocking(strings.intToStr(30, "=============x:{}\r\n", 1), null) catch unreachable;
     if (DMA1.ISR.read().TCIF1 == 1) {
         // Clear bit flag
         DMA1.IFCR.modify(.{ .CTCIF1 = 1 });
@@ -282,7 +282,7 @@ pub fn channel1IRQ() callconv(.C) void {
 
 pub fn channel2IRQ() callconv(.C) void {
     const cbs = callbacks[1];
-    uart.transmitBlocking(strings.intToStr(30, "=============x:{}\r\n", 0), null) catch unreachable;
+    uart.transmitBlocking(strings.intToStr(30, "=============x:{}\r\n", 2), null) catch unreachable;
     if (DMA1.ISR.read().TCIF2 == 1) {
         // Clear bit flag
         DMA1.IFCR.modify(.{ .CTCIF2 = 1 });
@@ -295,7 +295,7 @@ pub fn channel2IRQ() callconv(.C) void {
 
 pub fn channel3IRQ() callconv(.C) void {
     const cbs = callbacks[2];
-    uart.transmitBlocking(strings.intToStr(30, "=============x:{}\r\n", 0), null) catch unreachable;
+    uart.transmitBlocking(strings.intToStr(30, "=============x:{}\r\n", 3), null) catch unreachable;
     if (DMA1.ISR.read().TCIF3 == 1) {
         // Clear bit flag
         DMA1.IFCR.modify(.{ .CTCIF3 = 1 });

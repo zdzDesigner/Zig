@@ -38,9 +38,9 @@ pub fn init_test() void {
 pub fn init() void {
     const FLASH = chip.peripherals.FLASH;
     rcc.reset(); // debug purposes
-    rcc.openHSE();
-    // const pll = clocks.PLL{ .multiplier = 9, .frequency = 72 * clocks.MHz, .source = .{ .hse = clocks.HSE{} } };
-    // clocks.Config.apply(.{ .sys = clocks.PLL.asOscillator(pll), .pll = pll, .pclk2_frequency = 72 * clocks.MHz }, .{}) catch undefined;
+    // rcc.openHSE();
+    const pll = clocks.PLL{ .multiplier = 9, .frequency = 72 * clocks.MHz, .source = .{ .hse = clocks.HSE{} } };
+    clocks.Config.apply(.{ .sys = clocks.PLL.asOscillator(pll), .pll = pll, .pclk2_frequency = 72 * clocks.MHz }, .{}) catch undefined;
     // clocks.Config.apply(.{ .sys = clocks.PLL.asOscillator(pll), .pclk2_frequency = 72 * clocks.MHz }, .{}) catch undefined;
     FLASH.ACR.modify(.{ .PRFTBE = 1 });
     interrupts.setNVICPriorityGroup(.g4);
@@ -58,7 +58,7 @@ pub fn configTick() void {
 
     TICK.LOAD.modify(.{ .RELOAD = ticks - 1 });
 
-    interrupts.CortexM3Interrupt.setPriority(.SysTick, .{ .preemptive = 15, .sub = 0 });
+    interrupts.CortexM3Interrupt.setPriority(.SysTick, .{ .preemptive = 10, .sub = 0 });
 
     TICK.VAL.raw = 0;
     // TICK.CTRL.raw = 0b011; // 开启中断, 外部时钟源

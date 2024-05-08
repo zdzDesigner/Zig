@@ -8,13 +8,17 @@ const GPIO = hal.GPIO;
 const adc = hal.ADC;
 const adc1 = adc.ADC1;
 const USART = hal.USART;
+const uart = USART.USART1;
 
 pub const Callbacks = struct {
     pub fn ADC1() void {
-        if (adc1.read()) |val| {
-            _ = val;
+        if (hal.isCycTick(1000)) {
+            if (adc1.read()) |val| {
+                // _ = val;
+                uart.transmitBlocking(strings.intToStr2(30, "xx:{d}\r\n", .{val}), null) catch unreachable;
+            }
+            adc1.registers.SR.modify(.{ .EOC = 0 });
         }
-        adc1.registers.SR.modify(.{ .EOC = 0 });
     }
 };
 
@@ -22,7 +26,7 @@ pub fn main() void {
     hal.init();
 
     interrupts.DeviceInterrupt.enable(.ADC1_2);
-    const uart = USART.USART1;
+    interrupts.DeviceInterrupt.setPriority(.ADC1_2, .{ .preemptive = 15, .sub = 0 });
     uart.apply(.{});
 
     adc1.apply(.{
@@ -61,6 +65,7 @@ pub fn main() void {
         // const fnum = @as(i16, @intFromFloat((v - @as(f16, @floatFromInt(inum))) * 100));
         // uart.transmitBlocking(strings.intToStr2(30, "Vref:{}.{}\r\n", .{ inum, fnum }), null) catch unreachable;
         // // led.write(@intFromBool(value < 1000));
-        // time.delay_ms(300);
+        uart.transmitBlocking(strings.intToStr2(30, "==========Vref:{s}\r\n", .{"sss"}), null) catch unreachable;
+        time.delay_ms(10);
     }
 }

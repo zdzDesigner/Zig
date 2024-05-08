@@ -6,6 +6,9 @@ const GPIO = @import("GPIO.zig");
 const time = @import("time.zig");
 const dma = @import("dma.zig");
 
+const strings = @import("util");
+const uart = @import("USART.zig").USART1;
+
 pub const Registers = chip.types.peripherals.ADC1;
 
 const RCC = chip.peripherals.RCC;
@@ -108,7 +111,7 @@ pub fn applyUnchecked(adc: ADC, config: Config) void {
         },
         .EOCIE = @intFromBool(config.interrupt),
     });
-    std.debug.assert(config.interrupt);
+    // std.debug.assert(config.interrupt);
 
     adc.registers.CR2.modify(.{
         .ALIGN = @intFromEnum(config.data_alignment),
@@ -117,7 +120,7 @@ pub fn applyUnchecked(adc: ADC, config: Config) void {
         .EXTTRIG = 0,
     });
 
-    adc.configChannels(config.channels) catch {};
+    adc.configChannels(config.channels) catch unreachable;
 }
 
 pub fn configChannels(adc: ADC, channels: []const Channel) Channel.Error!void {
@@ -222,7 +225,7 @@ fn writeADON(adc: ADC, value: u1) error{Timeout}!void {
 
     adc.registers.CR2.modify(.{ .ADON = value });
 
-    time.delay_us(5);
+    // time.delay_us(5);
 
     const delay = time.absolute();
     while (adc.registers.CR2.read().ADON != value) {
@@ -384,6 +387,7 @@ fn WithDMA(comptime adc: ADC) type {
                 if (!config.requiresDMA()) @compileError("ADC config doesn't require DMA");
             }
             adc.applyUnchecked(config);
+            uart.transmitBlocking(strings.intToStr(30, "-apply----:{s}\r\n", ""), null) catch unreachable;
             try self.enable();
         }
 
@@ -407,6 +411,7 @@ fn WithDMA(comptime adc: ADC) type {
 
             adc.registers.SR.modify(.{ .EOC = 0 });
             adc.registers.CR2.modify(.{ .DMA = 1 });
+            uart.transmitBlocking(strings.intToStr(30, "channel index:{s}\r\n", ""), null) catch unreachable;
             const transfer = try dma.read(u16, .adc1, buffer, options);
 
             adc.start();
