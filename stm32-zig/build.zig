@@ -1,15 +1,16 @@
 const std = @import("std");
 
 const examples = &.{
-    "blinky",
-    "blinky_irq",
-    "adc",
-    "adc_temp",
-    "adc_dma",
-    "button",
-    "button_irq",
-    "uart",
-    "uart_irq",
+    // "blinky",
+    // "blinky_irq",
+    // "adc",
+    // "adc_temp",
+    // "adc_dma",
+    "adc_temp_irq",
+    // "button",
+    // "button_irq",
+    // "uart",
+    // "uart_irq",
 };
 
 pub fn build(b: *std.Build) void {

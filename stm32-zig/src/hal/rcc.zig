@@ -3,7 +3,7 @@ const chip = @import("chip");
 const flash = @import("flash.zig");
 const Reg = *volatile chip.types.peripherals.RCC;
 const RCC = chip.peripherals.RCC;
-// const isdebug = @import("builtin").mode == .Debug;
+const isdebug = @import("builtin").mode == .Debug;
 pub const rcc_reg: Reg = RCC;
 // inline fn debug() void {
 //     const reg: *volatile Reg = RCC;
@@ -41,10 +41,11 @@ pub fn reset() void { // 复位
     RCC.CIR.raw = 0x009F0000;
 }
 
-pub fn openHSE(reg: Reg) void {
-    {
-        _ = reg;
-    }
+pub fn openHSE() void {
+    // if (isdebug) {
+    //     const reg: Reg = RCC;
+    //     _ = reg.CIR;
+    // }
     // std.debug.assert(rcc_reg == RCC);
     // debug();
     // @call(.always_inline, debug, .{});

@@ -116,6 +116,7 @@ fn createVectorTable(comptime vector_table: type) VectorTable {
 
     for (@typeInfo(vector_table).Struct.decls) |decl| {
         if (@hasField(VectorTable, decl.name)) {
+            // @compileLog(decl.name);
             const v = @field(vector_table, decl.name);
 
             const info = @typeInfo(@TypeOf(v));

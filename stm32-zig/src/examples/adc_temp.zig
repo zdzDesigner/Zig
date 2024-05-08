@@ -23,10 +23,6 @@ pub fn main() void {
         },
     }) catch @panic("Failed to enable ADC");
 
-    // GPIO.Port.enable(.A);
-    // const x = GPIO.init(.A, 4);
-    // x.asInput(.analog);
-
     while (true) {
         adc1.start();
         const value = adc1.waitAndRead(1000) catch continue;

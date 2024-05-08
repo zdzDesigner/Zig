@@ -37,6 +37,7 @@ pub const VectorTable = struct {
     pub const DMA1_Channel6 = makeIRQ("DMA1_Channel6");
     pub const DMA1_Channel7 = makeIRQ("DMA1_Channel7");
     pub const USART1 = makeIRQ("USART1");
+    pub const ADC1_2 = makeIRQ("ADC1_2");
 };
 
 const EXTI = chip.peripherals.EXTI;
@@ -194,6 +195,12 @@ const HalVectorTable = struct {
         }
     }
 
+    pub fn ADC1_2() callconv(.C) void {
+        if (@hasDecl(Callbacks, "ADC1")) {
+            Callbacks.ADC1();
+        }
+    }
+
     pub const DMA1_Channel1 = dma.channel1IRQ;
     pub const DMA1_Channel2 = dma.channel2IRQ;
     pub const DMA1_Channel3 = dma.channel3IRQ;
@@ -208,15 +215,24 @@ fn makeIRQ(comptime name: []const u8) fn () callconv(.C) ReturnType(name) {
 
     const AppVectorTable = app.VectorTable;
 
-    return if (@hasDecl(AppVectorTable, name)) @field(AppVectorTable, name) else @field(HalVectorTable, name);
-    // return switch (std.meta.eql(u8, )name == "SysTick") {
-    //     true => fn () callconv(.C) ReturnType(name){
-    //
-    // },
-    //     else => {
-    //         if (@hasDecl(AppVectorTable, name)) @field(AppVectorTable, name) else @field(HalVectorTable, name);
-    //     },
-    // };
+    // if (@hasDecl(AppVectorTable, name)) {
+    //     const func = @field(AppVectorTable, name);
+    //     @compileLog(name, @hasDecl(AppVectorTable, name), func);
+    //     // @compileLog(@typeInfo(@TypeOf(func)));
+    // }
+
+    // return if (@hasDecl(AppVectorTable, name)) @field(AppVectorTable, name) else @field(HalVectorTable, name);
+    return switch (std.mem.eql(u8, name, "SysTick")) {
+        true => struct {
+            pub fn wrap() callconv(.C) ReturnType(name) {
+                if (@hasDecl(AppVectorTable, name)) @call(.always_inline, @field(AppVectorTable, name), .{});
+                @call(.always_inline, hal.incrementTick, .{}); // 递增Tick
+            }
+        }.wrap,
+        false => {
+            return if (@hasDecl(AppVectorTable, name)) @field(AppVectorTable, name) else @field(HalVectorTable, name);
+        },
+    };
 }
 
 fn ReturnType(comptime name: []const u8) type {

@@ -20,10 +20,11 @@ registers: *volatile Registers,
 pub inline fn apply(comptime adc: ADC, comptime config: Config) error{Timeout}!void {
     comptime {
         config.check(adc);
-        if (config.requiresDMA()) @compileError("ADC config requires DMA");
+        // if (config.requiresDMA()) @compileError("ADC config requires DMA");
     }
     adc.applyUnchecked(config);
     try adc.enable();
+    try adc.calibrate();
 }
 
 pub inline fn withDMA(comptime adc: ADC) WithDMA(adc) {
@@ -31,7 +32,11 @@ pub inline fn withDMA(comptime adc: ADC) WithDMA(adc) {
 }
 
 pub fn start(adc: ADC) void {
+    // read DR autoclear it, 防止超时手动清除
     adc.registers.SR.modify(.{ .EOC = 0 });
+    // adc.registers.CR1.modify(.{
+    //     .EOCIE = 1,
+    // });
 
     if (adc.isSoftwareTriggered()) {
         adc.registers.CR2.modify(.{
@@ -85,6 +90,7 @@ pub fn applyUnchecked(adc: ADC, config: Config) void {
         @intFromPtr(ADC1.registers) => {
             RCC.APB2ENR.modify(.{ .ADC1EN = 1 });
             _ = RCC.APB2ENR.read().ADC1EN;
+            RCC.CFGR.modify(.{ .ADCPRE = 0b11 });
         },
         @intFromPtr(ADC2.registers) => {
             RCC.APB2ENR.modify(.{ .ADC2EN = 1 });
@@ -100,7 +106,9 @@ pub fn applyUnchecked(adc: ADC, config: Config) void {
             .single, .continuous => 0,
             .discontinuous => |n| @as(u3, @truncate(n - 1)),
         },
+        .EOCIE = @intFromBool(config.interrupt),
     });
+    std.debug.assert(config.interrupt);
 
     adc.registers.CR2.modify(.{
         .ALIGN = @intFromEnum(config.data_alignment),
@@ -173,6 +181,20 @@ pub fn configChannel(adc: ADC, channel: Channel, rank: u5) Channel.Error!void {
     }
 }
 
+// 校准
+pub inline fn calibrate(adc: ADC) error{Timeout}!void {
+    adc.registers.CR2.modify(.{ .RSTCAL = 1 });
+    const delay = time.absolute();
+    while (adc.registers.CR2.read().RSTCAL != 0) {
+        if (delay.isReached(20)) return error.Timeout;
+    }
+    adc.registers.CR2.modify(.{ .CAL = 1 });
+    const delay2 = time.absolute();
+    while (adc.registers.CR2.read().CAL != 0) {
+        if (delay2.isReached(20)) return error.Timeout;
+    }
+}
+
 pub inline fn enable(adc: ADC) error{Timeout}!void {
     try adc.writeADON(1);
 }
@@ -214,7 +236,7 @@ pub const Config = struct {
     trigger: Trigger = .SOFTWARE,
     data_alignment: DataAlignment = .right,
     mode: Mode = .single,
-    // interrupt: bool = false,
+    interrupt: bool = false,
 
     pub fn requiresDMA(config: Config) bool {
         if (config.channels.len == 1) return config.mode == .continuous;
@@ -312,7 +334,7 @@ pub const Channel = packed struct(u8) {
     }
 
     pub inline fn isValid(channel: Channel, adc: ADC) Error!void {
-        if (channel.number == temperature.number or channel.number == Vref.number) {
+        if (channel.number == temperature.number or channel.number == Vref.number) { // ADC1支持
             if (adc.registers != ADC1.registers) return Error.ChannelNotSupported;
         } else {
             if (channel.number > 9) return Error.InvalidChannel;

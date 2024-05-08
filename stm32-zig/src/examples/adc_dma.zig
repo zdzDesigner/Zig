@@ -9,36 +9,12 @@ var buf: [2]u16 = undefined;
 fn completion() void {
     uart.transmitBlocking(strings.intToStr(30, "x:{}\r\n", buf[0]), null) catch unreachable;
 }
-// pub const VectorTable = struct {
-//     pub fn DMA1_Channel1() callconv(.C) void {
-//         uart.transmitBlocking(strings.intToStr(30, "DMA1_Channel1:{}\r\n", buf[0]), null) catch unreachable;
-//         hal.VectorTable.DMA1_Channel1();
-//     }
-//     pub fn DMA1_Channel2() callconv(.C) void {
-//         uart.transmitBlocking(strings.intToStr(30, "DMA1_Channel1:{}\r\n", buf[0]), null) catch unreachable;
-//         hal.VectorTable.DMA1_Channel1();
-//     }
-//     pub fn DMA1_Channel3() callconv(.C) void {
-//         uart.transmitBlocking(strings.intToStr(30, "DMA1_Channel1:{}\r\n", buf[0]), null) catch unreachable;
-//         hal.VectorTable.DMA1_Channel1();
-//     }
-//     pub fn DMA1_Channel4() callconv(.C) void {
-//         uart.transmitBlocking(strings.intToStr(30, "DMA1_Channel1:{}\r\n", buf[0]), null) catch unreachable;
-//         hal.VectorTable.DMA1_Channel1();
-//     }
-//     pub fn DMA1_Channel5() callconv(.C) void {
-//         uart.transmitBlocking(strings.intToStr(30, "DMA1_Channel1:{}\r\n", buf[0]), null) catch unreachable;
-//         hal.VectorTable.DMA1_Channel1();
-//     }
-//     pub fn DMA1_Channel6() callconv(.C) void {
-//         uart.transmitBlocking(strings.intToStr(30, "DMA1_Channel1:{}\r\n", buf[0]), null) catch unreachable;
-//         hal.VectorTable.DMA1_Channel1();
-//     }
-//     pub fn DMA1_Channel7() callconv(.C) void {
-//         uart.transmitBlocking(strings.intToStr(30, "DMA1_Channel1:{}\r\n", buf[0]), null) catch unreachable;
-//         hal.VectorTable.DMA1_Channel1();
-//     }
-// };
+pub const VectorTable = struct {
+    pub fn DMA1_Channel1() callconv(.C) void {
+        uart.transmitBlocking(strings.intToStr(30, "DMA1_Channel1:{}\r\n", buf[0]), null) catch unreachable;
+        hal.VectorTable.DMA1_Channel1();
+    }
+};
 
 pub fn main() void {
     hal.init();
@@ -51,22 +27,22 @@ pub fn main() void {
         .channels = &.{
             // adc.Channel.A0,
             // adc.Channel.A1,
-            // adc.Channel.temperature,
+            adc.Channel.temperature,
             // You can repeat channels
             // adc.Channel.A1,
             // Default sampling cycles is 1.5, but you can change it
             // adc.Channel.A2.withSamplingCycles(.@"7.5"),
             // ===========
             adc.Channel.A4,
-            adc.Channel.A5,
+            // adc.Channel.A5,
         },
     }) catch @panic("Failed to enable ADC");
 
     GPIO.Port.enable(.A);
     const x = GPIO.init(.A, 4);
-    const y = GPIO.init(.A, 5);
+    // const y = GPIO.init(.A, 5);
     x.asInput(.analog);
-    y.asInput(.analog);
+    // y.asInput(.analog);
 
     // var buf: [1]u16 = undefined;
     while (true) {
