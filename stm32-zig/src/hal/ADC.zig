@@ -407,11 +407,12 @@ fn WithDMA(comptime adc: ADC) type {
 
         pub inline fn start(_: Self, buffer: []u16, options: dma.TransferOptions) dma.Error!dma.Transfer {
             const l = adc.registers.SQR1.read().L;
+            // uart.transmitBlocking(strings.intToStr(30, "l:{}\r\n", l), null) catch unreachable;
             std.debug.assert(buffer.len >= l);
 
             adc.registers.SR.modify(.{ .EOC = 0 });
             adc.registers.CR2.modify(.{ .DMA = 1 });
-            uart.transmitBlocking(strings.intToStr(30, "channel index:{s}\r\n", ""), null) catch unreachable;
+            // uart.transmitBlocking(strings.intToStr(30, "channel index:{s}\r\n", ""), null) catch unreachable;
             const transfer = try dma.read(u16, .adc1, buffer, options);
 
             adc.start();

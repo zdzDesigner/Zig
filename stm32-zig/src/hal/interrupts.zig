@@ -99,6 +99,7 @@ pub const DeviceInterrupt = enum(u8) {
     pub fn setPriority(interrupt: DeviceInterrupt, priority: Priority) void {
         const encoded = priority.encodeU16();
         const index: u32 = @intFromEnum(interrupt);
+        // 15个中断
         var ips: *volatile [15 * 4]u8 = @ptrCast(&NVIC.IPR0);
         ips[index] = @truncate(encoded & 0xff);
     }
@@ -108,8 +109,8 @@ pub const NVICPriorityGroup = enum(u3) {
     g0 = 7,
     g1 = 6,
     g2 = 5,
-    g3 = 4,
-    g4 = 3,
+    g3 = 4, // 3 bits for pre-emption priority 1 bits for subpriority
+    g4 = 3, // 4 bits for pre-emption priority 0 bits for subpriority
 };
 // NVIC_PriorityGroupConfig
 pub fn setNVICPriorityGroup(group: NVICPriorityGroup) void {

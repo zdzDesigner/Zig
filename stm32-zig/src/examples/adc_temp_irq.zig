@@ -12,13 +12,13 @@ const uart = USART.USART1;
 
 pub const Callbacks = struct {
     pub fn ADC1() void {
-        if (hal.isCycTick(1000)) {
-            if (adc1.read()) |val| {
-                // _ = val;
-                uart.transmitBlocking(strings.intToStr2(30, "xx:{d}\r\n", .{val}), null) catch unreachable;
-            }
-            adc1.registers.SR.modify(.{ .EOC = 0 });
+        // if (hal.isCycTick(1000)) {
+        if (adc1.read()) |val| {
+            // _ = val;
+            uart.transmitBlocking(strings.intToStr2(30, "xx:{d}\r\n", .{val}), null) catch unreachable;
         }
+        adc1.registers.SR.modify(.{ .EOC = 0 });
+        // }
     }
 };
 

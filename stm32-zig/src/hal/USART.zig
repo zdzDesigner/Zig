@@ -128,7 +128,8 @@ pub fn isHasRead(self: Self) bool {
 }
 
 /// For now 9 bit data without parity bit will not work :)
-pub fn transmitBlocking(self: Self, buffer: []const u8, timeout: ?u32) error{Timeout}!void {
+pub fn transmitBlocking(_: Self, _: []const u8, _: ?u32) error{Timeout}!void {}
+pub fn _transmitBlocking(self: Self, buffer: []const u8, timeout: ?u32) error{Timeout}!void {
     const delay = time.absolute();
 
     const regs = self.registers;

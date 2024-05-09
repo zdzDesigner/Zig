@@ -6,8 +6,8 @@ const hal = @import("hal.zig");
 const strings = @import("util");
 const uart = hal.USART.USART1;
 
-// const SCALE = if (@import("builtin").mode == .Debug) 20 else 1;
-const SCALE = 1;
+const SCALE = if (@import("builtin").mode == .Debug) 40 else 1;
+// const SCALE = 1;
 pub inline fn uscount(us: u32) u32 {
     return us * (clocks.systemCoreClockFrequency() / 1_000_000 / 9) / SCALE;
 }

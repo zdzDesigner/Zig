@@ -212,8 +212,8 @@ pub const Channel = enum(u3) {
     ) Error!Transfer {
         const index = @intFromEnum(channel);
 
-        uart.transmitBlocking(strings.intToStr(30, "channel index:{}\r\n", index), null) catch unreachable;
-        uart.transmitBlocking(strings.intToStr(30, "on_completion:{}\r\n", @intFromBool(options.callbacks.on_completion != null)), null) catch unreachable;
+        // uart.transmitBlocking(strings.intToStr(30, "channel index:{}\r\n", index), null) catch unreachable;
+        // uart.transmitBlocking(strings.intToStr(30, "on_completion:{}\r\n", @intFromBool(options.callbacks.on_completion != null)), null) catch unreachable;
         if (running[index]) return Error.Busy;
 
         running[index] = true;

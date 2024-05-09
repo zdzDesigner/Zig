@@ -29,4 +29,11 @@ https://renode.readthedocs.io/en/latest/basic/using-python.html#python-periphera
 
 
 
+- gdbgui
+```sh
+gdbgui --gdb-cmd="arm-none-eabi-gdb-py -x ./gdbinit"
+```
+
+
+
 
