@@ -92,6 +92,7 @@ pub fn applyUnchecked(adc: ADC, config: Config) void {
     switch (@intFromPtr(adc.registers)) {
         @intFromPtr(ADC1.registers) => {
             RCC.APB2ENR.modify(.{ .ADC1EN = 1 });
+            RCC.APB2RSTR.modify(.{ .ADC1RST = 1 }); // 复位
             _ = RCC.APB2ENR.read().ADC1EN;
             RCC.CFGR.modify(.{ .ADCPRE = 0b11 });
         },

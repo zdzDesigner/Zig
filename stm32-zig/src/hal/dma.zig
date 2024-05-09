@@ -226,14 +226,15 @@ pub const Channel = enum(u3) {
         DMA1.IFCR.raw = @as(u32, 0b1111) << pos;
 
         registers.CR.modify(.{
-            // .TCIE = @intFromBool(options.callbacks.on_completion != null),
-            // .HTIE = @intFromBool(options.callbacks.on_half != null),
-            // .TEIE = @intFromBool(options.callbacks.on_error != null),
-            .TCIE = 1,
-            .HTIE = 1,
-            .TEIE = 1,
+            .TCIE = @intFromBool(options.callbacks.on_completion != null),
+            .HTIE = @intFromBool(options.callbacks.on_half != null),
+            .TEIE = @intFromBool(options.callbacks.on_error != null),
+            // .TCIE = 1,
+            // .HTIE = 1,
+            // .TEIE = 1,
             // .CIRC = @intFromBool(options.circular),
-            .CIRC = 0,
+            .DIR = 0,
+            .CIRC = 1,
             .MINC = @intFromBool(mem_inc),
             .PINC = 0,
             .MSIZE = @intFromEnum(word_len),
@@ -269,12 +270,14 @@ pub const Channel = enum(u3) {
 
 pub fn channel1IRQ() callconv(.C) void {
     const cbs = callbacks[0];
-    uart.transmitBlocking(strings.intToStr(30, "=============x:{}\r\n", 1), null) catch unreachable;
     if (DMA1.ISR.read().TCIF1 == 1) {
+        // uart.transmitBlocking(strings.intToStr(30, "=============x:{}\r\n", 1), null) catch unreachable;
         // Clear bit flag
         DMA1.IFCR.modify(.{ .CTCIF1 = 1 });
+        // DMA1.IFCR.modify(.{ .CTCIF1 = 1, .CGIF1 = 1 });
         running[0] = false;
         if (cbs.on_completion) |cb| {
+            // uart.transmitBlocking(strings.intToStr(30, "====callbacks=========x:{}\r\n", 1), null) catch unreachable;
             cb();
         }
     }
