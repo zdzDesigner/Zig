@@ -1,24 +1,29 @@
 const std = @import("std");
+const audio = @import("./miniaudio.zig");
 
 pub fn main() !void {
-    // Prints to stderr (it's a shortcut based on `std.io.getStdErr()`)
-    std.debug.print("All your {s} are belong to us.\n", .{"codebase"});
+    const filepath = "/home/zdz/Documents/Try/Zig/zig-pro/zig_miniaudio/asserts/the_flower.mp3";
 
-    // stdout is for the actual output of your application, for example if you
-    // are implementing gzip, then only the compressed bytes should be sent to
-    // stdout, not any debugging messages.
-    const stdout_file = std.io.getStdOut().writer();
-    var bw = std.io.bufferedWriter(stdout_file);
-    const stdout = bw.writer();
+    try audio.play(filepath);
 
-    try stdout.print("Run `zig build test` to run the tests.\n", .{});
+    // var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    // var allocator = gpa.allocator();
 
-    try bw.flush(); // don't forget to flush!
+    // var engine = try audio.AudioEngine.create(&allocator);
+    // defer engine.destroy();
+    // const rootpath = try root(allocator);
+    // // const info = @typeInfo(@TypeOf(rootpath)).Pointer;
+    // defer allocator.free(rootpath);
+    // std.debug.print("rootpath:{s}\n", .{rootpath});
+    //
+    // try engine.playOneShot("/home/zdz/Documents/Try/Zig/zig-pro/zig_miniaudio/asserts/the_flower.mp3");
+
+    // std.time.sleep(100000000000);
 }
 
-test "simple test" {
-    var list = std.ArrayList(i32).init(std.testing.allocator);
-    defer list.deinit(); // try commenting this out and see if zig detects the memory leak!
-    try list.append(42);
-    try std.testing.expectEqual(@as(i32, 42), list.pop());
+inline fn root(allocator: std.mem.Allocator) ![]u8 {
+    const main_path = comptime (std.fs.path.dirname(@src().file) orelse ".");
+    std.debug.print("main_path:{s}\n", .{@src().file});
+    std.debug.print("main_path:{s}\n", .{main_path});
+    return try std.fs.path.resolve(allocator, &.{ main_path, "../../" });
 }

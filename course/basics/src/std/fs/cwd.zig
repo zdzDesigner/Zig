@@ -4,8 +4,25 @@ fn root() []const u8 {
     return comptime (std.fs.path.dirname(@src().file) orelse ".");
 }
 
+test "root:" {
+    const v = @import("root");
+    std.debug.print("root:{any}\n", .{@typeInfo(v)});
+}
+
+test "@src():" {
+    std.debug.print("@src:{s}\n", .{@src().file});
+    std.debug.print("@src:{s}\n", .{@src().fn_name}); // test.@src():
+    std.debug.print("@src:{}\n", .{@src().line}); // 11
+    std.debug.print("@src:{}\n", .{@src().column}); // 36
+}
+
 test "pwd::" {
     std.debug.print("pwd:{s}\n", .{root()});
+}
+
+test "process::getCwd:" {
+    var p: [300]u8 = undefined;
+    std.debug.print("getCwd:{s}\n", .{std.process.getCwd(&p) catch "xxx"});
 }
 
 test "cwd:: current dirname:" {
