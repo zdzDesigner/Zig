@@ -21,7 +21,8 @@ pub fn play(filepath: [*c]const u8) !void {
     std.debug.print("ok", .{});
 
     // !!!error https://github.com/ziglang/zig/issues/12325
-    ma.ma_device_config_init(ma.ma_device_type_playback);
+    // var device_config: ma.struct_ma_device_config = undefined;
+    // device_config = ma.ma_device_config_init(ma.ma_device_type_playback);
     // var device_config: ma.ma_device_config = ma.ma_device_config_init(ma.ma_device_type_playback);
     // device_config.playback.format = decoder.outputFormat;
     // device_config.playback.channels = decoder.outputChannels;
