@@ -71,11 +71,71 @@ test "test const pointer" {
 
 }
 
+test "pointer 转换:" {
+    var arr = [_]u8{ 5, 4, 2, 6 }; // 数组
+    std.debug.print("&arr:{*}\n", .{&arr}); // 转换为数组指针: [4]u8@7ffe6dfc453c
+    std.debug.print("&arr[0..3]:{}\n", .{&arr[0..3]}); // 数组指针: *[3]u8@7ffe6dfc4548
+
+    const mp: [*]u8 = &arr; // 数组 => 多项指针
+    const p = &mp[0..3]; // 多项指针 => 数组指针
+    std.debug.print("p:{}\n", .{p});
+    std.debug.print("p.*:{*}\n", .{p.*}); // 转换为数组: [3]u8@7ffe6dfc453c
+    std.debug.print("p.*.ptr:{*}\n", .{p.*.ptr}); // 转换为数组指针 u8@7ffe6dfc453c
+    std.debug.print("p.*.len:{}\n", .{p.*.len}); // 3
+}
+
+// ========= 擅长用于加减运算
+// ========= 从已知长度转换未知长度
+test "test [*]T::action:" {
+    var arr = [_]u16{ 5, 4, 2, 6 };
+    try expect(arr.len == 4);
+    const p: [*]u16 = &arr; // 从已知长度转换未知长度
+    // =============
+    std.debug.print("p:{*}\n", .{p}); // p:u16@7ffcdfa39250
+    std.debug.print("p+1:{*}\n", .{p + 1}); // p+1:u16@7ffcdfa39252
+    // =============
+    const p1 = @as([*]u16, p + 1);
+    std.debug.print("typeof p+1:{}\n", .{@TypeOf(p1)}); // [*]u16
+    const p1_1: [*]u16 = @ptrCast(p + 1);
+    std.debug.print("typeof p+1:{}\n", .{@TypeOf(p1_1)}); // [*]u16
+    // =============
+    std.debug.print("p+1:{}\n", .{(p + 1)[0]}); // 4
+    std.debug.print("p+2:{}\n", .{(p + 2)[0]}); // 2
+    // std.debug.print("p-2:{}\n", .{(p - 2)[0]}); // 32765  越界了
+}
+
 test "test [*]T" {
     var arr = [_]u8{ 5, 4, 2, 6 };
     try expect(arr.len == 4);
     const p: [*]u8 = &arr; // 从已知长度转换未知长度
-    try expect(p[0] == 5);
+    // =============
+    std.debug.print("p:{}\n", .{@TypeOf(p)}); // p:[*]u8 多项指针
+    // =============
+    std.debug.print("p[0]:{}\n", .{p[0]}); // 5
+    std.debug.print("typeof p[0]:{}\n", .{@TypeOf(p[0])}); // u8
+    // =============
+    std.debug.print("p[0..3]:{any}\n", .{p[0..3]}); // {5,4,2}
+    std.debug.print("typeof p[0..3]:{any}\n", .{@TypeOf(p[0..3])}); // *[3]u8  数组指针
+    std.debug.print("p[0..3].*:{any}\n", .{@TypeOf(p[0..3].*)}); // [3]u8  数组
+    // ====================
+    std.debug.print("p:{}\n", .{@typeInfo(@TypeOf(p))}); // p:[*]u8
+    // p:builtin.Type{
+    //   .Pointer = builtin.Type.Pointer{
+    //      .size = builtin.Type.Pointer.Size.Many,
+    //      .is_const = false,
+    //      .is_volatile = false,
+    //      .alignment = 1,
+    //      .address_space = builtin.AddressSpace.generic,
+    //      .child = u8,
+    //      .is_allowzero = false,
+    //      .sentinel = null
+    //   }
+    // }
+    // ====================
+    const s: []u8 = arr[0..3];
+    std.debug.print("typeof s:{}\n", .{@TypeOf(s)}); // []u8  切片
+
+    // std.debug.print("p.*:{*}\n", .{p.*}); // p:u8@7fff676b5384
     // try expect(p.*.len == 4);
     // error: index syntax required for unknown-length pointer type '[*]u8'
     // try expect(p.len == 4);
