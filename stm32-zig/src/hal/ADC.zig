@@ -6,6 +6,7 @@ const GPIO = @import("GPIO.zig");
 const time = @import("time.zig");
 const dma = @import("dma.zig");
 
+// debug =============
 const strings = @import("util");
 const uart = @import("USART.zig").USART1;
 
@@ -23,7 +24,7 @@ registers: *volatile Registers,
 pub inline fn apply(comptime adc: ADC, comptime config: Config) error{Timeout}!void {
     comptime {
         config.check(adc);
-        // if (config.requiresDMA()) @compileError("ADC config requires DMA");
+        if (config.requiresDMA()) @compileError("ADC config requires DMA");
     }
     adc.applyUnchecked(config);
     try adc.enable();
@@ -56,14 +57,20 @@ pub fn isReady(adc: ADC) bool {
     if (adc.isSingleConversion()) {
         return adc.registers.SR.read().EOC == 1;
     }
+    // uart.transmitBlocking(strings.intToStr(30, "SQR1.L-----:{}\r\n", adc.registers.SQR1.read().L), null) catch unreachable;
+    // uart.transmitBlocking(strings.intToStr(30, "SR.EOC-----:{}\r\n", adc.registers.SR.read().EOC), null) catch unreachable;
+    while (adc.registers.SR.read().EOC == 0) {}
+    return true;
 
     // TODO: Implement
-    unreachable;
+    // unreachable;
 }
 
 pub fn wait(adc: ADC, timeout: ?u32) error{Timeout}!void {
     std.debug.assert(!adc.isDMA());
     const delay = time.absolute();
+    // uart.transmitBlocking(strings.intToStr(30, "wait-----:{s}\r\n", ""), null) catch unreachable;
+
     while (!adc.isReady()) {
         if (delay.isReached(timeout)) return error.Timeout;
     }
@@ -91,8 +98,12 @@ pub fn oneShot(adc: ADC, channel: Channel) Channel.Error!u16 {
 pub fn applyUnchecked(adc: ADC, config: Config) void {
     switch (@intFromPtr(adc.registers)) {
         @intFromPtr(ADC1.registers) => {
+            { // 复位: 先开启后关闭
+                RCC.APB2RSTR.modify(.{ .ADC1RST = 1 });
+                time.delay_us(1);
+                RCC.APB2RSTR.modify(.{ .ADC1RST = 0 });
+            }
             RCC.APB2ENR.modify(.{ .ADC1EN = 1 });
-            RCC.APB2RSTR.modify(.{ .ADC1RST = 1 }); // 复位
             _ = RCC.APB2ENR.read().ADC1EN;
             RCC.CFGR.modify(.{ .ADCPRE = 0b11 });
         },
@@ -224,13 +235,15 @@ fn writeADON(adc: ADC, value: u1) error{Timeout}!void {
         return;
     }
 
+    uart.transmitBlocking(strings.intToStr(30, "writeADON-----:{}\r\n", value), null) catch unreachable;
     adc.registers.CR2.modify(.{ .ADON = value });
 
     // time.delay_us(5);
 
-    const delay = time.absolute();
+    // const delay = time.absolute();
     while (adc.registers.CR2.read().ADON != value) {
-        if (delay.isReached(20)) return error.Timeout;
+        uart.transmitBlocking(strings.intToStr(30, "delay-----:{}\r\n", adc.registers.CR2.read().ADON), null) catch unreachable;
+        // if (delay.isReached(200)) return error.Timeout;
     }
 }
 
@@ -243,8 +256,10 @@ pub const Config = struct {
     interrupt: bool = false,
 
     pub fn requiresDMA(config: Config) bool {
+        // 单通道 and 连续转换
         if (config.channels.len == 1) return config.mode == .continuous;
 
+        // 间断模式:子组(可以配置转换策略)
         return switch (config.mode) {
             .discontinuous => |n| n > 1,
             else => true,
@@ -273,11 +288,13 @@ pub const Config = struct {
 
     pub fn check(comptime config: Config, adc: ADC) void {
         const print = std.fmt.comptimePrint;
+        // 通道数量
         if (config.channels.len < 1) @compileError("Zero ADC converion channels");
         if (config.channels.len > 16) @compileError(print(
             "Too many ADC conversion channels: {}. Max is 16",
             .{config.channels.len},
         ));
+        // 转换模式
         if (config.mode == .discontinuous) {
             const n = config.mode.discontinuous;
             if (n < 1) @compileError("Zero ADC discontinuous conversions when in discontinuous mode");
@@ -305,6 +322,8 @@ pub const Config = struct {
 pub const Channel = packed struct(u8) {
     pub const Error = error{ InvalidChannel, ChannelNotSupported };
 
+    // pub const A4: Channel = .{ .number = 1 };
+    // pub const A5: Channel = .{ .number = 2 };
     pub const A0: Channel = .{ .number = 0 };
     pub const A1: Channel = .{ .number = 1 };
     pub const A2: Channel = .{ .number = 2 };
@@ -398,6 +417,7 @@ fn WithDMA(comptime adc: ADC) type {
 
         pub inline fn enable(_: Self) error{Timeout}!void {
             try adc.enable();
+            uart.transmitBlocking(strings.intToStr(30, "-adc.enable ok----:{s}\r\n", ""), null) catch unreachable;
             dma.enable();
         }
 

@@ -4,6 +4,7 @@ const examples = &.{
     // "blinky",
     // "blinky_irq",
     // "adc",
+    // "adc_group",
     // "adc_temp",
     "adc_dma",
     // "adc_temp_irq",

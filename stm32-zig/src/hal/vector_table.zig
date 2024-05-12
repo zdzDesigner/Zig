@@ -9,6 +9,10 @@ const app = @import("app");
 
 const dma = @import("dma.zig");
 
+// debug =============
+const strings = @import("util");
+const uart = @import("USART.zig").USART1;
+
 const Callbacks = if (@hasDecl(app, "Callbacks"))
     app.Callbacks
 else
@@ -59,6 +63,10 @@ const HalVectorTable = struct {
     pub fn HardFault() callconv(.C) noreturn {
         @panic("HardFault");
     }
+    // pub fn HardFault() callconv(.C) void {
+    //     uart.transmitBlocking(strings.intToStr(30, "-HardFault----:{s}\r\n", ""), null) catch unreachable;
+    //     // @panic("HardFault");
+    // }
 
     pub fn USART1() callconv(.C) void {}
 

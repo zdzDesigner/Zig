@@ -5,7 +5,7 @@ const chip = @import("chip");
 const time = @import("time.zig");
 
 // Blue pill only has C 1
-const DMA1 = chip.peripherals.DMA1;
+pub const DMA1 = chip.peripherals.DMA1;
 const RCC = chip.peripherals.RCC;
 // test =======
 const strings = @import("util");

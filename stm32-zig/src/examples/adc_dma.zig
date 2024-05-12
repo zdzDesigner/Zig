@@ -4,12 +4,28 @@ const interrupts = hal.interrupts;
 const GPIO = hal.GPIO;
 const adc = hal.ADC;
 const dma = hal.dma;
+const DMA1 = dma.DMA1;
 const uart = hal.USART.USART1;
 
-var buf: [200]u16 = undefined;
+var buf: [2]u16 = undefined;
+// var buf: [200]u16 = undefined;
 fn completion() void {
-    uart.transmitBlocking(strings.intToStr2(30, "tmp:{},x:{}\r\n", .{ buf[0], buf[1] }), null) catch unreachable;
-    adc.ADC1.registers.SR.modify(.{ .EOC = 0 });
+    // uart.transmitBlocking(strings.intToStr(30, "completion-----:{s}\r\n", ""), null) catch unreachable;
+    // var x: u16 = undefined;
+    // var y: u16 = undefined;
+    // for (buf, 0..) |_, i| {
+    //     if (i % 2 == 1) {
+    //         y = buf[i];
+    //         uart.transmitBlocking(strings.intToStr2(30, "x:{},y:{}\r\n", .{ x, y }), null) catch unreachable;
+    //     } else {
+    //         x = buf[i];
+    //     }
+    // }
+    uart.transmitBlocking(strings.intToStr2(30, "x:{},y:{}\r\n", .{ buf[0], buf[1] }), null) catch unreachable;
+    // uart.transmitBlocking(strings.intToStr2(30, "x:{}\r\n", .{buf[0]}), null) catch unreachable;
+    // uart.transmitBlocking(strings.intToStr2(30, "x:{},y:{}\r\n", .{ buf[0], buf[1] }), null) catch unreachable;
+    // adc.ADC1.registers.SR.modify(.{ .EOC = 0 });
+    // DMA1.IFCR.raw = @as(u32, 0b1111);
 
     // const v = buf;
     // _ = v;
@@ -29,14 +45,14 @@ pub fn main() void {
     uart.apply(.{});
 
     interrupts.DeviceInterrupt.enable(.DMA1_Channel1);
-    // interrupts.DeviceInterrupt.setPriority(.DMA1_Channel1, .{ .preemptive = 15, .sub = 0 });
+    interrupts.DeviceInterrupt.setPriority(.DMA1_Channel1, .{ .preemptive = 15, .sub = 0 });
     const adc1 = adc.ADC1.withDMA();
     // uart.transmitBlocking(strings.intToStr(30, "-xxx----:{s}\r\n", ""), null) catch unreachable;
     // const adc1 = adc.ADC1;
     adc1.apply(.{
-        .mode = .continuous,
-        // .mode = .single,
-        // .mode = .{ .discontinuous = 4 },
+        // .mode = .continuous,
+        .mode = .single,
+        // .mode = .{ .discontinuous = 1 },
         .channels = &.{
             // adc.Channel.A0,
             // adc.Channel.A1,
@@ -53,11 +69,11 @@ pub fn main() void {
     }) catch @panic("Failed to enable ADC");
     uart.transmitBlocking(strings.intToStr(30, "-----:{s}\r\n", ""), null) catch unreachable;
 
-    GPIO.Port.enable(.A);
-    const x = GPIO.init(.A, 4);
-    const y = GPIO.init(.A, 5);
-    x.asInput(.analog);
-    y.asInput(.analog);
+    // GPIO.Port.enable(.A);
+    // const x = GPIO.init(.A, 4);
+    // const y = GPIO.init(.A, 5);
+    // x.asInput(.analog);
+    // y.asInput(.analog);
 
     // var buf: [1]u16 = undefined;
     // _ = adc1.start(&buf, .{}) catch |err| {
