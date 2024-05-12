@@ -4,15 +4,6 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
-    const lib = b.addStaticLibrary(.{
-        .name = "zig_miniaudio",
-        .root_source_file = b.path("src/root.zig"),
-        .target = target,
-        .optimize = optimize,
-    });
-
-    b.installArtifact(lib);
-
     const exe = b.addExecutable(.{
         .name = "zig_miniaudio",
         .root_source_file = b.path("src/main.zig"),
@@ -20,7 +11,12 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
     exe.root_module.addIncludePath(.{ .path = "./miniaudio" });
-
+    exe.root_module.addIncludePath(.{ .path = "./miniaudio/extras" });
+    // exe.defineCMacro("MINIAUDIO_IMPLEMENTATION", null);
+    // const cflags = &[_][]const u8{ "-DMA_NO_FLAC", "-DMA_NO_WEBAUDIO", "-DMA_NO_ENCODING", "-DMA_NO_NULL", "-DMA_NO_RUNTIME_LINKING" };
+    // exe.root_module.addCSourceFile(.{ .file = .{ .path = "src/c/miniaudio.c" }, .flags = cflags });
+    exe.root_module.addCSourceFile(.{ .file = .{ .path = "src/c/miniaudio.c" }, .flags = &.{ "-ldl", "-lm", "-lpthread" } });
+    exe.linkLibC();
     b.installArtifact(exe);
 
     const run_cmd = b.addRunArtifact(exe);

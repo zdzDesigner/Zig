@@ -146,6 +146,16 @@ pub fn build(b: *std.Build) void {
     const debug_step = b.step("debug", "Debug the program");
     debug_step.dependOn(&debugger_cmd.step);
 
+    // // debug ===============================
+    // const debug_exe = b.addExecutable(.{
+    //     .name = "debug",
+    //     .root_source_file = .{ .path = "debug/gdb.zig" },
+    //     .target = b.standardTargetOptions(.{}),
+    //     .optimize = b.standardOptimizeOption(.{}),
+    // });
+    //
+    // b.installArtifact(debug_exe);
+
     // 不生效 zig build test --verbose ===============
     const hal_test = b.addTest(.{
         .name = "test",

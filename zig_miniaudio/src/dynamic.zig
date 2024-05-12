@@ -1,5 +1,6 @@
 const ma = @import("c.zig").ma;
 const std = @import("std");
+const miniaudio = @import("./miniaudio.zig");
 
 // ma.ma_async_notification_callbacks
 
@@ -14,7 +15,7 @@ const std = @import("std");
 
 const LoadNotification = extern struct {
     cb: ma.ma_async_notification_callbacks = .{ .onSignal = onSoundLoaded },
-    sound: *Sound,
+    sound: *miniaudio.Sound,
     //     allocator: *std.mem.Allocator = undefined,
     //
     //     pub fn create(allocator: *std.mem.Allocator, sound: *Sound) !LoadNotification {
@@ -29,8 +30,8 @@ const LoadNotification = extern struct {
     //         self.allocator.destroy(self);
     //     }
     //
-    fn onSoundLoaded(notification: ?*ma_async_notification, code: c_int) callconv(.C) void {
-        var note = @ptrCast(*LoadNotification, @alignCast(@alignOf(LoadNotification), notification));
+    fn onSoundLoaded(notification: ?*ma.ma_async_notification, code: c_int) callconv(.C) void {
+        var note: *LoadNotification = @ptrCast(@alignCast(notification));
         std.debug.print("Loaded. code: {}-----------\n", .{code});
 
         if (code == MA_NOTIFICATION_COMPLETE) {
