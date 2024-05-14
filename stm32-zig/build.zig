@@ -1,39 +1,34 @@
 const std = @import("std");
 
-const examples = &.{
-    // "blinky",
-    // "blinky_irq",
-    // "adc",
-    // "adc_group",
-    // "adc_temp",
-    "adc_dma",
-    // "adc_temp_irq",
-    // "button",
-    // "button_irq",
-    // "uart",
-    // "uart_irq",
-};
-
 pub fn build(b: *std.Build) void {
-    const target = b.resolveTargetQuery(.{
-        .cpu_arch = .thumb,
-        .cpu_model = .{ .explicit = &std.Target.arm.cpu.cortex_m3 },
-        .os_tag = .freestanding,
-        .abi = .eabi,
-    });
-    const optimize = b.standardOptimizeOption(.{
-        // .preferred_optimize_mode = .ReleaseSafe,
-        // .preferred_optimize_mode = .ReleaseSmall,
+    // installExample(b);
+    registers(b);
+}
+
+fn registers(b: *std.Build) void {
+    const target = b.standardTargetOptions(.{});
+    const optimize = b.standardOptimizeOption(.{});
+    const chip = b.addModule("chip", .{
+        .root_source_file = .{ .path = "src/chip/chip.zig" },
+        .target = target,
+        .optimize = optimize,
     });
 
-    // const flash_cmd = b.addSystemCommand(&.{
-    //     "/home/fran/.local/stm32/STM32CubeProgrammer/bin/STM32_Programmer_CLI",
-    //     "-c",
-    //     "port=SWD",
-    //     "mode=UR",
-    //     "reset=HWrst",
-    // });
+    const registersExc = b.addExecutable(.{
+        .name = "registers",
+        .root_source_file = .{ .path = "debug/gdb.zig" },
+        .target = target,
+        .optimize = optimize,
+    });
 
+    registersExc.root_module.addImport("chip", chip);
+    b.installArtifact(registersExc);
+
+    const run_cmd = b.addRunArtifact(registersExc);
+    const run_step = b.step("reg", "");
+    run_step.dependOn(&run_cmd.step);
+}
+fn cmd(b: *std.Build) !void {
     const flash_cmd = b.addSystemCommand(&.{
         "openocd",
         "-f",
@@ -59,6 +54,43 @@ pub fn build(b: *std.Build) void {
     //     "stm32-zig-blinky.bin",
     // });
 
+    const flash_step = b.step("flash", "Flash the program");
+    flash_step.dependOn(&flash_cmd.step);
+
+    server_cmd.step.dependOn(&flash_cmd.step);
+    const server_step = b.step("server", "Start the server");
+    server_step.dependOn(&server_cmd.step);
+
+    const debug_step = b.step("debug", "Debug the program");
+    debug_step.dependOn(&debugger_cmd.step);
+}
+
+const examples = &.{
+    // "blinky",
+    // "blinky_irq",
+    // "adc",
+    // "adc_group",
+    // "adc_temp",
+    "adc_dma",
+    // "adc_temp_irq",
+    // "button",
+    // "button_irq",
+    // "uart",
+    // "uart_irq",
+};
+fn installExample(
+    b: *std.Build,
+) void {
+    const target = b.resolveTargetQuery(.{
+        .cpu_arch = .thumb,
+        .cpu_model = .{ .explicit = &std.Target.arm.cpu.cortex_m3 },
+        .os_tag = .freestanding,
+        .abi = .eabi,
+    });
+    const optimize = b.standardOptimizeOption(.{
+        // .preferred_optimize_mode = .ReleaseSafe,
+        // .preferred_optimize_mode = .ReleaseSmall,
+    });
     inline for (examples) |example| {
         const source = b.fmt("src/examples/{s}.zig", .{example});
         const artifact = b.fmt("stm32-zig-{s}.elf", .{example});
@@ -127,35 +159,15 @@ pub fn build(b: *std.Build) void {
         // debugger_cmd.step.dependOn(&elf.step);
     }
 
-    if (b.args) |args| {
-        const name = b.getInstallPath(.bin, b.fmt("stm32-zig-{s}.elf", .{args[0]}));
-        flash_cmd.addArgs(&.{
-            "-w",
-            name,
-            "--verify",
-        });
-        debugger_cmd.addArg(name);
-    }
-
-    const flash_step = b.step("flash", "Flash the program");
-    flash_step.dependOn(&flash_cmd.step);
-
-    server_cmd.step.dependOn(&flash_cmd.step);
-    const server_step = b.step("server", "Start the server");
-    server_step.dependOn(&server_cmd.step);
-
-    const debug_step = b.step("debug", "Debug the program");
-    debug_step.dependOn(&debugger_cmd.step);
-
-    // // debug ===============================
-    // const debug_exe = b.addExecutable(.{
-    //     .name = "debug",
-    //     .root_source_file = .{ .path = "debug/gdb.zig" },
-    //     .target = b.standardTargetOptions(.{}),
-    //     .optimize = b.standardOptimizeOption(.{}),
-    // });
-    //
-    // b.installArtifact(debug_exe);
+    // if (b.args) |args| {
+    //     const name = b.getInstallPath(.bin, b.fmt("stm32-zig-{s}.elf", .{args[0]}));
+    //     flash_cmd.addArgs(&.{
+    //         "-w",
+    //         name,
+    //         "--verify",
+    //     });
+    //     debugger_cmd.addArg(name);
+    // }
 
     // 不生效 zig build test --verbose ===============
     const hal_test = b.addTest(.{

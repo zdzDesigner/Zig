@@ -1,6 +1,10 @@
 const std = @import("std");
 const expect = std.testing.expect;
 
+// !! 切片是指向数组的指针
+// !! 切片是指向数组的指针
+// !! 切片是指向数组的指针
+
 pub fn logic() void {
     std.log.info("--------- slice ---------\n", .{});
     basevar();
@@ -109,11 +113,20 @@ test "arr pointer test" {
 // 我觉得这有点令人困惑，但它并不是经常出现的东西，而且也不太难掌握。
 // 我很想在这一点上跳过它，但无法找到一种诚实的方法来避免这个细节。
 
+// !! 自动转换 ===========================================================================
+fn testSlice(list: []const i32) void {
+    std.debug.print("typeof:{}\n", .{@TypeOf(list)}); // []const i32
+    std.debug.print("list[0]:{}\n", .{list[0]});
+}
 test "slice test" {
     const a = [_]i32{ 1, 2, 3, 4, 5 };
-    const end: usize = 4;
-    const b = a[1..end];
-    try expect(@TypeOf(b) == []const i32); // 切片
+    std.debug.print("array pointer:{}\n", .{@TypeOf(a[1..4])}); // *const [3]i32
+    var end: usize = 4;
+    end = 4;
+    std.debug.print("array pointer(slice):{}\n", .{@TypeOf(a[1..end])}); // []const i32
+    testSlice(&a); // *const [5]i32
+    testSlice(a[1..3]); // *const [2]i32
+    testSlice(a[1..end]); // [3]const i32
 }
 
 // 切片是指向数组（部分）的长度和指针。
