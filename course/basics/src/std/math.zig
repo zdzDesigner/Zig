@@ -18,3 +18,8 @@ test "modf:" {
     const v = std.math.modf(3.14);
     std.debug.print("modf::v:ipart:{d},fpart:{d}\n", .{ v.ipart, v.fpart });
 }
+
+test "inf:" {
+    std.debug.print("inf(usize):{}\n", .{std.math.inf(f32)});
+    std.debug.print("inf(usize):{}\n", .{@as(usize, @bitCast(std.math.inf(f64)))});
+}
