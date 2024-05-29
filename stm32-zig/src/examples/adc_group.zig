@@ -19,7 +19,7 @@ pub fn main() void {
         .mode = .single,
         .channels = &.{
             adc.Channel.A4.withSamplingCycles(.@"239.5"),
-            // adc.Channel.A5.withSamplingCycles(.@"239.5"),
+            adc.Channel.A5.withSamplingCycles(.@"239.5"),
             // Default sampling cycles is 1.5, but you can change it
             // adc.Channel.A0.withSamplingCycles(.@"7.5"),
         },

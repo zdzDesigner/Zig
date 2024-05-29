@@ -158,11 +158,15 @@ pub fn configChannel(adc: ADC, channel: Channel, rank: u5) Channel.Error!void {
     try channel.isValid(adc);
 
     {
+        // 0b10100100
+        // SQ1:0b00100 => 4
+        // SQ2:0b101 => 5
         if (rank < 6) {
-            const value: u32 = @as(u32, channel.number) << rank;
-            const mask: u32 = @as(u32, 0b11111) << rank;
+            const value: u32 = @as(u32, channel.number) << (5 * rank);
+            const mask: u32 = @as(u32, 0b11111) << (5 * rank);
             const temp = adc.registers.SQR3.raw;
             adc.registers.SQR3.raw = (temp & ~mask) | value;
+            // adc.registers.SQR3.raw = 0xa4;
         } else if (rank < 12) {
             const value: u32 = @as(u32, channel.number) << (rank - 6);
             const mask: u32 = @as(u32, 0b11111) << (rank - 6);
@@ -182,17 +186,19 @@ pub fn configChannel(adc: ADC, channel: Channel, rank: u5) Channel.Error!void {
     }
 
     {
-        const c = channel.number;
-        const sc: u32 = @intFromEnum(channel.sampling_cycles);
-        if (c >= 10) {
-            const mask: u32 = @as(u32, 0b111) << (3 * (c - 10));
-            const temp = adc.registers.SMPR1.raw;
-            adc.registers.SMPR1.raw = (temp & ~mask) | (sc << (3 * (c - 10)));
-        } else {
-            const mask: u32 = @as(u32, 0b111) << (3 * c);
-            const temp = adc.registers.SMPR1.raw;
-            adc.registers.SMPR1.raw = (temp & ~mask) | (sc << (3 * c));
-        }
+        // const c = channel.number;
+        // const sc: u32 = @intFromEnum(channel.sampling_cycles);
+        // if (c >= 10) {
+        //     const mask: u32 = @as(u32, 0b111) << (3 * (c - 10));
+        //     const temp = adc.registers.SMPR1.raw;
+        //     adc.registers.SMPR1.raw = (temp & ~mask) | (sc << (3 * (c - 10)));
+        // } else {
+        //     const mask: u32 = @as(u32, 0b111) << (3 * c);
+        //     const temp = adc.registers.SMPR1.raw;
+        //     adc.registers.SMPR1.raw = (temp & ~mask) | (sc << (3 * c));
+        // }
+        adc.registers.SMPR1.raw = 0;
+        adc.registers.SMPR2.raw = 0x0002d000;
     }
 }
 
