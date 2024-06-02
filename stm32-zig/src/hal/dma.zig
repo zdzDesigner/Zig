@@ -27,7 +27,8 @@ pub inline fn enable() void {
 }
 
 pub const TransferOptions = struct {
-    priority: enum(u2) { low, medium, high, very_high } = .low,
+    // priority: enum(u2) { low, medium, high, very_high } = .low,
+    priority: enum(u2) { low, medium, high, very_high } = .medium,
     // circular: bool = false,
     callbacks: Callbacks = .{},
 };
