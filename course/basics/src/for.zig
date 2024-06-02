@@ -17,11 +17,55 @@ pub fn logic() void {
         std.log.info("a:{},a1:{}", .{ a, a1 });
     }
 
-
     // for 左闭右开(两个点)  区分 switch 的三个点
     for (0..4) |i| {
         std.log.info("{}", .{i});
     }
+}
+
+// 执行完触发 finally?
+test "for else:" {
+    const zero: [0]u8 = undefined;
+    for (zero) |c| {
+        if (c == 'c') continue;
+        std.debug.print("c:{c}\n", .{c});
+    } else {
+        std.debug.print("nothing ======\n", .{});
+    }
+    // nothing ======
+
+    const string = "abcde";
+    for (string) |c| {
+        if (c == 'c') continue;
+        std.debug.print("c:{c}\n", .{c});
+    } else {
+        std.debug.print("nothing ======\n", .{});
+    }
+    // c:a
+    // c:b
+    // c:d
+    // c:e
+    // nothing ======
+
+    // For loops can also be used as expressions.
+    const items = [_]?i32{ 3, 4, null, 5 };
+    var sum: i32 = 0;
+    for (items) |value| {
+        if (value != null) {
+            sum += value.?;
+        }
+        std.debug.print("value:{any}\n", .{value});
+    } else {
+        std.debug.print("for else =======\n", .{});
+    }
+    std.debug.print("sum:{}\n", .{sum});
+    // value:3
+    // value:4
+    // value:null
+    // value:5
+    // for else =======
+    // sum:12
+
 }
 
 test "for sample" {

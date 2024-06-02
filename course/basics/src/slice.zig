@@ -1,6 +1,10 @@
 const std = @import("std");
 const expect = std.testing.expect;
 
+// !! 切片是指向数组(部分[编译未知])的指针
+// !! 切片是指向数组(部分[编译未知])的指针
+// !! 切片是指向数组(部分[编译未知])的指针
+
 pub fn logic() void {
     std.log.info("--------- slice ---------\n", .{});
     basevar();
@@ -42,6 +46,8 @@ fn slice() void {
     end = 4;
     const b = a[1..end];
     std.log.info("切片:{any}", .{@TypeOf(b)}); // []const i32  切片 const 不可编辑
+    //
+    std.debug.print("对比数组指针和切片指针:{}\n", .{&a == b.ptr});
 
     // 如果两个边界值均是编译期可知的话，编译器会直接将切片优化为`数组指针`
     const end2: usize = 4; // const 编译时已知
@@ -109,11 +115,52 @@ test "arr pointer test" {
 // 我觉得这有点令人困惑，但它并不是经常出现的东西，而且也不太难掌握。
 // 我很想在这一点上跳过它，但无法找到一种诚实的方法来避免这个细节。
 
+// !! 自动转换 ===========================================================================
+fn testSlice(list: []const i32) void {
+    std.debug.print("typeof:{}\n", .{@TypeOf(list)}); // []const i32
+    std.debug.print("list[0]:{}\n", .{list[0]});
+}
 test "slice test" {
     const a = [_]i32{ 1, 2, 3, 4, 5 };
-    const end: usize = 4;
-    const b = a[1..end];
-    try expect(@TypeOf(b) == []const i32); // 切片
+    std.debug.print("array pointer:{}\n", .{@TypeOf(a[1..4])}); // *const [3]i32
+    var end: usize = 4;
+    end = 4;
+    std.debug.print("array pointer(slice):{}\n", .{@TypeOf(a[1..end])}); // []const i32
+    testSlice(&a); // *const [5]i32
+    testSlice(a[1..3]); // *const [2]i32
+    testSlice(a[1..end]); // []const i32
+    std.debug.print("对比数组指针和切片指针:{}\n", .{&a == a[0..end].ptr}); // true
+
+    std.debug.print("数组指针:{}\n", .{@TypeOf(&a)}); // *[5]const i32
+    std.debug.print("数组指针:{}\n", .{@TypeOf(a[1..3])}); // *[2]const i32
+    std.debug.print("数组的多项指针:{}\n", .{@TypeOf(a[1..3].ptr)}); // [*]const i32
+}
+
+// 单项指针的类型为：`*T`，`T`是所指向内存区域的类型，解引用方法是 `ptr.*`。
+// 多项指针如何解引用? 长度未知了(类别C中的数组指针)
+// 参考 pointer.zig
+fn testSlicePointer(p: [*]i32) void {
+    std.debug.print("p.len:{*}\n", .{p});
+    std.debug.print("p[0]:{}\n", .{p[0]}); // 1
+    std.debug.print("p[0..3]:type:{},value:{any}\n", .{ @TypeOf(p[0..3]), p[0..3] }); // 变成了数组指针 type:*[3]i32, value:{ 1, 2, 3 }
+    std.debug.print("p[0..3].ptr:{*}\n", .{p[0..3].ptr}); // 取指针
+}
+test "slice pointer" {
+    var a = [_]i32{ 1, 2, 3, 4, 5 };
+    testSlicePointer((&a)); // 自动转
+    testSlicePointer((&a).ptr); // 同上
+    std.debug.print("(&a).ptr:{*},\n", .{(&a).ptr});
+
+    // ============= 数组指针
+    testSlicePointer((a[0..2])); // 自动转, 这里不出错（传递的仅仅是一个指针）
+    testSlicePointer((a[0..2].ptr)); // 同上
+
+    // ============= 切片
+    var end: u32 = 1;
+    end = 1;
+    // testSlicePointer((a[0..end])); // !!error: expected type '[*]i32', found '[]i32'
+    testSlicePointer((a[0..end].ptr)); // 这里不出错（传递的仅仅是一个指针）
+
 }
 
 // 切片是指向数组（部分）的长度和指针。
@@ -122,3 +169,51 @@ test "slice test" {
 // 如果我们想写入 b，就需要将 a 从 const 变为 var。
 
 test "update arr" {}
+
+test "append:" {
+    comptime var list: []const []const u8 = &.{};
+    // comptime var list: []const []const u8 = undefined; // error: use of undefined value here causes undefined behavior
+    list = list ++ .{"aa"};
+    list = list ++ .{"bb"};
+
+    std.debug.print("list:{any}, length:{}\n", .{ list, list.len });
+}
+
+test "struct field append:" {
+    // comptime var list: []const []const u8 = &.{};
+    // const songlist = struct { // error: type capture contains reference to comptime var
+    //     fn append(item: []const u8) void {
+    //         list = list ++ .{item};
+    //     }
+    // };
+    //
+    // songlist.append("aa");
+    // songlist.append("bb");
+    //
+    // std.debug.print("list:{any}, length:{}\n", .{ songlist.list, songlist.list.len });
+}
+
+test "struct field append::" {
+    const songlist = struct {
+        var list: std.ArrayList([]const u8) = undefined;
+
+        fn init(ally: std.mem.Allocator) void {
+            list = std.ArrayList([]const u8).init(ally);
+        }
+
+        fn deinit() void {
+            list.deinit();
+        }
+
+        fn append(item: []const u8) !void {
+            try list.append(item);
+        }
+    };
+
+    songlist.init(std.testing.allocator);
+    try songlist.append("aaa");
+    try songlist.append("bbb");
+    defer songlist.deinit();
+
+    std.debug.print("list:{s}\n", .{songlist.list.items});
+}

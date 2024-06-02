@@ -1,6 +1,6 @@
 define reg
-  shell echo "" > gdb.tmp
-  set logging file gdb.tmp
+  shell echo "" > debug/gdb.tmp
+  set logging file debug/gdb.tmp
   set logging on
   x/32x $arg0
   set logging off

@@ -105,3 +105,65 @@ test "@Type" {
 
     std.debug.print("T==i32:{}\n", .{T == i32}); // true
 }
+
+// ======================================================
+// error: opaque types have unknown size and therefore cannot be directly embedded in structs
+// opaque 不能用于 field
+const Auth = struct {
+    key: []const u8,
+    pub const password = opaque {};
+    pub const val = 3;
+};
+
+test "opaque:" {
+    const auth = Auth{ .key = "zdz" };
+    std.debug.print("auth:{}\n", .{auth});
+    _ = Auth.password;
+    _ = Auth.val;
+}
+
+test "std.builtin.TypeId:" {
+    std.debug.print("std.builtin.TypeId:{}\n", .{std.builtin.TypeId});
+    // @typeInfo(builtin.Type).Union.tag_type.?
+
+    // std.debug.print("type info std.builtin.TypeId:{}\n", .{@typeInfo(std.builtin.TypeId)});
+    // @typeInfo(builtin.Type).Union.tag_type.?
+
+    switch (@typeInfo(std.builtin.TypeId)) {
+        .Enum => |e| {
+            inline for (e.fields) |field| {
+                std.debug.print("enum.field.name:{s}\n", .{field.name});
+            }
+            // enum.field.name:Type
+            // enum.field.name:Void
+            // enum.field.name:Bool
+            // enum.field.name:NoReturn
+            // enum.field.name:Int
+            // enum.field.name:Float
+            // enum.field.name:Pointer
+            // enum.field.name:Array
+            // enum.field.name:Struct
+            // enum.field.name:ComptimeFloat
+            // enum.field.name:ComptimeInt
+            // enum.field.name:Undefined
+            // enum.field.name:Null
+            // enum.field.name:Optional
+            // enum.field.name:ErrorUnion
+            // enum.field.name:ErrorSet
+            // enum.field.name:Enum
+            // enum.field.name:Union
+            // enum.field.name:Fn
+            // enum.field.name:Opaque
+            // enum.field.name:Frame
+            // enum.field.name:AnyFrame
+            // enum.field.name:Vector
+            // enum.field.name:EnumLiteral
+
+        },
+        .Struct => |s| {
+            std.debug.print("struct:{}", .{s});
+        },
+        else => {},
+        // std.debug.print("item:{}\n", .{item});
+    }
+}

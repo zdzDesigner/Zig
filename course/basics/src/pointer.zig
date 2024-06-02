@@ -109,7 +109,7 @@ test "test [*]T" {
     try expect(arr.len == 4);
     const p: [*]u8 = &arr; // 从已知长度转换未知长度
     // =============
-    std.debug.print("p:{}\n", .{@TypeOf(p)}); // p:[*]u8 多项指针
+    std.debug.print("p:{}\n", .{@TypeOf(p)}); // p:[*]u8  多项指针
     // =============
     std.debug.print("p[0]:{}\n", .{p[0]}); // 5
     std.debug.print("typeof p[0]:{}\n", .{@TypeOf(p[0])}); // u8
@@ -167,4 +167,63 @@ test "test slice" {
     // 当这些 n 和 m 值在编译时都是已知的时，切片实际上会生成"指向数组的指针"。这不是指向数组的指针的问题，即 *[N]T 将强制到 []T 。
     try expect(@TypeOf(sub) == *const [2]u8);
     try expect(pool[2..].len == 3);
+}
+
+fn multiPointer(p: [*]u8) void {
+    std.debug.print("p:{any}\n", .{@TypeOf(p)});
+
+    switch (@typeInfo(@TypeOf(p))) {
+        .Pointer => |pointer| {
+            std.debug.print("ppointer.size:{}\n", .{pointer.size});
+            // ppointer.size:builtin.Type.Pointer.Size.Many
+        },
+        else => {},
+    }
+}
+
+test "pointer.child:" {
+    const char: u8 = '2';
+    std.debug.print("type of char:{}\n", .{@TypeOf(&char)}); // *const u8
+
+    switch (@typeInfo(@TypeOf(&char))) {
+        .Pointer => |p| {
+            // p:builtin.Type.Pointer{
+            //     .size = builtin.Type.Pointer.Size.One,
+            //     .is_const = true,
+            //     .is_volatile = false,
+            //     .alignment = 1,
+            //     .address_space = builtin.AddressSpace.generic,
+            //     .child = u8,
+            //     .is_allowzero = false,
+            //     .sentinel = null
+            // }
+            std.debug.print("p:{}\n", .{p});
+        },
+        else => {},
+    }
+
+    const strlist = &.{ "aaa", "bbb" };
+    std.debug.print("typeof strlist:{}\n", .{@TypeOf(strlist)});
+    switch (@typeInfo(@TypeOf(strlist))) {
+        .Pointer => |p| {
+            // p:builtin.Type.Pointer{
+            //     .size = builtin.Type.Pointer.Size.One,
+            //     .is_const = true,
+            //     .is_volatile = false,
+            //     .alignment = 1,
+            //     .address_space = builtin.AddressSpace.generic,
+            //     .child = struct{
+            //         comptime *const [3:0]u8 = &.{ 97, 97, 97 },
+            //         comptime *const [3:0]u8 = &.{ 98, 98, 98 }
+            //     },
+            //     .is_allowzero = false,
+            //     .sentinel = null
+            // }
+            std.debug.print("p:{}\n", .{p});
+        },
+        else => {},
+    }
+
+    var a = [_]u8{ 1, 2, 3, 4, 5 };
+    multiPointer((&a));
 }

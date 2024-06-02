@@ -16,18 +16,26 @@ test "parseInt" {
     std.debug.print("parseInt:{any}\n", .{std.fmt.parseInt(u32, "0xa", 0)}); // 10
 }
 
-test "tostring:" {
-    std.debug.print("comptimePrint:{s}\n", .{std.fmt.comptimePrint("aa:{}", .{99})});
+pub inline fn intToStr(comptime size: comptime_int, comptime format: []const u8, val: anytype) []const u8 {
+    var buf: [size]u8 = undefined;
+    return std.fmt.bufPrint(&buf, format, val) catch "\r\n";
+}
+test "merge string:" {
+    std.debug.print("merge string:{s}\n", .{intToStr(10, "val:{s}", .{"xxx"})});
 }
 
-// 无需堆上分配
-inline fn intToStr(comptime size: comptime_int, comptime format: []const u8, val: anytype) []const u8 {
-    var buf: [size]u8 = undefined;
-    return std.fmt.bufPrint(&buf, format, .{val}) catch "\r\n";
+test "fmt::count:" {
+    std.debug.print("count:{}\n", .{std.fmt.count("aa:{s}", .{"cc"})}); // 5
+}
+
+// comptimePrint 会调用 bufPrint
+test "tostring:" {
+    std.debug.print("comptimePrint:{s}\n", .{std.fmt.comptimePrint("aa:{}", .{99})}); // aa:99
+    std.debug.print("comptimePrint:{s}\n", .{std.fmt.comptimePrint("aa:{s}", .{"bb"})}); // aa:bb
 }
 
 test "int to str:" {
-    std.debug.print("intToStr:{s}\n", .{intToStr(20, "ddd{}\r\n", 8)});
+    std.debug.print("intToStr:{s}\n", .{intToStr(20, "ddd{}\r\n", .{8})});
 }
 
 const fmtId = std.zig.fmtId;

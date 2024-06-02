@@ -56,7 +56,6 @@ pub fn logic() void {
     //     },
     // }
 
-
     // 带标签的联合的使用有点像接口，只要我们提前知道所有可能的实现，我们就能够将其转化带标签的联合这种形式。
     // ======== tagged union
     const LangType = enum {
