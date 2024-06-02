@@ -1,6 +1,7 @@
 const chip = @import("chip");
 const clocks = @import("clocks.zig");
 const GPIO = @import("GPIO.zig");
+const dma = @import("dma.zig");
 const time = @import("time.zig");
 const interrupts = @import("interrupts.zig");
 
@@ -9,12 +10,12 @@ const AFIO = chip.peripherals.AFIO;
 
 pub const Registers = chip.types.peripherals.USART1;
 
-pub const USART1: Self = .{ .registers = chip.peripherals.USART1 };
+pub const USART1: USART = .{ .registers = chip.peripherals.USART1 };
 // TODO Implement other two
-// pub const USART2: Self = .{ .registers = chip.peripherals.USART2 };
-// pub const USART3: Self = .{ .registers = chip.peripherals.USART3 };
+// pub const USART2: USART = .{ .registers = chip.peripherals.USART2 };
+// pub const USART3: USART = .{ .registers = chip.peripherals.USART3 };
 
-const Self = @This();
+const USART = @This();
 
 registers: *volatile Registers,
 
@@ -35,7 +36,10 @@ pub const Config = struct {
     pub const Remap = enum { none, partial, full };
 };
 
-pub fn apply(self: Self, config: Config) void {
+pub fn apply(self: USART, config: Config) void {
+    applyImpl(self, config);
+}
+pub fn applyImpl(self: USART, config: Config) void {
     var tx: GPIO = undefined;
     var rx: GPIO = undefined;
 
@@ -115,7 +119,15 @@ pub fn apply(self: Self, config: Config) void {
 
     self.registers.CR1.modify(.{ .UE = 1 });
 }
-pub fn flush(self: Self, timeout: ?u32) error{Timeout}!void {
+
+fn calculateBRR(baud: u32, pclk: u32) u32 {
+    const brr = pclk / baud;
+    const rounding = ((pclk % baud) + (baud / 2)) / baud;
+    return brr + rounding;
+    // return ((pclk / baud) * 10 + 5) / 10;
+}
+
+pub fn flush(self: USART, timeout: ?u32) error{Timeout}!void {
     const delay = time.absolute(timeout);
 
     while (!self.registers.SR.read().TC) {
@@ -123,13 +135,13 @@ pub fn flush(self: Self, timeout: ?u32) error{Timeout}!void {
     }
 }
 
-pub fn isHasRead(self: Self) bool {
+pub fn isHasRead(self: USART) bool {
     return self.registers.SR.read().RXNE != 0;
 }
 
 /// For now 9 bit data without parity bit will not work :)
-// pub fn transmitBlocking(_: Self, _: []const u8, _: ?u32) error{Timeout}!void {}
-pub fn transmitBlocking(self: Self, buffer: []const u8, timeout: ?u32) error{Timeout}!void {
+// pub fn transmitBlocking(_: USART, _: []const u8, _: ?u32) error{Timeout}!void {}
+pub fn transmitBlocking(self: USART, buffer: []const u8, timeout: ?u32) error{Timeout}!void {
     const delay = time.absolute();
 
     const regs = self.registers;
@@ -154,7 +166,7 @@ pub const ReadError = error{
     Overrun,
 };
 
-pub fn readBlocking(self: Self, buffer: []u8, timeout: ?u32) ReadError!void {
+pub fn readBlocking(self: USART, buffer: []u8, timeout: ?u32) ReadError!void {
     const delay = time.absolute();
 
     const regs = self.registers;
@@ -172,7 +184,7 @@ pub fn readBlocking(self: Self, buffer: []u8, timeout: ?u32) ReadError!void {
     }
 }
 
-pub fn checkRXflags(self: Self) ReadError!bool {
+pub fn checkRXflags(self: USART) ReadError!bool {
     const sr = self.registers.SR.read();
     if (sr.RXNE == 1) {
         if (sr.ORE == 1) return error.Overrun;
@@ -184,9 +196,25 @@ pub fn checkRXflags(self: Self) ReadError!bool {
     return false;
 }
 
-fn calculateBRR(baud: u32, pclk: u32) u32 {
-    const brr = pclk / baud;
-    const rounding = ((pclk % baud) + (baud / 2)) / baud;
-    return brr + rounding;
-    // return ((pclk / baud) * 10 + 5) / 10;
+pub fn whithDMA(comptime usart: USART) WhithDMA(usart) {
+    return .{};
+}
+
+fn WhithDMA(comptime usart: USART) type {
+    return struct {
+        const Self = @This();
+        pub inline fn apply(self: Self, config: Config) void {
+            applyImpl(usart, config);
+            self.enable();
+        }
+        pub inline fn enable(_: Self) void {
+            dma.enable();
+            usart.registers.CR3.modify(.{ .DMAT = 1 });
+        }
+        pub fn start(_: Self, buffer: []u8, options: dma.TransferOptions) dma.Error!dma.Transfer {
+            const transfer = try dma.write(u8, buffer, .{ .usart = .one }, options);
+            return transfer;
+        }
+        fn send() void {}
+    };
 }

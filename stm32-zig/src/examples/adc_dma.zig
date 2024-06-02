@@ -1,3 +1,4 @@
+const std = @import("std");
 const hal = @import("hal");
 const strings = @import("util");
 const interrupts = hal.interrupts;
@@ -8,7 +9,7 @@ const DMA1 = dma.DMA1;
 const uart = hal.USART.USART1;
 
 // var count: u16 = 0;
-var buf: [2000]u16 = undefined;
+var buf: [2004]u16 = undefined;
 // var buf: [200]u16 = undefined;
 fn completion() void {
     // if (count > 100) return;
@@ -16,14 +17,24 @@ fn completion() void {
     // uart.transmitBlocking(strings.intToStr(3000, "buf:{any}\r\n", buf), null) catch unreachable;
     var x: u32 = 0;
     var y: u32 = 0;
-    for (buf, 0..) |_, i| {
+    var max_x: u32 = 0;
+    var max_y: u32 = 0;
+    var min_x: u32 = 1 << 5;
+    var min_y: u32 = 1 << 5;
+    for (buf, 0..) |v, i| {
         if (i % 2 == 1) {
-            y += buf[i];
+            y += v;
+            if (v > max_x) max_x = v;
+            if (v < min_x) min_x = v;
             // uart.transmitBlocking(strings.intToStr2(30, "x:{},y:{}\r\n", .{ x, y }), null) catch unreachable;
         } else {
-            x += buf[i];
+            x += v;
+            if (v > max_y) max_y = v;
+            if (v < min_y) min_y = v;
         }
     }
+    x = x - max_x - min_x;
+    y = y - max_y - min_y;
     uart.transmitBlocking(strings.intToStr2(30, "x:{},y:{}\r\n", .{ x / 1000, y / 1000 }), null) catch unreachable;
     // uart.transmitBlocking(strings.intToStr2(30, "x:{},y:{}\r\n", .{ buf[0], buf[1] }), null) catch unreachable;
     // adc.ADC1.registers.SR.modify(.{ .EOC = 0 });
