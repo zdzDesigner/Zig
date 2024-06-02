@@ -10,8 +10,9 @@ test "math pow" {
 
 test "maxInt and minInt" {
     std.debug.print("\n", .{});
-    std.debug.print("maxInt:{any}\n", .{std.math.maxInt(u32)});
-    std.debug.print("minInt:{any}\n", .{std.math.minInt(u32)});
+    std.debug.print("maxInt:{any}\n", .{std.math.maxInt(u32)}); // 4294967295
+    std.debug.print("maxInt:{any}\n", .{std.math.maxInt(usize)}); // 18446744073709551615
+    std.debug.print("minInt:{any}\n", .{std.math.minInt(u32)}); // 0
 }
 
 test "modf:" {

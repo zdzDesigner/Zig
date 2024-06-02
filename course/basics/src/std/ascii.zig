@@ -11,3 +11,7 @@ test "isControl:" {
 test "isPrint:" {
     std.debug.print("isPrint:{}\n", .{std.ascii.isPrint(0x00)}); // false (isASCII() and !isControl())
 }
+
+test "toUpper:" {
+    std.debug.print("toUpper:{c}\n", .{std.ascii.toUpper('y')}); // Y
+}

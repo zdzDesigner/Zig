@@ -4,7 +4,7 @@ test "stderr:" {
     try std.io.getStdOut().writer().print("aa:{s}", .{""});
     try std.io.getStdErr().writer().print("aa:{s}", .{""});
     try std.io.getStdIn().writer().print("stdin:{s}", .{"xx"});
-    var buf: [100]u8 = undefined;
+    var buf: [2]u8 = undefined;
     const reader = std.io.getStdIn().reader();
     // const size = try std.io.getStdIn().reader().readAll(&buf);
 

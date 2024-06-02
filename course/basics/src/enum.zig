@@ -38,6 +38,35 @@ pub fn localEnum() void {
     std.log.info("equal:{}", .{std.mem.eql(u8, @tagName(Small.six), "six")}); // true
 }
 
+test "tagName:" {
+    const Langx = union(enum) { zh: []const u8, en: []const u8 };
+    std.debug.print("tagName:{}\n", .{Langx.en}); // tag_type.?.en
+    switch (@typeInfo(Langx)) {
+        .Union => |info| {
+            std.debug.print("union(enum):{}\n", .{info.tag_type.?}); // Union.tag_type.?
+            std.debug.print("zh:{}\n", .{info.tag_type.?.zh}); // Union.tag_type.?.zh
+            std.debug.print("compare:{}\n", .{info.tag_type.?.zh == Langx.zh}); // true
+        },
+        else => {},
+    }
+
+    const STATE = enum { RUN, STOP };
+    // @tagName(STATE.RUN) => "RUN"
+    std.debug.print("std.meta.Tag(STATE):{}\n", .{std.meta.Tag(STATE)}); // u1
+    std.debug.print("std.meta.Tag(Langx):{}\n", .{std.meta.Tag(Langx)}); // tag_type.?
+    std.debug.print("std.builtin.TypeId:{}\n", .{std.builtin.TypeId}); // tag_type.?
+
+    // 纯 union 无 tag_type============= error: enum.test.tagName:.Lang has no tag type
+    const Lang = union { zh: []const u8, en: []const u8 };
+    // std.debug.print("std.meta.Tag(Lang):{}\n", .{std.meta.Tag(Lang)});
+    switch (@typeInfo(Lang)) {
+        .Union => |info| {
+            std.debug.print("union:{any}\n", .{info.tag_type}); // null
+        },
+        else => {},
+    }
+}
+
 test "test enum" {
     const Code2 = enum {
         success,

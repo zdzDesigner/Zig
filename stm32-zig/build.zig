@@ -1,8 +1,8 @@
 const std = @import("std");
 
 pub fn build(b: *std.Build) void {
-    // installExample(b);
-    registers(b);
+    installExample(b);
+    // registers(b);
 }
 
 fn registers(b: *std.Build) void {

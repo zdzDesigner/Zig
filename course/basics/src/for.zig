@@ -36,11 +36,12 @@ test "for else:" {
 
     const string = "abcde";
     for (string) |c| {
-        // if (c == 'c') continue;
+        if (c == 'c') continue;
         std.debug.print("c:{c}\n", .{c});
     } else {
         std.debug.print("nothing ======\n", .{});
     }
+    // c:a
     // c:b
     // c:d
     // c:e

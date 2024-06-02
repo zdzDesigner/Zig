@@ -18,3 +18,12 @@ test "ArrayList::str:" {
     std.debug.print("buf.item:{s}\n", .{buf.items});
     std.debug.print("buf.items[0]:{s}\n", .{buf.items[0]});
 }
+
+const Player = struct {
+    name: []const u8,
+    isdead: bool,
+};
+test "MultiArrayList:" {
+    const list = std.MultiArrayList(Player){};
+    std.debug.print("list:{}\n", .{list});
+}

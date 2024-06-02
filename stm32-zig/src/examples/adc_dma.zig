@@ -10,6 +10,7 @@ const uart = hal.USART.USART1;
 var buf: [2]u16 = undefined;
 // var buf: [200]u16 = undefined;
 fn completion() void {
+    hal.time.delay_ms(1000);
     // uart.transmitBlocking(strings.intToStr(30, "completion-----:{s}\r\n", ""), null) catch unreachable;
     // var x: u16 = undefined;
     // var y: u16 = undefined;

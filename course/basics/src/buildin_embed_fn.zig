@@ -1,9 +1,27 @@
 const std = @import("std");
 
+test "@trun:" {
+    std.debug.print("typeof @trunc(58.0):{}\n", .{@TypeOf(@trunc(58.1892))}); // comptime_float
+    std.debug.print("equal:{}\n", .{58.0 == @trunc(58.1892)}); // true
+    std.debug.print("equal:{}\n", .{58 == @trunc(58.1892)}); // true
+    std.debug.print("equal:{}\n", .{58 == 58.0}); // true
+
+    const v: u8 = @as(u8, @trunc(58.0));
+    std.debug.print("v:{}\n", .{v}); // 58
+
+    const v2: u4 = @truncate(v); // 0b111010 << 2  = 0b1010
+    std.debug.print("v2:{}\n", .{v2}); // 10
+}
 test "@truncate:" {
     const u: u4 = @truncate(58); // 0b111010 << 2  = 0b1010
     std.debug.print("u:{}\n", .{u}); // 10
-    //
+}
+
+test "u32 to i32:" {
+    var a: u64 = 30;
+    const v: i64 = @as(u32, @truncate(a * 10));
+    a = 3;
+    std.debug.print("v:{}\n", .{v});
 }
 
 test "@ptrCast:" {
@@ -51,8 +69,8 @@ test "packed:" {
         seconed: u4,
         three: u8,
     };
-    std.debug.print("size:Full:{}\n", .{@sizeOf(Full)}); // 2
-    std.debug.print("size:Divide:{}\n", .{@sizeOf(Divide)}); // 2
+    std.debug.print("size:Full:{}\n", .{@sizeOf(Full)}); // 2 字节
+    std.debug.print("size:Divide:{}\n", .{@sizeOf(Divide)}); // 2 字节
 
     const div: Divide = @bitCast(Full{ .number = 0b1100001111110000 }); // three:0b11000011 seconed:0b1111 first:0b0000
 
@@ -73,4 +91,15 @@ const CortexM3Interrupt = enum(u4) {
 test "@intFromEnum" {
     std.debug.print("intFromEnum:{}\n", .{@intFromEnum(CortexM3Interrupt.HardFault)}); // 8
     std.debug.print("intFromEnum:{}\n", .{@intFromEnum(CortexM3Interrupt.Systick)}); // 15
+}
+
+test "@sizeOf:" {
+    std.debug.print("size of:{}\n", .{@sizeOf(CortexM3Interrupt)}); // 1 字节
+    std.debug.print("字节对齐:{}\n", .{@sizeOf(struct { v: u1, id: u32 })}); // 8 字节(字节对齐)
+    std.debug.print("字节对齐:{}\n", .{@sizeOf(struct { v: u1, v2: u1, id: u32 })}); // 8 字节(字节对齐)
+    std.debug.print("字节对齐:{}\n", .{@sizeOf(struct { v: u1, id: u32, v2: u2 })}); // 8 字节(字节对齐)
+    std.debug.print("字节对齐:{}\n", .{@sizeOf(struct { v: u3, id: u32 })}); // 8 字节(字节对齐)
+    std.debug.print("切片:{}\n", .{@sizeOf(struct { v: []const u1 })}); // 胖指针 16 字节(指针+长度[字节对齐])
+    std.debug.print("多项指针:{}\n", .{@sizeOf(struct { v: [*]const u8 })}); // 8 字节
+
 }

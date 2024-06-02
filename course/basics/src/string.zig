@@ -167,3 +167,73 @@ test "sentry extend" {
     try expect(chname.len == 4);
     try expect(std.mem.asBytes(chname).*.len == 5);
 }
+
+fn arg(v: []u8) void {
+    std.debug.print("v:{s}\n", .{v}); // v:abc // *[3]u8 => []u8 自动转
+}
+
+test "arr pointer conv:" {
+    var arr: [3]u8 = .{ 'a', 'b', 'c' };
+    // ===== 1.有长度 2.有指针 满足切片要求; 自定转换
+    // ===== len:3, ptr:[3]u8@7ffe78548ffc, ptr:u8@7ffe78548ffc val:abc
+    std.debug.print("len:{}, ptr:{*}, ptr:{*}, val:{s}\n", .{ (&arr).len, (&arr), (&arr).ptr, (&arr).* });
+    std.debug.print("type of arr:{}\n", .{@TypeOf(&arr)}); // *[3]u8
+    arg(&arr);
+}
+
+fn constArg(v: [*]u8) void { // 指针未知长度
+    std.debug.print("v:{*}\n", .{v});
+}
+fn constArg1(v: []const u8) void {
+    std.debug.print("v:{s}\n", .{v});
+}
+fn constArg2(v: [*]const u8) void { // 指针未知长度
+    std.debug.print("v:{*}\n", .{v});
+}
+
+fn constArg3(v: [*:0]const u8) void { // 尾部0的指针
+    std.debug.print("v:{s}\n", .{v});
+}
+test "const u8::" {
+    const filepath = try std.fs.path.resolve(std.testing.allocator, &.{ "aaa", "bbb" });
+    defer std.testing.allocator.free(filepath);
+    std.debug.print("typeof filepath.ptr:{}\n", .{@TypeOf(filepath.ptr)}); // [*]u8
+    constArg(filepath.ptr);
+    constArg2(filepath.ptr);
+
+    const filepathZ = try std.fmt.allocPrintZ(std.testing.allocator, "{s}", .{filepath});
+    defer std.testing.allocator.free(filepathZ);
+    constArg3(filepathZ.ptr);
+
+    // std.mem.endsWith
+}
+
+fn getFilepath(ally: std.mem.Allocator) ![*:0]const u8 {
+    const filepath = try std.fs.path.resolve(ally, &.{ "aaa", "bbb" });
+    defer std.testing.allocator.free(filepath);
+
+    const filepathZ = try std.fmt.allocPrintZ(ally, "{s}", .{filepath});
+    defer std.testing.allocator.free(filepathZ);
+    return filepathZ;
+}
+
+const songlist = struct {
+    var list: std.ArrayList([*:0]const u8) = undefined;
+    fn init(ally: std.mem.Allocator) void {
+        list = std.ArrayList([*:0]const u8).init(ally);
+    }
+    fn deinit() void {
+        list.deinit();
+    }
+    fn append(item: [*:0]const u8) !void {
+        try list.append(item);
+    }
+};
+
+test "const u8::arraylist:" {
+    const filepath = try getFilepath(std.testing.allocator);
+    std.debug.print("filepath:{any}\n", .{filepath});
+    songlist.init(std.testing.allocator);
+    defer songlist.deinit();
+    try songlist.append(filepath);
+}
