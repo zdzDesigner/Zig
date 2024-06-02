@@ -29,7 +29,7 @@ pub inline fn enable() void {
 pub const TransferOptions = struct {
     // priority: enum(u2) { low, medium, high, very_high } = .low,
     priority: enum(u2) { low, medium, high, very_high } = .medium,
-    // circular: bool = false,
+    circular: bool = false,
     callbacks: Callbacks = .{},
 };
 
@@ -53,7 +53,7 @@ pub inline fn read(comptime T: type, comptime from: Peripheral, to: []T, options
 }
 
 pub inline fn write(comptime T: type, from: []T, comptime to: Peripheral, options: TransferOptions) Error!Transfer {
-    const word_len: u2 = switch (T) {
+    const word_len = switch (T) {
         u8 => .byte,
         u16 => .half_word,
         u32 => .word,
@@ -213,7 +213,8 @@ pub const Channel = enum(u3) {
     ) Error!Transfer {
         const index = @intFromEnum(channel);
 
-        // uart.transmitBlocking(strings.intToStr(30, "channel index:{}\r\n", index), null) catch unreachable;
+        uart.transmitBlocking(strings.intToStr(30, "channel index:{}\r\n", index), null) catch unreachable;
+        uart.transmitBlocking(strings.intToStr(30, "mem_len :{}\r\n", mem_len), null) catch unreachable;
         // uart.transmitBlocking(strings.intToStr(30, "on_completion:{}\r\n", @intFromBool(options.callbacks.on_completion != null)), null) catch unreachable;
         if (running[index]) return Error.Busy;
 
@@ -221,10 +222,16 @@ pub const Channel = enum(u3) {
         callbacks[index] = options.callbacks;
 
         const registers = channel.regs();
+        const v: u5 = index;
+
+        uart.transmitBlocking(strings.intToStr(30, "v :{}\r\n", v * 4), null) catch unreachable;
 
         // Clear all interrupts
-        const pos = index * 4;
-        DMA1.IFCR.raw = @as(u32, 0b1111) << pos;
+        const pos: u5 = v * 4;
+        // const pos: u5 = index << 2;
+        uart.transmitBlocking(strings.intToStr(30, "pos :{}\r\n", pos), null) catch unreachable;
+        const mask: u32 = @as(u32, 0b11111) << pos;
+        DMA1.IFCR.raw = DMA1.IFCR.raw | mask;
 
         registers.CR.modify(.{
             .TCIE = @intFromBool(options.callbacks.on_completion != null),
@@ -233,9 +240,9 @@ pub const Channel = enum(u3) {
             // .TCIE = 1,
             // .HTIE = 1,
             // .TEIE = 1,
-            // .CIRC = @intFromBool(options.circular),
-            .DIR = 0,
-            .CIRC = 1,
+            .CIRC = @intFromBool(options.circular),
+            .DIR = 1, // !! TODO 通过参数判断传输方向问题
+            // .CIRC = 1,
             .MINC = @intFromBool(mem_inc),
             .PINC = 0,
             .MSIZE = @intFromEnum(word_len),

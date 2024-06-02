@@ -215,6 +215,8 @@ fn WhithDMA(comptime usart: USART) type {
             const transfer = try dma.write(u8, buffer, .{ .usart = .one }, options);
             return transfer;
         }
-        fn send() void {}
+        pub fn send(_: Self, buffer: []const u8, timeout: ?u32) error{Timeout}!void {
+            return transmitBlocking(usart, buffer, timeout);
+        }
     };
 }

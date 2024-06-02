@@ -25,8 +25,11 @@ pub fn main() void {
     const usart = USART.USART1.whithDMA();
     usart.apply(.{});
 
-    const buf: []const u8 = strings.intToStr(20, "encode:{s}\r\n", "");
-    _ = usart.start(buf[0..], .{}) catch unreachable;
+    usart.send(strings.intToStr(20, "encode:{s}\r\n", ""), null) catch unreachable;
+    const buf: []u8 = strings.intToStr3(20, "encode:{s}\r\n", .{"xxxx"});
+    _ = usart.start(buf[0..], .{}) catch |err| {
+        usart.send(strings.intToStr(30, "error-----:{s}\r\n", @errorName(err)), null) catch unreachable;
+    };
 
     while (true) {
         // usart1_count += 1;
