@@ -126,8 +126,8 @@ pub fn asInput(gpio: GPIO, options: InputOptions) void {
 ///     CNF[1:0] drain and function
 pub const OutputOptions = packed struct(u4) {
     speed: enum(u2) { reserved, s10MHz, s2MHz, s50MHz } = .s2MHz, // MODE
-    drain: enum(u1) { push_pull, open } = .push_pull, // CFN[0]
-    function: enum(u1) { general_purpose, alternate } = .general_purpose, // CNF[1]
+    drain: enum(u1) { push_pull, open } = .push_pull, // CFN[0] 推挽, 开漏
+    function: enum(u1) { general_purpose, alternate } = .general_purpose, // CNF[1] 通用, 复用
 };
 
 pub fn asOutput(gpio: GPIO, options: OutputOptions) void {

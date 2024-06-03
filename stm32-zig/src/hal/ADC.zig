@@ -149,6 +149,19 @@ pub fn configChannels(adc: ADC, channels: []const Channel) Channel.Error!void {
     }
 }
 
+inline fn mask_value(channel: Channel, move: u5) struct { value: u32, mask: u32 } {
+    const value: u32 = @as(u32, channel.number) << move;
+    const mask: u32 = @as(u32, 0b11111) << move;
+    return .{
+        .value = value,
+        .mask = mask,
+    };
+}
+inline fn getSQR(raw: u32, channel: Channel, move: u5) u32 {
+    const value: u32 = @as(u32, channel.number) << move;
+    const mask: u32 = @as(u32, 0b11111) << move;
+    return (raw & ~mask) | value;
+}
 pub fn configChannel(adc: ADC, channel: Channel, rank: u5) Channel.Error!void {
     // Blue pill has up to channel 9 but channels 16 and 17 are
     // temperature sensor and Vbat sensor respectively
@@ -162,21 +175,32 @@ pub fn configChannel(adc: ADC, channel: Channel, rank: u5) Channel.Error!void {
         // SQ1:0b00100 => 4
         // SQ2:0b101 => 5
         if (rank < 6) {
-            const value: u32 = @as(u32, channel.number) << (5 * rank);
-            const mask: u32 = @as(u32, 0b11111) << (5 * rank);
-            const temp = adc.registers.SQR3.raw;
-            adc.registers.SQR3.raw = (temp & ~mask) | value;
+            // const mv = mask_value(channel, (rank - 0) * 5);
+            // const temp = adc.registers.SQR3.raw;
+            // adc.registers.SQR3.raw = (temp & ~mv.mask) | mv.value;
+            // =========
+            adc.registers.SQR3.raw = getSQR(adc.registers.SQR3.raw, channel, (rank - 0) * 5);
             // adc.registers.SQR3.raw = 0xa4;
         } else if (rank < 12) {
-            const value: u32 = @as(u32, channel.number) << (rank - 6);
-            const mask: u32 = @as(u32, 0b11111) << (rank - 6);
-            const temp = adc.registers.SQR2.raw;
-            adc.registers.SQR2.raw = (temp & ~mask) | value;
+            // const move = (rank - 6) * 5;
+            // const value: u32 = @as(u32, channel.number) << move;
+            // const mask: u32 = @as(u32, 0b11111) << move;
+            // =========
+            // const mv = mask_value(channel, (rank - 6) * 5);
+            // const temp = adc.registers.SQR2.raw;
+            // adc.registers.SQR2.raw = (temp & ~mv.mask) | mv.value;
+            // =========
+            adc.registers.SQR2.raw = getSQR(adc.registers.SQR2.raw, channel, (rank - 6) * 5);
         } else {
-            const value: u32 = @as(u32, channel.number) << (rank - 12);
-            const mask: u32 = @as(u32, 0b11111) << (rank - 12);
-            const temp = adc.registers.SQR1.raw;
-            adc.registers.SQR1.raw = (temp & ~mask) | value;
+            // const move = (rank - 12) * 5;
+            // const value: u32 = @as(u32, channel.number) << move;
+            // const mask: u32 = @as(u32, 0b11111) << move;
+            // =========
+            // const mv = mask_value(channel, (rank - 12) * 5);
+            // const temp = adc.registers.SQR1.raw;
+            // adc.registers.SQR1.raw = (temp & ~mv.mask) | mv.value;
+            // =========
+            adc.registers.SQR1.raw = getSQR(adc.registers.SQR1.raw, channel, (rank - 12) * 5);
         }
     }
 
@@ -413,7 +437,7 @@ fn WithDMA(comptime adc: ADC) type {
                 if (!config.requiresDMA()) @compileError("ADC config doesn't require DMA");
             }
             adc.applyUnchecked(config);
-            uart.transmitBlocking(strings.intToStr(30, "-apply----:{s}\r\n", ""), null) catch unreachable;
+            // uart.transmitBlocking(strings.intToStr(30, "-apply----:{s}\r\n", ""), null) catch unreachable;
             try self.enable();
         }
 
@@ -423,7 +447,7 @@ fn WithDMA(comptime adc: ADC) type {
 
         pub inline fn enable(_: Self) error{Timeout}!void {
             try adc.enable();
-            uart.transmitBlocking(strings.intToStr(30, "-adc.enable ok----:{s}\r\n", ""), null) catch unreachable;
+            // uart.transmitBlocking(strings.intToStr(30, "-adc.enable ok----:{s}\r\n", ""), null) catch unreachable;
             dma.enable();
         }
 

@@ -9,3 +9,8 @@ pub inline fn intToStr2(comptime size: comptime_int, comptime format: []const u8
     var buf: [size]u8 = undefined;
     return std.fmt.bufPrint(&buf, format, val) catch "\r\n";
 }
+pub inline fn intToStr3(comptime size: comptime_int, comptime format: []const u8, val: anytype) []u8 {
+    var buf: [size]u8 = undefined;
+    // return std.fmt.bufPrint(&buf, format, val) catch "\r\n";
+    return std.fmt.bufPrint(&buf, format, val) catch unreachable;
+}

@@ -1,5 +1,20 @@
 const std = @import("std");
 
+const examples = &.{
+    // "blinky",
+    // "blinky_irq",
+    // "adc",
+    // "adc_group",
+    // "adc_temp",
+    // "adc_dma",
+    "uart_dma",
+    // "adc_temp_irq",
+    // "button",
+    // "button_irq",
+    // "uart",
+    // "uart_irq",
+};
+
 pub fn build(b: *std.Build) void {
     installExample(b);
     // registers(b);
@@ -65,19 +80,6 @@ fn cmd(b: *std.Build) !void {
     debug_step.dependOn(&debugger_cmd.step);
 }
 
-const examples = &.{
-    // "blinky",
-    // "blinky_irq",
-    // "adc",
-    // "adc_group",
-    // "adc_temp",
-    "adc_dma",
-    // "adc_temp_irq",
-    // "button",
-    // "button_irq",
-    // "uart",
-    // "uart_irq",
-};
 fn installExample(
     b: *std.Build,
 ) void {
