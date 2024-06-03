@@ -25,13 +25,22 @@ pub fn main() void {
     const usart = USART.USART1.whithDMA();
     usart.apply(.{});
 
-    usart.send(strings.intToStr(20, "encode:{s}\r\n", ""), null) catch unreachable;
-    const buf: []u8 = strings.intToStr3(20, "encode:{s}\r\n", .{"xxxx"});
-    _ = usart.start(buf[0..], .{}) catch |err| {
+    const count: u32 = 10000;
+    var buf: [count]u8 = undefined;
+    for (0..count) |i| {
+        buf[i] = '9';
+    }
+
+    // usart.send(strings.intToStr(20, "encode:{s}\r\n", ""), null) catch unreachable;
+    // _ = usart.start(strings.intToStr3(20, "encode:{s}\r\n", .{"xxxx"}), .{}) catch |err| {
+    _ = usart.start(&buf, .{}) catch |err| {
         usart.send(strings.intToStr(30, "error-----:{s}\r\n", @errorName(err)), null) catch unreachable;
     };
 
     while (true) {
+        usart1_count += 1;
+        if (usart1_count > 20) return;
+        usart.send(strings.intToStr(30, "111:{s}\r\n", ""), null) catch unreachable;
         // usart1_count += 1;
         // const pri = hal.interrupts.Priority{ .preemptive = 15, .sub = 0 };
         // _ = pri;
