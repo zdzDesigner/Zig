@@ -1,0 +1,10 @@
+.{
+    .name = "32_c",
+    .version = "0.1.0",
+    .dependencies = .{
+        .c_lib = .{
+            .path = "../32_c_lib",
+        },
+    },
+    .paths = .{""},
+}
