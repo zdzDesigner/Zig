@@ -22,97 +22,24 @@ pub fn build(b: *std.Build) void {
         },
     });
 
-    _ = b.addModule("root", .{
-        .root_source_file = .{ .path = "src/zaudio.zig" },
-    });
-
-    const miniaudio = b.addStaticLibrary(.{
-        .name = "miniaudio",
-        .target = target,
-        .optimize = optimize,
-    });
-
-    // b.installArtifact(miniaudio);
-
-    miniaudio.addIncludePath(.{ .path = "libs/miniaudio" });
-    miniaudio.linkLibC();
-
-    // const system_sdk = b.dependency("system_sdk", .{});
-
-    if (target.result.os.tag == .macos) {
-        // miniaudio.addFrameworkPath(.{ .path = system_sdk.path("macos12/System/Library/Frameworks").getPath(b) });
-        // miniaudio.addSystemIncludePath(.{ .path = system_sdk.path("macos12/usr/include").getPath(b) });
-        // miniaudio.addLibraryPath(.{ .path = system_sdk.path("macos12/usr/lib").getPath(b) });
-        // miniaudio.linkFramework("CoreAudio");
-        // miniaudio.linkFramework("CoreFoundation");
-        // miniaudio.linkFramework("AudioUnit");
-        // miniaudio.linkFramework("AudioToolbox");
-    } else if (target.result.os.tag == .linux) {
-        std.debug.print("target.result.os.tag:{s}\n", .{@tagName(target.result.os.tag)});
-        if (isarm) {
-            std.debug.print("isarm:{}\n", .{true});
-            // miniaudio.addSystemIncludePath(.{ .path = "/usr/arm-linux-gnueabi/include" });
-            // miniaudio.addIncludePath(.{ .path = "/usr/arm-linux-gnueabi/include" });
-            // miniaudio.addLibraryPath(.{ .path = "/usr/arm-linux-gnueabi/lib" });
-            miniaudio.addIncludePath(.{ .path = "/usr/aarch64-linux-gnu/include" });
-            miniaudio.addLibraryPath(.{ .path = "/usr/aarch64-linux-gnu/lib" });
-            //  --dynamic-linker /lib/ld-linux-aarch64.so.1
-        }
-        miniaudio.linkSystemLibrary("pthread");
-        miniaudio.linkSystemLibrary("m");
-        miniaudio.linkSystemLibrary("dl");
-    }
-
-    miniaudio.addCSourceFile(.{
-        .file = .{ .path = "src/zaudio.c" },
-        .flags = &.{
-            "-std=c99",
-            // "--dynamic-linker=/lib/ld-linux-aarch64.so.1",
-        },
-    });
-    miniaudio.addCSourceFile(.{
-        .file = .{ .path = "libs/miniaudio/miniaudio.c" },
-        .flags = &.{
-            "-DMA_NO_WEBAUDIO",
-            "-DMA_NO_ENCODING",
-            "-DMA_NO_NULL",
-            "-DMA_NO_JACK",
-            "-DMA_NO_DSOUND",
-            "-DMA_NO_WINMM",
-            "-std=c99",
-            "-fno-sanitize=undefined",
-            // "--dynamic-linker=/lib/ld-linux-aarch64.so.1",
-            if (target.result.os.tag == .macos) "-DMA_NO_RUNTIME_LINKING" else "",
-        },
-    });
-
-    // const test_step = b.step("test", "Run zaudio tests");
-    // const tests = b.addTest(.{
-    //     .name = "zaudio-tests",
-    //     .root_source_file = .{ .path = "src/zaudio.zig" },
-    //     .target = target,
-    //     .optimize = optimize,
-    // });
-    // b.installArtifact(tests);
-    // tests.linkLibrary(miniaudio);
-    // test_step.dependOn(&b.addRunArtifact(tests).step);
-
-    audioPlayer(b, miniaudio, target, optimize);
+    audioPlayer(b, target, optimize);
 }
 
-fn audioPlayer(b: *std.Build, miniaudio: *std.Build.Step.Compile, target: std.Build.ResolvedTarget, optimize: std.builtin.OptimizeMode) void {
+fn audioPlayer(b: *std.Build, target: std.Build.ResolvedTarget, optimize: std.builtin.OptimizeMode) void {
     const znotify_sdk = b.dependency("znotify", .{});
+    const zaudio_sdk = b.dependency("zaudio", .{});
 
     const audioplayer = b.addExecutable(.{
         .name = "audioplayer",
-        .root_source_file = .{ .path = "src/audioplayer.zig" },
+        .root_source_file = .{ .path = "src/main.zig" },
         .target = target,
         .optimize = optimize,
     });
 
     audioplayer.root_module.addImport("znotify", znotify_sdk.module("znotify"));
+    audioplayer.root_module.addImport("zaudio", zaudio_sdk.module("root"));
 
-    audioplayer.linkLibrary(miniaudio);
+    audioplayer.linkLibrary(zaudio_sdk.artifact("miniaudio"));
     b.installArtifact(audioplayer);
     const step_ap = b.step("ap", "audioplayer");
     step_ap.dependOn(&b.addRunArtifact(audioplayer).step);

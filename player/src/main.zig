@@ -2,7 +2,7 @@ const std = @import("std");
 const time = std.time;
 const mem = std.mem;
 const znotify = @import("znotify");
-const zaudio = @import("./zaudio.zig");
+const zaudio = @import("zaudio");
 const command = @import("./command.zig");
 
 const Sub = fn (sound: *AudioCxt, c: u8) void;
@@ -93,8 +93,8 @@ const AudioCxt = struct {
         // self.sound_conf.file_path = if (filepath) |v| v else songlist.next();
         self.sound_conf.file_path = filepath orelse songlist.next();
         self.sound = try self.engin.createSound(self.sound_conf);
-        std.debug.print("ok:{}\n", .{self.sound_conf});
-        std.debug.print("sound:{}\n", .{self.sound});
+        // std.debug.print("ok:{}\n", .{self.sound_conf});
+        // std.debug.print("sound:{}\n", .{self.sound});
         std.debug.print("path:{s}\n", .{self.sound_conf.file_path.?});
         // return self;
     }
@@ -142,13 +142,26 @@ const event = struct {
         switch (k) {
             'S' => ctx.stop() catch unreachable,
             'R' => ctx.start() catch unreachable,
-            'N' => {
+            'P' => {
                 ctx.stop() catch unreachable;
                 ctx.next() catch unreachable;
             },
-            'P' => {
+            'O' => {
                 ctx.stop() catch unreachable;
                 ctx.prev() catch unreachable;
+            },
+            '"', 'H' => {
+                var frames_cur = ctx.sound.getTime();
+                // std.debug.print("frames_cur:{d}\n", .{frames_cur});
+                const step = ctx.channels * ctx.frames * 10;
+                if (k == 'H') {
+                    frames_cur = if (frames_cur < step) 0 else frames_cur - step;
+                } else {
+                    frames_cur = frames_cur + step;
+                }
+                ctx.sound.seekToPcmFrame(frames_cur) catch |err| {
+                    std.debug.print("err ============\n:{any}\n =============\n", .{err});
+                };
             },
             else => {},
         }
@@ -174,7 +187,10 @@ pub fn main() !void {
     // try readSongList(ally, "/home/zdz/temp/music/like");
     // try readSongList(ally, "/home/zdz/temp/music/listening");
     // try readSongList(ally, "/home/zdz/temp/music/lzs");
+    // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/listening";
     const dirpath = args.get("dir") orelse "/home/zdz/temp/music/listened";
+    // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/ape-resource";
+    // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/ape-resource2";
     try readSongList(ally, dirpath);
 
     zaudio.init(ally);
@@ -296,19 +312,19 @@ fn audoPlay(ctx: *AudioCxt, sub: Sub) !void {
         time.sleep(1e9);
         if (ctx.sound.isPlaying()) { // 正常结束不会调用
             // std.debug.print("position:{any}\n", .{ctx.sound.getPosition()});
-            const seconds = try ctx.sound.getCursorInSeconds();
-            std.debug.print("seconds:{d}\n", .{@as(u32, @intFromFloat(@trunc(seconds * 1000))) * ctx.channels * ctx.frames * 32});
+            // const seconds = try ctx.sound.getCursorInSeconds();
+            // std.debug.print("seconds:{d}\n", .{@as(u32, @intFromFloat(@trunc(seconds * 1000))) * ctx.channels * ctx.frames * 32});
 
             // const frames_cur = try ctx.sound.getCursorInPcmFrames();
             // std.debug.print("frames_cur:{d}\n", .{frames_cur});
-            const frames_cur = ctx.sound.getTime();
-            std.debug.print("frames_cur:{d}\n", .{frames_cur});
+            // const frames_cur = ctx.sound.getTime();
+            // std.debug.print("frames_cur:{d}\n", .{frames_cur});
 
             // const seconds_total = try ctx.sound.getLengthInSeconds();
             // std.debug.print("total:{d}\n", .{@trunc(seconds_total * 100)});
 
             // const frames = ctx.sound.getTimeInPcmFrames();
-            std.debug.print("frames:{d},channels:{d},format:{any}\n", .{ ctx.frames, ctx.channels, ctx.format });
+            // std.debug.print("frames:{d},channels:{d},format:{any}\n", .{ ctx.frames, ctx.channels, ctx.format });
 
             // // ctx.sound.setPosition(v: [3]f32)
             // if (frames_cur > ctx.frames_total / 10 and frames_cur < ctx.frames_total / 9) {
@@ -336,7 +352,7 @@ fn audoPlay(ctx: *AudioCxt, sub: Sub) !void {
         }
         if (ctx.sound.isAtEnd()) {
             std.debug.print("=========== end ===========\n", .{});
-            sub(ctx, 'N');
+            sub(ctx, 'P');
         }
     }
 }
