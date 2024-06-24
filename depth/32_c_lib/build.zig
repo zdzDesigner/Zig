@@ -7,7 +7,6 @@ pub fn build(b: *std.Build) void {
     // 创建静态库 ====================
     const lib = b.addStaticLibrary(.{
         .name = "math",
-        // .root_source_file = .{ .path = "src/math.c" },
         .target = target,
         .optimize = optimize,
     });
@@ -25,6 +24,8 @@ pub fn build(b: *std.Build) void {
     // 载入构建依赖流
     b.installArtifact(lib);
 
+    const math = b.addModule("math", .{ .root_source_file = .{ .path = "src/math.zig" } });
+
     // 可执行 ===================================================
     // Build the main executable for this project.
     // Could be Zig or C code.
@@ -35,6 +36,7 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
 
+    exe.root_module.addImport("math", math);
     // 链接外部库
     exe.linkLibrary(lib);
     // 链接标准 C 库

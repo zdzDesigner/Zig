@@ -1,0 +1,11 @@
+.{
+    .name = "app",
+    .version = "0.0.0",
+    .dependencies = .{
+        .math = .{ .path = "../32_c_lib" },
+    },
+
+    .paths = .{
+        "",
+    },
+}
