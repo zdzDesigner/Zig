@@ -210,10 +210,10 @@ test "const u8::" {
 
 fn getFilepath(ally: std.mem.Allocator) ![*:0]const u8 {
     const filepath = try std.fs.path.resolve(ally, &.{ "aaa", "bbb" });
-    defer std.testing.allocator.free(filepath);
+    defer ally.free(filepath);
 
     const filepathZ = try std.fmt.allocPrintZ(ally, "{s}", .{filepath});
-    defer std.testing.allocator.free(filepathZ);
+    // defer ally.free(filepathZ);
     return filepathZ;
 }
 
@@ -233,6 +233,13 @@ const songlist = struct {
 test "const u8::arraylist:" {
     const filepath = try getFilepath(std.testing.allocator);
     std.debug.print("filepath:{any}\n", .{filepath});
+    std.debug.print("type filepath:{}\n", .{@TypeOf(filepath)});
+
+    // 销毁, 把C指针包装成zig指针, 调用zig销毁
+    const filepath_ptr = std.mem.span(filepath);
+    defer std.testing.allocator.free(filepath_ptr);
+    std.debug.print("filepath_ptr:{s}\n", .{filepath_ptr});
+
     songlist.init(std.testing.allocator);
     defer songlist.deinit();
     try songlist.append(filepath);

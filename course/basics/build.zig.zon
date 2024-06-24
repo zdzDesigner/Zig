@@ -8,8 +8,9 @@
             .hash = "1220889cec612d653c31a4063d20daa9ec382ac23f76e9cc60a778b0ad17377bafa1",
         },
         .httpz = .{
-            .url = "https://github.com/karlseguin/http.zig/archive/refs/heads/master.tar.gz",
-            .hash = "122034f5f223223dc902880afbe8fa9c0c8c52a312ebc5507b98c631a60fae4f9204",
+            .path = "../../../fork/http.zig",
+            // .url = "https://github.com/karlseguin/http.zig/archive/refs/heads/master.tar.gz",
+            // .hash = "122034f5f223223dc902880afbe8fa9c0c8c52a312ebc5507b98c631a60fae4f9204",
         },
     },
 }

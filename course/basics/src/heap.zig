@@ -113,3 +113,9 @@ test "GPA" {
     const bytes = try allocator.alloc(u8, 100);
     defer allocator.free(bytes);
 }
+
+test "create:" {
+    const v = try std.testing.allocator.create(u8);
+    defer std.testing.allocator.destroy(v);
+    std.debug.print("v:{}\n", .{v.*});
+}

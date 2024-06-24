@@ -15,3 +15,11 @@ test "isPrint:" {
 test "toUpper:" {
     std.debug.print("toUpper:{c}\n", .{std.ascii.toUpper('y')}); // Y
 }
+
+test "toLower:" {
+    std.debug.print("toLower:{c}\n", .{std.ascii.toLower('A')});
+}
+
+test "eqlIgnoreCase:" {
+    std.debug.print("eqlIgnoreCase:{}\n", .{std.ascii.eqlIgnoreCase("AA", "aa")}); // true
+}

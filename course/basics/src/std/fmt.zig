@@ -76,3 +76,9 @@ test "fmtId" {
     try expectFmt("@\"\"", "{}", .{fmtId("")});
     try expectFmt("@\"\\x00\"", "{}", .{fmtId("\x00")});
 }
+
+test "allocPrint:" {
+    try std.fmt.allocPrint(std.testing.allocator, "{s}", .{"vvvvvvvvvv"});
+}
+
+test "allocPrintZ:" {}

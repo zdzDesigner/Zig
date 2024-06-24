@@ -1,4 +1,5 @@
-const expect = @import("std").testing.expect;
+const std = @import("std");
+const expect = std.testing.expect;
 
 test "test statement" {
     var i: i8 = 10;
@@ -39,4 +40,21 @@ test "test statement" {
         else => ui,
     };
     try expect(udivval == 2);
+}
+
+// =====================
+const ActionType = enum { ADD, DEL };
+
+// 利用可选类型
+fn orelseSwitch(comptime val: ActionType) usize {
+    const v = switch (val) {
+        .ADD => 100,
+        .DEL => null,
+    } orelse return 1000; // null orelse 直接返回
+    // std.debug.print("v:{}\n", .{v});
+    return v;
+}
+
+test "orelse" {
+    std.debug.print("switch orelse:{}\n", .{orelseSwitch(.DEL)}); // 1000
 }
