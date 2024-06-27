@@ -20,11 +20,11 @@ const state = union(enum) {
 };
 
 const songlist = struct {
+    const max: usize = std.math.maxInt(usize);
     var ally: mem.Allocator = undefined;
     var list: std.ArrayList([*:0]const u8) = undefined;
-    // const max: usize = @bitCast(std.math.inf(f32));
-    const max: usize = std.math.maxInt(usize);
     var index: usize = max;
+
     fn init(allocator: mem.Allocator) void {
         ally = allocator;
         list = std.ArrayList([*:0]const u8).init(ally);
@@ -51,7 +51,6 @@ const songlist = struct {
     }
 
     fn next() ?[*:0]const u8 {
-        // if(index == undefined) index = 0;
         if (index == lastIndex() and !isloop) return null;
         index = if (index == max) 0 else index + 1;
         index = if (index > lastIndex()) 0 else index;
@@ -174,6 +173,7 @@ pub fn main() !void {
     defer _ = gpa.deinit();
     const ally = gpa.allocator();
 
+    // args =================
     var args = try command.CommandLineArgs.parse(ally);
     defer args.deinit();
 

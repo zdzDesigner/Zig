@@ -23,7 +23,8 @@ pub const CommandLineArgs = struct {
     }
 
     // Done this way, with our anytype iterator so that we can write unit tests
-    fn parseFromIterator(arena: *ArenaAllocator, it: anytype) !CommandLineArgs {
+    // fn parseFromIterator(arena: *ArenaAllocator, it: anytype) !CommandLineArgs {
+    fn parseFromIterator(arena: *ArenaAllocator, it: *std.process.ArgIterator) !CommandLineArgs {
         const allocator = arena.allocator();
         var list = std.ArrayList([]const u8).init(allocator);
         var lookup = std.StringHashMap([]const u8).init(allocator);
