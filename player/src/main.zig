@@ -5,6 +5,8 @@ const znotify = @import("znotify");
 const zaudio = @import("zaudio");
 const command = @import("./command.zig");
 
+const Error = error{ErrorEmpty};
+
 const Sub = fn (sound: *AudioCxt, c: u8) void;
 // var list: []const [*:0]const u8 = &.{};
 // fn init(val: []const [*:0]const u8) void {
@@ -51,20 +53,21 @@ const songlist = struct {
     }
 
     fn next() ?[*:0]const u8 {
-        if (index == lastIndex() and !isloop) return null;
+        if (index == lastIndex().? and !isloop) return null;
         index = if (index == max) 0 else index + 1;
-        index = if (index > lastIndex()) 0 else index;
+        index = if (index > lastIndex().?) 0 else index;
         std.debug.print("index:{}\n", .{index});
         return list.items[index];
     }
     fn prev() ?[*:0]const u8 {
         if (index == 0 and !isloop) return null;
-        index = if (index == 0) lastIndex() else index - 1;
+        index = if (index == 0) lastIndex().? else index - 1;
         std.debug.print("index:{}\n", .{index});
         return list.items[index];
     }
 
-    fn lastIndex() usize {
+    fn lastIndex() ?usize {
+        if (list.items.len == 0) return null;
         return list.items.len - 1;
     }
 };
@@ -73,18 +76,18 @@ const AudioCxt = struct {
     allocator: mem.Allocator,
     engin: *zaudio.Engine,
     sound: *zaudio.Sound = undefined,
+    sound_conf: zaudio.Sound.Config,
+    format: zaudio.Format = undefined,
     frames_total: u64 = 0,
     frames: u64 = 0,
     channels: u64 = 0,
-    format: zaudio.Format = undefined,
-    sound_conf: zaudio.Sound.Config,
     STATE: u8 = 'R',
 
-    fn init(ally: mem.Allocator) !AudioCxt {
+    fn init(ally: mem.Allocator, engin: *zaudio.Engine, conf: zaudio.Sound.Config) !AudioCxt {
         return .{
             .allocator = ally,
-            .engin = try zaudio.Engine.create(null),
-            .sound_conf = zaudio.Sound.Config.init(),
+            .engin = engin,
+            .sound_conf = conf,
         };
     }
 
@@ -100,14 +103,14 @@ const AudioCxt = struct {
 
     fn start(self: *AudioCxt) !void {
         try self.sound.start();
-        self.frames_total = try self.sound.getLengthInPcmFrames();
+        self.frames_total = try self.sound.getLengthInPcmFrames(); // 长度
         var sample_rate: u32 = undefined;
         var channels: u32 = undefined;
         var format: zaudio.Format = undefined;
         try self.sound.getDataFormat(&format, &channels, &sample_rate, null);
-        self.frames = sample_rate;
-        self.channels = channels;
-        self.format = format;
+        self.frames = sample_rate; // 采样率
+        self.channels = channels; // 通道
+        self.format = format; // 采样深度
         // self.frames = self.sound.getTimeInPcmFrames();
         // if (self.frames == 0) {
         //     self.frames = try self.sound.getCursorInPcmFrames();
@@ -143,14 +146,20 @@ const event = struct {
             'R' => ctx.start() catch unreachable,
             'P' => {
                 ctx.stop() catch unreachable;
-                ctx.next() catch unreachable;
+
+                while (true) {
+                    ctx.next() catch |err| {
+                        std.debug.print("err:{}\n", .{err});
+                    };
+                    break;
+                }
             },
             'O' => {
                 ctx.stop() catch unreachable;
                 ctx.prev() catch unreachable;
             },
             '"', 'H' => {
-                var frames_cur = ctx.sound.getTime();
+                var frames_cur = ctx.sound.getTime(); // 当前时间的帧数
                 // std.debug.print("frames_cur:{d}\n", .{frames_cur});
                 const step = ctx.channels * ctx.frames * 10;
                 if (k == 'H') {
@@ -187,6 +196,11 @@ pub fn main() !void {
     // try readSongList(ally, "/home/zdz/temp/music/like");
     // try readSongList(ally, "/home/zdz/temp/music/listening");
     // try readSongList(ally, "/home/zdz/temp/music/lzs");
+    // const dirpath = args.get("dir") orelse "/home/zdz/temp/music";
+    // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/wb";
+    // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/lj-resource/李健-2005 为你而来";
+
+    // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/enya";
     // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/listening";
     const dirpath = args.get("dir") orelse "/home/zdz/temp/music/listened";
     // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/ape-resource";
@@ -195,7 +209,8 @@ pub fn main() !void {
 
     zaudio.init(ally);
     defer zaudio.deinit();
-    var ctx = try AudioCxt.init(ally);
+
+    var ctx = try AudioCxt.init(ally, try zaudio.Engine.create(null), zaudio.Sound.Config.init());
     try ctx.loadSound(null);
     try ctx.start();
     // const engin = try zaudio.Engine.create(null);
@@ -358,7 +373,7 @@ fn audoPlay(ctx: *AudioCxt, sub: Sub) !void {
 }
 
 const validtype = struct {
-    const valids = &.{ ".flac", ".mp3" };
+    const valids = &.{ ".flac", ".mp3", ".m4a" };
     fn chek(name: []const u8) bool {
         inline for (valids) |t| {
             if (std.mem.endsWith(u8, name, t)) return true;
@@ -391,6 +406,8 @@ fn readSongList(ally: mem.Allocator, dirpath: []const u8) !void {
         // try tempList.append(try std.fmt.allocPrintZ(ally, "{s}", .{filepath}));
         try songlist.append(try std.fmt.allocPrintZ(ally, "{s}", .{filepath}));
     }
+
+    if (songlist.lastIndex() == null) return Error.ErrorEmpty;
 
     songlist.random();
 }

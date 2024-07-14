@@ -1,0 +1,46 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Lantu</title>
+    
+    <script src="/webui.js"></script>
+  </head>
+  <body>
+    <div id="GTheme" class="g-theme">
+  <div id="GStageTitle" class="g-theme-stage-title"></div>
+</div>
+<div id="GContent" class="g-content">
+  <div id="GSvg" class="g-content-svg clear-slot"></div>
+  <div id="GEditAndView" class="g-content-edit-view">
+    <textarea id="GEdit" class="g-content-edit" type="text"></textarea>
+    <div id="GView" class="g-content-view"></div>
+  </div>
+</div>
+
+<div id="GCommand" class="g-command hide">
+  <div class="g-command-ctx">
+    <span id="GCommandTitle" class="g-command-title"></span>
+    <!-- <input id="GCommandEdit" class="g-command-edit" type="text"/> -->
+    <span class="g-command-edit-wrap"><textarea id="GCommandEdit" class="g-command-edit" type="text"></textarea></span>
+  </div>
+</div>
+<!-- <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"></script> -->
+<!-- <script src="/axios.min.js"></script> -->
+<script charset="utf-8">
+    // const socket = new WebSocket('ws://127.0.0.1:10001', 'hmr')
+    // socket.addEventListener('message', async ({
+    //     data
+    // }) => {
+    //     console.log(data)
+    //     if ('update' == data) {
+    //         location.reload()
+    //     }
+    // })
+</script>
+
+    <script src="axios.min.js" type="module"></script>
+<script src="bundle.js" type="module"></script>
+  </body>
+</html>
