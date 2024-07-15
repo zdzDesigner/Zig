@@ -200,9 +200,9 @@ pub fn main() !void {
     // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/wb";
     // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/lj-resource/李健-2005 为你而来";
 
-    // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/enya";
+    const dirpath = args.get("dir") orelse "/home/zdz/temp/music/enya";
     // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/listening";
-    const dirpath = args.get("dir") orelse "/home/zdz/temp/music/listened";
+    // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/listened";
     // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/ape-resource";
     // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/ape-resource2";
     try readSongList(ally, dirpath);
