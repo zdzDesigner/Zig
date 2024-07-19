@@ -11,6 +11,11 @@ pub fn build(b: *std.Build) void {
         .is_static = true, // whether static link
     });
 
+    const json = b.dependency("zig-json", .{
+        .target = target,
+        .optimize = optimize,
+    });
+
     const exe = b.addExecutable(.{
         .name = "bitou",
         .root_source_file = b.path("src/main.zig"),
@@ -19,6 +24,7 @@ pub fn build(b: *std.Build) void {
     });
 
     exe.root_module.addImport("webui", webui.module("webui"));
+    exe.root_module.addImport("json", json.module("zig-json"));
     b.installArtifact(exe);
 
     const run_cmd = b.addRunArtifact(exe);

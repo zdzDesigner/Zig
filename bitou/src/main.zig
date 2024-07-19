@@ -1,6 +1,8 @@
 const std = @import("std");
 const mem = std.mem;
 const webui = @import("webui");
+const json = @import("json");
+const Allocator = std.mem.Allocator;
 
 pub fn main() !void {
     // webui.setConfig(webui.Config.folder_monitor, true); // 自动刷新
@@ -48,6 +50,15 @@ fn receive(evt: webui.Event) void {
     const val = val_c;
     std.debug.print("key:{s},val:{s}\n", .{ key, val });
     evt.returnString("xxxxx");
+    var gap = std.heap.GeneralPurposeAllocator(.{}){};
+    defer _ = gap.deinit();
+    const allocator = gap.allocator();
+    const value = json.parse(val, allocator) catch unreachable;
+    const url = value.get("url");
+    std.debug.print("url:{}\n", .{url});
+    std.debug.print("stringPtr:{s}\n", .{url.stringPtr.?});
+
+    defer value.deinit(allocator);
 }
 
 fn close(_: webui.Event) void {
