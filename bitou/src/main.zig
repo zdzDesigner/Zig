@@ -1,7 +1,9 @@
 const std = @import("std");
-const mem = std.mem;
 const webui = @import("webui");
 const json = @import("json");
+const route = @import("./route/router.zig");
+const mem = std.mem;
+const heap = std.heap;
 const Allocator = std.mem.Allocator;
 
 pub fn main() !void {
@@ -9,12 +11,18 @@ pub fn main() !void {
     // webui.setTimeout(0); // 防止超时 Wait forever (never timeout)
     // webui.setConfig(.multi_client, true);
 
+    var gap = heap.GeneralPurposeAllocator(.{}){};
+    defer _ = gap.deinit();
+    const allocator = gap.allocator();
+
     const winm = webui.newWindow();
     std.debug.print("winm:{any}\n", .{winm});
 
     // if (!winm.setRootFolder("assets")) return;
     if (!winm.setRootFolder("/home/zdz/Documents/Try/SVG/bitou/dist")) return;
     winm.setFileHandler(fileHook);
+
+    try route.bind(allocator);
     _ = winm.bind("message", receive);
 
     std.debug.print("getBestBrowser:{}\n", .{winm.getBestBrowser()});
@@ -46,19 +54,30 @@ pub fn main() !void {
 
 fn receive(evt: webui.Event) void {
     const key = evt.element;
-    const val_c = evt.getString();
-    const val = val_c;
+    const val = evt.getString();
     std.debug.print("key:{s},val:{s}\n", .{ key, val });
     evt.returnString("xxxxx");
-    var gap = std.heap.GeneralPurposeAllocator(.{}){};
-    defer _ = gap.deinit();
-    const allocator = gap.allocator();
-    const value = json.parse(val, allocator) catch unreachable;
-    const url = value.get("url");
-    std.debug.print("url:{}\n", .{url});
-    std.debug.print("stringPtr:{s}\n", .{url.stringPtr.?});
 
-    defer value.deinit(allocator);
+    // =====================
+    // var gap = std.heap.GeneralPurposeAllocator(.{}){};
+    // defer _ = gap.deinit();
+    // const allocator = gap.allocator();
+    // const value = json.parse(val, allocator) catch unreachable;
+    // const url = value.get("url");
+    // std.debug.print("url:{}\n", .{url});
+    // if (url.stringPtr) |request| {
+    //     // switch (request) {
+    //     // mem.eql(u8, request, "/stage")=> evt.returnString("stage");
+    //     // }
+    //     if (mem.eql(u8, request, "/stage")) {
+    //         evt.returnString("stage");
+    //     } else if (mem.eql(u8, request, "/operation/list")) {
+    //         evt.returnString("operation/list");
+    //     }
+    // }
+    // std.debug.print("stringPtr:{s}\n", .{url.stringPtr.?});
+
+    // defer value.deinit(allocator);
 }
 
 fn close(_: webui.Event) void {

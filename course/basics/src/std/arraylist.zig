@@ -24,6 +24,7 @@ const Player = struct {
     isdead: bool,
 };
 test "MultiArrayList:" {
-    const list = std.MultiArrayList(Player){};
+    // const list = std.MultiArrayList(Player){};
+    const list = std.ArrayList(Player).init(std.testing.allocator);
     std.debug.print("list:{}\n", .{list});
 }

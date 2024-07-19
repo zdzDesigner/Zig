@@ -35,3 +35,9 @@ test "optional::if:" {
     const isgo: bool = isok orelse false;
     std.debug.print("isgo:{}\n", .{isgo});
 }
+
+test "optional:null" {
+    const isok: ?bool = null;
+    if (isok == null) return;
+    std.debug.print("advance reutrn\n", .{});
+}

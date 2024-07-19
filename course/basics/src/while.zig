@@ -19,3 +19,10 @@ test "while::true:" {
     }
     std.debug.print("is while out\n", .{});
 }
+
+test "while::sub command:" {
+    var len: u8 = 10;
+    while (len > 0) : (len -= 1) {
+        std.debug.print("len:{}\n", .{len - 1});
+    }
+}
