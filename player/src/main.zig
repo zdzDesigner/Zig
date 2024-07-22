@@ -56,13 +56,14 @@ const songlist = struct {
         if (index == lastIndex().? and !isloop) return null;
         index = if (index == max) 0 else index + 1;
         index = if (index > lastIndex().?) 0 else index;
-        std.debug.print("index:{}\n", .{index});
+        std.debug.print("index:{}, item:{s}\n", .{ index, list.items[index] });
         return list.items[index];
     }
     fn prev() ?[*:0]const u8 {
         if (index == 0 and !isloop) return null;
         index = if (index == 0) lastIndex().? else index - 1;
-        std.debug.print("index:{}\n", .{index});
+        std.debug.print("index:{}, item:{}\n", .{ index, list.items.len });
+
         return list.items[index];
     }
 
@@ -94,7 +95,10 @@ const AudioCxt = struct {
     fn loadSound(self: *AudioCxt, filepath: ?[*:0]const u8) !void {
         // self.sound_conf.file_path = if (filepath) |v| v else songlist.next();
         self.sound_conf.file_path = filepath orelse songlist.next();
-        self.sound = try self.engin.createSound(self.sound_conf);
+        self.sound = self.engin.createSound(self.sound_conf) catch |err| {
+            std.debug.print("createSound::error:{}", .{err});
+            return self.loadSound(null);
+        };
         // std.debug.print("ok:{}\n", .{self.sound_conf});
         // std.debug.print("sound:{}\n", .{self.sound});
         std.debug.print("path:{s}\n", .{self.sound_conf.file_path.?});
@@ -141,6 +145,7 @@ const AudioCxt = struct {
 
 const event = struct {
     fn sub(ctx: *AudioCxt, k: u8) void {
+        // std.debug.print("command::{}\n", .{k});
         switch (k) {
             'S' => ctx.stop() catch unreachable,
             'R' => ctx.start() catch unreachable,
@@ -177,7 +182,6 @@ const event = struct {
 };
 
 pub fn main() !void {
-    std.debug.print("audioplayer:", .{});
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer _ = gpa.deinit();
     const ally = gpa.allocator();
@@ -203,8 +207,8 @@ pub fn main() !void {
     // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/enya";
     // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/piano";
 
-    const dirpath = args.get("dir") orelse "/home/zdz/temp/music/listening";
-    // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/listened";
+    // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/WP";
+    const dirpath = args.get("dir") orelse "/home/zdz/temp/music/listened";
     // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/ape-resource";
     // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/ape-resource2";
     try readSongList(ally, dirpath);
@@ -214,6 +218,7 @@ pub fn main() !void {
 
     var ctx = try AudioCxt.init(ally, try zaudio.Engine.create(null), zaudio.Sound.Config.init());
     try ctx.loadSound(null);
+    std.debug.print("main run ===============", .{});
     try ctx.start();
     // const engin = try zaudio.Engine.create(null);
     // const sound = try play(engin);
@@ -244,7 +249,6 @@ pub fn main() !void {
     // sound.setVolume(0.25);
     // time.sleep(5e9);
     // sound.setVolume(1);
-    std.debug.print("main run ===============", .{});
     // time.sleep(1e13);
 }
 

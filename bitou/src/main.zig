@@ -5,6 +5,9 @@ const route = @import("./route/router.zig");
 const mem = std.mem;
 const heap = std.heap;
 const Allocator = std.mem.Allocator;
+var allocator: Allocator = undefined;
+// router
+var router: route.ManageRouter = undefined;
 
 pub fn main() !void {
     // webui.setConfig(webui.Config.folder_monitor, true); // 自动刷新
@@ -13,36 +16,53 @@ pub fn main() !void {
 
     var gap = heap.GeneralPurposeAllocator(.{}){};
     defer _ = gap.deinit();
-    const allocator = gap.allocator();
+    allocator = gap.allocator();
 
-    const winm = webui.newWindow();
-    std.debug.print("winm:{any}\n", .{winm});
+    const win = webui.newWindow();
+    std.debug.print("win:{any}\n", .{win});
 
-    // if (!winm.setRootFolder("assets")) return;
-    if (!winm.setRootFolder("/home/zdz/Documents/Try/SVG/bitou/dist")) return;
-    winm.setFileHandler(fileHook);
+    // if (!win.setRootFolder("assets")) return;
+    if (!win.setRootFolder("/home/zdz/Documents/Try/SVG/bitou/dist")) return;
+    win.setFileHandler(fileHook);
 
-    try route.bind(allocator);
-    _ = winm.bind("message", receive);
+    router = try route.bind(allocator, win);
+    std.debug.print("router:{}\n", .{router});
+    // _ = win.bind("message", receive);
+    // _ = win.bind("/stage", struct {
+    //     fn f(evt: webui.Event) void {
+    //         const key = evt.element;
+    //         std.debug.print("key:{s}\n", .{key});
+    //         const str = std.fmt.allocPrintZ(allocator, "response:{s}", .{key}) catch unreachable;
+    //         defer allocator.free(str);
+    //         evt.returnString(str);
+    //     }
+    // }.f);
+    _ = win.bind("message", struct {
+        fn f(evt: webui.Event) void {
+            std.debug.print("router:{}\n", .{router});
+            std.debug.print("evt:{}\n", .{evt});
+            // router.match(path: []const u8)
+        }
+    }.f);
 
-    std.debug.print("getBestBrowser:{}\n", .{winm.getBestBrowser()});
+    std.debug.print("getBestBrowser:{}\n", .{win.getBestBrowser()});
     // std.time.sleep(3000_000_0000);
 
     // 内部打开 ========================================
-    const ok = winm.showBrowser("index.html", .Chrome);
-    // const ok = winm.show("http://localhost:8086/");
-    // const ok = winm.show("http://localhost:10001/");
+    const ok = win.showBrowser("index.html", .Chrome);
+    // const ok = win.show("http://localhost:8086/");
+    // const ok = win.show("http://localhost:10001/");
     std.debug.print("show ok:{}\n", .{ok});
     // -------------------------------------------------
 
     // // 浏览器打开=====================================
-    // if (winm.setPort(10002)) {
+    // if (win.setPort(10002)) {
     //     webui.openUrl("http://localhost:10002/index.html");
-    //     // std.debug.print("getUrl:{s}\n", .{winm.getUrl()});
-    //     // winm.setPublic(true); // 可以用外部浏览器访问
-    //     // winm.setProxy("http://localhost:8086");
+    //     // std.debug.print("getUrl:{s}\n", .{win.getUrl()});
+    //     // win.setPublic(true); // 可以用外部浏览器访问
+    //     // win.setProxy("http://localhost:8086");
     // }
-    // const url = winm.startServer("index.html");
+    // const url = win.startServer("index.html");
     // std.debug.print("url:{s}\n", .{url});
     // // webui.openUrl(@as([*c]const u8, @ptrCast(url.ptr))[0..url.len :0]);
     // // webui.openUrl(url.ptr[0..url.len :0]);
