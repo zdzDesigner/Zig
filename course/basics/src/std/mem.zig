@@ -1,6 +1,6 @@
 const std = @import("std");
 
-test "copy:" {
+test "copy::copyForwards:" {
     const source = "ccccx";
     var buf: [source.len]u8 = undefined;
     std.mem.copyForwards(u8, &buf, source);

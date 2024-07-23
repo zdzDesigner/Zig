@@ -5,9 +5,6 @@ const route = @import("./route/router.zig");
 const mem = std.mem;
 const heap = std.heap;
 const Allocator = std.mem.Allocator;
-var allocator: Allocator = undefined;
-// router
-// var router: route.ManageRouter = undefined;
 
 pub fn main() !void {
     // webui.setConfig(webui.Config.folder_monitor, true); // 自动刷新
@@ -16,17 +13,16 @@ pub fn main() !void {
 
     var gap = heap.GeneralPurposeAllocator(.{}){};
     defer _ = gap.deinit();
-    allocator = gap.allocator();
+    const allocator = gap.allocator();
 
     const win = webui.newWindow();
     std.debug.print("win:{any}\n", .{win});
+    const router = try route.bind(allocator, win);
+    std.debug.print("router:{}\n", .{router});
 
     // if (!win.setRootFolder("assets")) return;
     if (!win.setRootFolder("/home/zdz/Documents/Try/SVG/bitou/dist")) return;
     win.setFileHandler(fileHook);
-
-    const router = try route.bind(allocator, win);
-    std.debug.print("router:{}\n", .{router});
 
     std.debug.print("getBestBrowser:{}\n", .{win.getBestBrowser()});
 
@@ -80,7 +76,5 @@ fn fileHook(filename: []const u8) ?[]const u8 {
     // const dist = webui.malloc(ret.len);
     // mem.copyForwards(u8, dist, ret);
     // std.debug.print("dist:{s}\n", .{dist});
-    if (mem.eql(u8, filename, "/stage")) return "stagexxx";
-    if (mem.eql(u8, filename, "/operation/list")) return "operation/list/xxxxxxxxxx";
     return null;
 }
