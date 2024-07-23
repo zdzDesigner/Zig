@@ -7,7 +7,7 @@ const heap = std.heap;
 const Allocator = std.mem.Allocator;
 var allocator: Allocator = undefined;
 // router
-var router: route.ManageRouter = undefined;
+// var router: route.ManageRouter = undefined;
 
 pub fn main() !void {
     // webui.setConfig(webui.Config.folder_monitor, true); // 自动刷新
@@ -25,25 +25,8 @@ pub fn main() !void {
     if (!win.setRootFolder("/home/zdz/Documents/Try/SVG/bitou/dist")) return;
     win.setFileHandler(fileHook);
 
-    router = try route.bind(allocator);
+    const router = try route.bind(allocator, win);
     std.debug.print("router:{}\n", .{router});
-    // _ = win.bind("message", receive);
-    _ = win.bind("/stage", struct {
-        fn f(evt: webui.Event) void {
-            const key = evt.element;
-            std.debug.print("key:{s}\n", .{key});
-            const str = std.fmt.allocPrintZ(allocator, "response:{s}", .{key}) catch unreachable;
-            defer allocator.free(str);
-            evt.returnString(str);
-        }
-    }.f);
-    // _ = win.bind("message", struct {
-    //     fn f(evt: webui.Event) void {
-    //         std.debug.print("router:{}\n", .{router});
-    //         std.debug.print("evt:{}\n", .{evt});
-    //         // router.match(path: []const u8)
-    //     }
-    // }.f);
 
     std.debug.print("getBestBrowser:{}\n", .{win.getBestBrowser()});
     // std.time.sleep(3000_000_0000);
