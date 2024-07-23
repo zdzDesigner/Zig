@@ -1,20 +1,22 @@
 const std = @import("std");
 const webui = @import("webui");
-const manager = @import("./manager.zig");
+const zin = @import("./manager.zig");
+const stage = @import("./stage.zig");
 const mem = std.mem;
+const json = std.json;
 
-pub const ManageRouter = manager.ManageRouter;
+pub const ManageRouter = zin.ManageRouter;
 
-// pub fn bind(allocator: mem.Allocator) !manager.ManageRouter {
-//     // manager.ManageRouter.init(allocator);
-//     // try manager.ManageRouter.use("/stage", struct {
-//     //     fn handle(_: manager.Context) void {
+// pub fn bind(allocator: mem.Allocator) !zin.ManageRouter {
+//     // zin.ManageRouter.init(allocator);
+//     // try zin.ManageRouter.use("/stage", struct {
+//     //     fn handle(_: zin.Context) void {
 //     //         std.debug.print("stage:router:", .{});
 //     //     }
 //     // }.handle);
-//     var router = manager.ManageRouter.init(allocator);
+//     var router = zin.ManageRouter.init(allocator);
 //     try router.use("/stage", struct {
-//         fn handle(_: manager.Context) void {
+//         fn handle(_: zin.Context) void {
 //             std.debug.print("stage:router:", .{});
 //         }
 //     }.handle);
@@ -22,12 +24,14 @@ pub const ManageRouter = manager.ManageRouter;
 //     return router;
 // }
 //
-pub fn bind(allocator: mem.Allocator, win: webui) !manager.ManageRouter {
-    var router = manager.ManageRouter.init(allocator, win);
-    try router.use("/stage", struct {
-        fn f(ctx: manager.Context) void {
-            // std.debug.print("stage:router:{}\n", .{ctx.evt});
-            // ctx.evt.returnString(str: [:0]const u8)
+pub fn bind(allocator: mem.Allocator, win: webui) !zin.ManageRouter {
+    var router = zin.ManageRouter.init(allocator, win);
+
+    // stage
+    try router.use("/stage", stage.stage);
+
+    try router.use("/operation/list", struct {
+        fn f(ctx: zin.Context) void {
             const key = ctx.evt.element;
             std.debug.print("key:{s}\n", .{key});
             const str = std.fmt.allocPrintZ(ctx.allocator, "response xx:{s}xxx", .{key}) catch unreachable;

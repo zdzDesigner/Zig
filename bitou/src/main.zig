@@ -29,7 +29,6 @@ pub fn main() !void {
     std.debug.print("router:{}\n", .{router});
 
     std.debug.print("getBestBrowser:{}\n", .{win.getBestBrowser()});
-    // std.time.sleep(3000_000_0000);
 
     // 内部打开 ========================================
     const ok = win.showBrowser("index.html", .Chrome);
@@ -37,19 +36,6 @@ pub fn main() !void {
     // const ok = win.show("http://localhost:10001/");
     std.debug.print("show ok:{}\n", .{ok});
     // -------------------------------------------------
-
-    // // 浏览器打开=====================================
-    // if (win.setPort(10002)) {
-    //     webui.openUrl("http://localhost:10002/index.html");
-    //     // std.debug.print("getUrl:{s}\n", .{win.getUrl()});
-    //     // win.setPublic(true); // 可以用外部浏览器访问
-    //     // win.setProxy("http://localhost:8086");
-    // }
-    // const url = win.startServer("index.html");
-    // std.debug.print("url:{s}\n", .{url});
-    // // webui.openUrl(@as([*c]const u8, @ptrCast(url.ptr))[0..url.len :0]);
-    // // webui.openUrl(url.ptr[0..url.len :0]);
-    // // -----------------------------------------------
 
     webui.wait();
     webui.clean();
@@ -85,7 +71,6 @@ fn receive(evt: webui.Event) void {
 
 fn close(_: webui.Event) void {
     std.debug.print("Exit.\n", .{});
-
     webui.exit();
 }
 
@@ -99,9 +84,3 @@ fn fileHook(filename: []const u8) ?[]const u8 {
     if (mem.eql(u8, filename, "/operation/list")) return "operation/list/xxxxxxxxxx";
     return null;
 }
-
-// pub fn main() !void {
-//     var nwin = webui.newWindow();
-//     _ = nwin.show("<html><head><script src=\"webui.js\"></script></head> Hello World ! </html>");
-//     webui.wait();
-// }
