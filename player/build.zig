@@ -31,7 +31,7 @@ fn audioPlayer(b: *std.Build, target: std.Build.ResolvedTarget, optimize: std.bu
 
     const audioplayer = b.addExecutable(.{
         .name = "audioplayer",
-        .root_source_file = .{ .path = "src/main.zig" },
+        .root_source_file = b.path("src/main.zig"),
         .target = target,
         .optimize = optimize,
     });

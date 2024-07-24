@@ -24,14 +24,14 @@ fn registers(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
     const chip = b.addModule("chip", .{
-        .root_source_file = .{ .path = "src/chip/chip.zig" },
+        .root_source_file = b.path("src/chip/chip.zig"),
         .target = target,
         .optimize = optimize,
     });
 
     const registersExc = b.addExecutable(.{
         .name = "registers",
-        .root_source_file = .{ .path = "debug/gdb.zig" },
+        .root_source_file = b.path("debug/gdb.zig"),
         .target = target,
         .optimize = optimize,
     });
@@ -91,7 +91,7 @@ fn installExample(
     });
     const optimize = b.standardOptimizeOption(.{
         // .preferred_optimize_mode = .ReleaseSafe,
-        // .preferred_optimize_mode = .ReleaseSmall,
+        .preferred_optimize_mode = .ReleaseSmall,
     });
     inline for (examples) |example| {
         const source = b.fmt("src/examples/{s}.zig", .{example});
@@ -99,26 +99,26 @@ fn installExample(
         const bin = b.fmt("stm32-zig-{s}.bin", .{example});
 
         const hal = b.addModule("hal", .{
-            .root_source_file = .{ .path = "src/hal/hal.zig" },
+            .root_source_file = b.path("src/hal/hal.zig"),
             .target = target,
             .optimize = optimize,
         });
 
         const util = b.addModule("util", .{
-            .root_source_file = .{ .path = "src/util/strings.zig" },
+            .root_source_file = b.path("src/util/strings.zig"),
             .target = target,
             .optimize = optimize,
         });
 
         const app = b.addModule(example, .{
-            .root_source_file = .{ .path = source },
+            .root_source_file = b.path(source),
             .target = target,
             .optimize = optimize,
         });
 
         const elf = b.addExecutable(.{
             .name = artifact,
-            .root_source_file = .{ .path = "src/chip/start.zig" },
+            .root_source_file = b.path("src/chip/start.zig"),
             .target = target,
             .optimize = optimize,
         });
@@ -138,7 +138,7 @@ fn installExample(
         app.addImport("hal", hal);
         app.addImport("util", util);
 
-        elf.setLinkerScript(.{ .path = "linker.ld" });
+        elf.setLinkerScript(b.path("linker.ld"));
 
         // b.installArtifact(elf);
         const step_elf = b.addInstallArtifact(elf, .{});
@@ -174,15 +174,13 @@ fn installExample(
     // 不生效 zig build test --verbose ===============
     const hal_test = b.addTest(.{
         .name = "test",
-        .root_source_file = .{ .path = "src/hal/interrupts.zig" },
+        .root_source_file = b.path("src/hal/interrupts.zig"),
         .target = target,
     });
 
     hal_test.root_module.addImport("chip", b.addModule("chip", .{
         .target = target,
-        .root_source_file = .{
-            .path = "src/chip/F10X.zig",
-        },
+        .root_source_file = b.path("src/chip/F10X.zig"),
     }));
 
     const hal_test_step = b.step("test", "test hal");

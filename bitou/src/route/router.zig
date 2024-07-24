@@ -9,7 +9,7 @@ const json = std.json;
 pub fn bind(allocator: mem.Allocator, win: webui) !zin.ManageRouter {
     var router = zin.ManageRouter.init(allocator, win);
 
-    try router.use("/stage", stage.stage);
+    try router.use("/stage", stage.list);
     try router.use("/operation/list", operation.operation);
 
     return router;
