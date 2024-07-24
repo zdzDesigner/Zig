@@ -1,7 +1,7 @@
 *
 !/**/
 !*.*
-zig-cache/
+.zig-cache/
 zig-out/
 *.elf
 *.bin
