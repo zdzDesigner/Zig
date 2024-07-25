@@ -5,6 +5,7 @@ const mem = std.mem;
 
 const Context = struct {
     allocator: mem.Allocator,
+    payload: []const u8,
     // .....
 };
 
@@ -18,8 +19,8 @@ const Tv = struct {
     fn use(self: *Tv, handle: fn (Context) void) !void {
         const call = struct {
             var allocator: mem.Allocator = undefined;
-            fn f() void {
-                handle(.{ .allocator = allocator });
+            fn f(payload: []const u8) void {
+                handle(.{ .allocator = allocator, .payload = payload });
             }
         };
         call.allocator = self.allocator;
@@ -28,7 +29,7 @@ const Tv = struct {
 };
 
 const emit = struct {
-    fn listen(name: []const u8, handle: fn (payload: u8) void) !void {
+    fn listen(name: []const u8, handle: fn (payload: []const u8) void) !void {
         std.debug.print("name:{}\n", .{name});
         std.debug.print("handle:{}\n", .{handle});
     }

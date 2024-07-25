@@ -32,6 +32,7 @@ pub fn build(b: *std.Build) !void {
     const headers = &.{
         "src",
         // "sys",
+        "sys/delay",
         // "src/key",
         // "src/led",
         // "sys/oledv2",
@@ -53,13 +54,13 @@ pub fn build(b: *std.Build) !void {
 
     const sources = &.{
         "src",
-        // "sys",
+        "sys/delay",
         // "sys/debug",
         // "sys/nrf24",
         // "sys/util",
         // "sys/sr04",
-        // "lib/CMSIS",
-        // "lib/STM32F10x_StdPeriph_Driver/src",
+        "lib/CMSIS",
+        "lib/STM32F10x_StdPeriph_Driver/src",
     };
     inline for (sources) |source| {
         const arrlist = try dirFiles(b, allocator, source);

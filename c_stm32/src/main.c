@@ -101,10 +101,14 @@
 // }
 
 // extern int _start();
+#include "delay.h"
+#include "misc.h"
 
 // int main()
 int _start()
 {
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
+    delay_init();
     while (1) {}
     return 0;
 }
