@@ -28,7 +28,7 @@ pub fn main() void {
     const count: u32 = 10000;
     var buf: [count]u8 = undefined;
     for (0..count) |i| {
-        buf[i] = '9';
+        buf[i] = '8';
     }
 
     // usart.send(strings.intToStr(20, "encode:{s}\r\n", ""), null) catch unreachable;

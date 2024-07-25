@@ -3,8 +3,8 @@
     .version = "0.1.0",
 
     .dependencies = .{
-        .@"zig-webui" = .{ .path = "../../fork/zig-webui" },
-        .@"zig-json" = .{ .path = "../../fork/zig-json" },
+        .@"zig-webui" = .{ .path = "../fork/zig-webui" },
+        .@"zig-json" = .{ .path = "../fork/zig-json" },
     },
 
     .paths = .{

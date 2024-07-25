@@ -18,10 +18,13 @@ pub fn main() !void {
     const win = webui.newWindow();
     std.debug.print("win:{any}\n", .{win});
     const router = try route.bind(allocator, win);
+    defer router.deinit();
     std.debug.print("router:{}\n", .{router});
 
     // if (!win.setRootFolder("assets")) return;
-    if (!win.setRootFolder("/home/zdz/Documents/Try/SVG/bitou/dist")) return;
+    // if (!win.setRootFolder("/home/zdz/Documents/Try/SVG/bitou/dist")) return;
+    if (!win.setRootFolder("/home/zdz/Documents/Try/Svg/badnib/client/dist")) return;
+
     win.setFileHandler(fileHook);
 
     std.debug.print("getBestBrowser:{}\n", .{win.getBestBrowser()});
