@@ -30,7 +30,7 @@ pub fn build(b: *std.Build) !void {
     c_exe.defineCMacro("USE_STDPERIPH_DRIVER", null);
 
     const headers = &.{
-        // "src",
+        "src",
         // "sys",
         // "src/key",
         // "src/led",
@@ -39,20 +39,20 @@ pub fn build(b: *std.Build) !void {
         // "sys/sr04",
         // "sys/debug",
         // "sys/nrf24",
-        // "lib/CMSIS",
-        // "lib/STM32F10x_StdPeriph_Driver/inc",
+        "lib/CMSIS",
+        "lib/STM32F10x_StdPeriph_Driver/inc",
         // "/home/zdz/Application/gcc-arm-none-eabi-9-2019-q4-major/lib/gcc/arm-none-eabi/9.2.1/include",
     };
     inline for (headers) |header| {
         std.debug.print("header:{s}\n", .{header});
-        c_exe.addIncludePath(.{ .path = header });
+        c_exe.addIncludePath(b.path(header));
     }
     // c_exe.addIncludePath(.{ .path = "/usr/arm-none-eabi/include" });
     // c_exe.addObjectFile(.{ .path = "/usr/arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a" });
     // c_exe.addObjectFile(.{ .path = "/usr/arm-none-eabi/lib/thumb/v7e-m+fp/hard/libm.a" });
 
     const sources = &.{
-        "src/main.c",
+        "src",
         // "sys",
         // "sys/debug",
         // "sys/nrf24",
@@ -67,25 +67,32 @@ pub fn build(b: *std.Build) !void {
         std.debug.print("arrlist:{s}\n", .{arrlist.items});
 
         c_exe.addCSourceFiles(.{
-            .root = .{ .path = source },
+            .root = b.path(source),
             .files = arrlist.items,
             .flags = &.{ "-Og", "-mthumb", "-mcpu=cortex-m3", "-Wall", "-fdata-sections", "-ffunction-sections" },
         });
     }
-    // c_exe.addAssemblyFile(.{ .path = "startup_stm32f103xb.s" });
 
-    // c_exe.setLinkerScriptPath(.{ .path = "STM32F103C8Tx_FLASH.ld" });
+    // c_exe.addAssemblyFile(b.path("startup_stm32f103xb.s"));
+    // c_exe.setLinkerScriptPath(b.path("STM32F103C8Tx_FLASH.ld"));
+    c_exe.setLinkerScriptPath(b.path("linker.ld"));
 
     // c_exe.link_gc_sections = true;
     // c_exe.link_data_sections = true;
     // c_exe.link_function_sections = true;
     // c_exe.linkLibC();
     b.installArtifact(c_exe);
+    // const step_elf = b.addInstallArtifact(c_exe, .{});
+    // const step_bin = b.addObjCopy(c_exe.getEmittedBin(), .{ .format = .bin });
+    // const install_step_bin = b.addInstallBinFile(step_bin.getOutput(), "c_stm32");
+    // step_bin.step.dependOn(&step_elf.step);
+    // install_step_bin.step.dependOn(&step_bin.step);
+    // b.default_step.dependOn(&install_step_bin.step);
 
     // ======================
     const exe = b.addExecutable(.{
         .name = "stm32",
-        .root_source_file = .{ .path = "src/main.zig" },
+        .root_source_file = b.path("src/main.zig"),
         .target = target,
         .optimize = optimize,
     });
@@ -118,6 +125,7 @@ pub fn build(b: *std.Build) !void {
 fn dirFiles(b: *std.Build, allocator: std.mem.Allocator, filepath: []const u8) !ArrayList([]const u8) {
     var list = ArrayList([]const u8).init(allocator);
 
+    std.debug.print("filepath:{s},root:{s}\n", .{ filepath, b.pathFromRoot(filepath) });
     const dir = try std.fs.openDirAbsolute(b.pathFromRoot(filepath), .{ .iterate = true });
     // std.debug.print("dir:{}\n", .{dir});
     var iter = dir.iterate();

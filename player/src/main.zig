@@ -207,8 +207,8 @@ pub fn main() !void {
     // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/enya";
     // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/piano";
 
-    // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/WP";
-    const dirpath = args.get("dir") orelse "/home/zdz/temp/music/listened";
+    const dirpath = args.get("dir") orelse "/home/zdz/temp/music/WP";
+    // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/listened";
     // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/ape-resource";
     // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/ape-resource2";
     try readSongList(ally, dirpath);

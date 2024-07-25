@@ -99,7 +99,11 @@
 //     // return send2();
 //     // return send_demo();
 // }
-int main()
+
+// extern int _start();
+
+// int main()
+int _start()
 {
     while (1) {}
     return 0;

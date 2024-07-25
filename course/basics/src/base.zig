@@ -71,3 +71,8 @@ test "test function" {
     try expect(name[0] == 'z');
     try expect(@TypeOf(name) == [1]u8);
 }
+
+test "multi assignment:" {
+    const a, const b = .{ 3, 4 };
+    std.debug.print("a:{},b:{}\n", .{ a, b });
+}
