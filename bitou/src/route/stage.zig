@@ -16,7 +16,7 @@ const StageList = struct {
     data: []Stage,
 };
 
-pub fn stage(ctx: zin.Context) void {
+pub fn list(ctx: zin.Context) void {
     // std.debug.print("stage:router:{}\n", .{ctx.evt});
 
     const key = ctx.evt.element;
