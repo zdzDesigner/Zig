@@ -36,6 +36,10 @@ pub const ManageRouter = struct {
         };
     }
 
+    pub fn deinit(self: Self) void {
+        self.routes.deinit();
+    }
+
     // 添加路由
     pub fn use(self: *Self, path: [:0]const u8, handle: Handle) !void {
         const call = struct {
