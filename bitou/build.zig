@@ -16,6 +16,11 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
 
+    const myzql = b.dependency("myzql", .{
+        // .target = target,
+        // .optimize = optimize,
+    });
+
     const exe = b.addExecutable(.{
         .name = "bitou",
         .root_source_file = b.path("src/main.zig"),
@@ -25,6 +30,7 @@ pub fn build(b: *std.Build) void {
 
     exe.root_module.addImport("webui", webui.module("webui"));
     exe.root_module.addImport("json", json.module("zig-json"));
+    exe.root_module.addImport("myzql", myzql.module("myzql"));
     b.installArtifact(exe);
 
     const run_cmd = b.addRunArtifact(exe);

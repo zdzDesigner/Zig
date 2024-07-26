@@ -1,10 +1,11 @@
 const std = @import("std");
-const webui = @import("webui");
-const json = @import("json");
-const route = @import("./route/router.zig");
 const mem = std.mem;
 const heap = std.heap;
 const Allocator = std.mem.Allocator;
+const webui = @import("webui");
+const json = @import("json");
+const db = @import("./db/db.zig");
+const route = @import("./route/router.zig");
 
 pub fn main() !void {
     // webui.setConfig(webui.Config.folder_monitor, true); // 自动刷新
@@ -14,6 +15,9 @@ pub fn main() !void {
     var gap = heap.GeneralPurposeAllocator(.{}){};
     defer _ = gap.deinit();
     const allocator = gap.allocator();
+    try db.init(allocator);
+
+    while (true) {}
 
     const win = webui.newWindow();
     std.debug.print("win:{any}\n", .{win});

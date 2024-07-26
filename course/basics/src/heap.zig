@@ -119,3 +119,9 @@ test "create:" {
     defer std.testing.allocator.destroy(v);
     std.debug.print("v:{}\n", .{v.*});
 }
+
+// 不可释放
+test "allocator []const u8:" {
+    // const str = "xxxx";
+    // std.testing.allocator.free(str); // Segmentation fault at address 0x1021a0e
+}

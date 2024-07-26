@@ -144,12 +144,12 @@ fn installExample(
         const step_elf = b.addInstallArtifact(elf, .{});
         // const install_elf_step = b.addInstallBinFile(.{ .path = "zig-out/bin/" }, artifact);
 
+        // elf => bin
         const step_bin = b.addObjCopy(
             elf.getEmittedBin(),
             .{ .format = .bin },
             // .{ .format = .elf },
         );
-
         const install_step_bin = b.addInstallBinFile(step_bin.getOutput(), bin);
         step_bin.step.dependOn(&step_elf.step);
         install_step_bin.step.dependOn(&step_bin.step);
