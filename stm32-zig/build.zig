@@ -7,11 +7,11 @@ const examples = &.{
     // "adc_group",
     // "adc_temp",
     // "adc_dma",
-    "uart_dma",
+    // "uart_dma",
     // "adc_temp_irq",
     // "button",
     // "button_irq",
-    // "uart",
+    "uart",
     // "uart_irq",
 };
 
