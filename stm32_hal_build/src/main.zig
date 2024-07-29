@@ -30,7 +30,10 @@ const hal = @cImport({
 //     pub extern fn HAL_Delay(Delay: u32) void;
 // };
 
+extern fn HAL_RCC_GPIOB_CLK_ENABLE() callconv(.C) void;
+
 export fn zigMain() void {
+    HAL_RCC_GPIOB_CLK_ENABLE();
     var type_def = hal.GPIO_InitTypeDef{
         .Pin = hal.GPIO_PIN_12,
         .Mode = hal.GPIO_MODE_OUTPUT_PP,

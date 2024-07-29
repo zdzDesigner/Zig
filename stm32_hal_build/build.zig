@@ -38,6 +38,26 @@ pub fn build(b: *std.Build) void {
         },
     };
 
+    // const includes = &.{
+    //     "Core/Inc",
+    //     "Drivers/STM32F1xx_HAL_Driver/Inc",
+    //     "Drivers/STM32F1xx_HAL_Driver/Inc/Legacy",
+    //     "Drivers/CMSIS/Device/ST/STM32F1xx/Include",
+    //     "Drivers/CMSIS/Include",
+    // };
+    // inline for (includes) |header| {
+    //     std.debug.print("include:{s}\n", .{header});
+    //     blinky_exe.addIncludePath(b.path(header));
+    // }
+    blinky_exe.addCSourceFiles(.{
+        .files = &.{
+            "src/hal/hal.c",
+        },
+        .flags = &.{"-std=c11"},
+    });
+
+    blinky_exe.defineCMacro("USE_HAL_DRIVER", null);
+    blinky_exe.defineCMacro("STM32F103xB", null);
     blinky_exe.addAssemblyFile(b.path("./hal/startup_stm32f103xb.s"));
     blinky_exe.setLinkerScriptPath(b.path("./hal/STM32F103C8Tx_FLASH.ld"));
     blinky_exe.link_gc_sections = true;
