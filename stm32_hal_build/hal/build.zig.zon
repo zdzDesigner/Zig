@@ -1,0 +1,17 @@
+.{
+    .name = "hal",
+    .version = "0.0.0",
+    .dependencies = .{
+        .gatz = .{
+            .path = "../../../fork/gcc-arm-to-zig",
+        },
+    },
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "Core",
+        "Drivers",
+        "startup_stm32f750xx.s",
+        "STM32F750N8Hx_FLASH.ld",
+    },
+}
