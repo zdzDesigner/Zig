@@ -30,7 +30,7 @@ const hal = @cImport({
 //     pub extern fn HAL_Delay(Delay: u32) void;
 // };
 
-pub export fn zigMain() void {
+export fn zigMain() void {
     var type_def = hal.GPIO_InitTypeDef{
         .Pin = hal.GPIO_PIN_12,
         .Mode = hal.GPIO_MODE_OUTPUT_PP,

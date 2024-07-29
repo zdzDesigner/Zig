@@ -52,6 +52,8 @@
 /* Entry Point */
 ENTRY(Reset_Handler)
 
+/* _estack = ORIGIN(RAM) + LENGTH(RAM);     */
+_estack = 0x20020000;    
 
 /* Specify the memory areas */
 MEMORY
@@ -62,7 +64,6 @@ FLASH (rx)      : ORIGIN = 0x8000000, LENGTH = 64K
 
 /* Highest address of the user mode stack */
 /* end of RAM */
-_estack = ORIGIN(RAM) + LENGTH(RAM);    
 /* Generate a link error if heap and stack don't fit into RAM */
 _Min_Heap_Size = 0x200;      /* required amount of heap  */
 _Min_Stack_Size = 0x400; /* required amount of stack */
@@ -173,7 +174,7 @@ SECTIONS
     . = . + _Min_Heap_Size;
     . = . + _Min_Stack_Size;
     . = ALIGN(8);
-  } >RAM
+  } >RAM AT> FLASH
 
   
 
