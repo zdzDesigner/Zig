@@ -8,8 +8,8 @@ pub fn build(b: *std.Build) !void {
         .cpu_arch = .thumb,
         .cpu_model = .{ .explicit = &std.Target.arm.cpu.cortex_m3 },
         .os_tag = .freestanding,
-        // .abi = .eabi,
-        .abi = .musleabihf,
+        .abi = .eabi,
+        // .abi = .musleabihf,
     });
     const optimize = b.standardOptimizeOption(.{
         .preferred_optimize_mode = .ReleaseSmall,
@@ -32,7 +32,7 @@ pub fn build(b: *std.Build) !void {
     const headers = &.{
         "src",
         // "sys",
-        "sys/delay",
+        // "sys/delay",
         // "src/key",
         // "src/led",
         // "sys/oledv2",
@@ -54,12 +54,12 @@ pub fn build(b: *std.Build) !void {
 
     const sources = &.{
         "src",
-        "sys/delay",
+        // "sys/delay",
         // "sys/debug",
         // "sys/nrf24",
         // "sys/util",
         // "sys/sr04",
-        "lib/CMSIS",
+        // "lib/CMSIS",
         "lib/STM32F10x_StdPeriph_Driver/src",
     };
     inline for (sources) |source| {

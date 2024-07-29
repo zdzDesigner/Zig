@@ -26,12 +26,36 @@ test "@trunc:" {
     std.debug.print("@trunc::v:{}\n", .{3.14});
 }
 
+// @sizeOf 24bit
+const V2 = struct {
+    name: []const u8, // filed 8bit
+    index: u32 = 0, // filed 4bit
+
+    // const Self = @This();
+    // pub const PubLang = enum { ZH }; // decl
+    // pub fn getname() []const u8 { // decl
+    //     std.debug.print("V getname run\n", .{});
+    //     return "";
+    // }
+
+    const names: []const []const u8 = &.{}; // 8bit
+    // const Lang = enum { ZH };
+    // fn conv(this: @This()) void {
+    //     _ = this;
+    //     std.debug.print("V conv run\n", .{});
+    // }
+};
+
 test "alignment:" {
     const c: u8 = 'a';
     std.debug.print("c alignment:{}\n", .{@alignOf(@TypeOf(c))}); // 1
     const str: []const u8 = "xxxx";
     std.debug.print("str alignment:{}\n", .{@alignOf(@TypeOf(str))}); // 8 指针
     std.debug.print("V alignment:{}\n", .{@alignOf(V)}); // 8 指针
+    std.debug.print("V sizeOf: {}\n", .{@sizeOf(V)}); //24
+    std.debug.print("V2 sizeOf: {}\n", .{@sizeOf(V2)}); //24
+    std.debug.print("enum sizeOf:{}\n", .{@sizeOf(enum { ZH, EN, JN, US })}); // 1
+    std.debug.print("u32 sizeOf:{}\n", .{@sizeOf(u32)}); // 4
     const list_str: []const []const u8 = &.{ "aaa", "bbb" };
     std.debug.print("list_str alignment:{}\n", .{@alignOf(@TypeOf(list_str))}); // 8 指针
 }
@@ -61,6 +85,7 @@ test "@call:" {
 //      name:[]const u8
 //      index: u32
 //      ... 可以调用 V 中@hasDecl带有@This的方法
+// @sizeOf 24bit
 const V = struct {
     name: []const u8, // filed
     index: u32 = 0, // filed
@@ -243,4 +268,19 @@ fn reflectStruct(comptime T: type) void {
 fn reflectEnum(comptime T: type) void {
     // std.log.debug("reflect typeinfo: {any}", .{@typeInfo(T).Enum.fields}); // `xxx` must be comptime-known, but index value is runtime-known
     std.log.debug("reflect typeinfo: {any}", .{@typeInfo(T).Enum.fields.len}); //  3
+}
+
+// returnAddress ==================================================
+fn getAddress() void {
+    const v: u32 = 23;
+    std.debug.print("v:{}\n", .{v});
+    std.debug.print("returnAddress:{}\n", .{@returnAddress()});
+    const v2: u32 = 23;
+    std.debug.print("v2:{}\n", .{v2});
+}
+
+test "returnAddress:" {
+    std.debug.print("returnAddress:{}\n", .{@returnAddress()});
+    getAddress();
+    std.debug.print("returnAddress:{}\n", .{@returnAddress()});
 }
