@@ -38,17 +38,6 @@ pub fn build(b: *std.Build) void {
         },
     };
 
-    // const includes = &.{
-    //     "Core/Inc",
-    //     "Drivers/STM32F1xx_HAL_Driver/Inc",
-    //     "Drivers/STM32F1xx_HAL_Driver/Inc/Legacy",
-    //     "Drivers/CMSIS/Device/ST/STM32F1xx/Include",
-    //     "Drivers/CMSIS/Include",
-    // };
-    // inline for (includes) |header| {
-    //     std.debug.print("include:{s}\n", .{header});
-    //     blinky_exe.addIncludePath(b.path(header));
-    // }
     blinky_exe.addCSourceFiles(.{
         .files = &.{
             "src/hal/hal.c",
