@@ -32,7 +32,7 @@ const hal = @cImport({
 
 extern fn HAL_RCC_GPIOB_CLK_ENABLE() callconv(.C) void;
 
-export fn zigMain() void {
+pub export fn zigMain() void {
     HAL_RCC_GPIOB_CLK_ENABLE();
     var type_def = hal.GPIO_InitTypeDef{
         .Pin = hal.GPIO_PIN_12,
@@ -44,8 +44,8 @@ export fn zigMain() void {
 
     while (true) {
         hal.HAL_GPIO_WritePin(hal.GPIOB, hal.GPIO_PIN_12, hal.GPIO_PIN_RESET);
-        hal.HAL_Delay(1000);
+        hal.HAL_Delay(3000);
         hal.HAL_GPIO_WritePin(hal.GPIOB, hal.GPIO_PIN_12, hal.GPIO_PIN_SET);
-        hal.HAL_Delay(100);
+        hal.HAL_Delay(10);
     }
 }
