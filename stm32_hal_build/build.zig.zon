@@ -7,6 +7,9 @@
         .hal = .{
             .path = "./hal",
         },
+        .compile_commands = .{
+            .path = "../../fork/zig-compile-commands",
+        },
     },
 
     .paths = .{

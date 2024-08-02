@@ -1,6 +1,10 @@
 const std = @import("std");
+const zcc = @import("compile_commands");
 
 pub fn build(b: *std.Build) void {
+    std.debug.print("zcc::{}\n", .{zcc});
+    var targets = std.ArrayList(*std.Build.Step.Compile).init(b.allocator);
+
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
@@ -11,9 +15,9 @@ pub fn build(b: *std.Build) void {
         .link_libc = true,
     });
 
-    sub_mod.addIncludePath(.{ .path = "include" });
+    sub_mod.addIncludePath(b.path("include"));
     sub_mod.addCSourceFiles(.{
-        .root = .{ .path = "lib" },
+        .root = b.path("lib"),
         // .files = ([_][]const u8{"sum.c"})[0..],
         // .files = &[_][]const u8{"sum.c"},
         .files = &.{"sum.c"},
@@ -25,10 +29,10 @@ pub fn build(b: *std.Build) void {
         .target = target,
         .optimize = optimize,
     });
-    lib.addIncludePath(.{ .path = "include" });
-    lib.installHeadersDirectory(.{ .path = "./include" }, "sum", .{});
+    lib.addIncludePath(b.path("include"));
+    lib.installHeadersDirectory(b.path("./include"), "sum", .{});
     lib.addCSourceFiles(.{
-        .root = .{ .path = "lib" },
+        .root = b.path("lib"),
         // .files = ([_][]const u8{"sum.c"})[0..],
         // .files = &[_][]const u8{"sum.c"},
         .files = &.{"sum.c"},
@@ -47,7 +51,7 @@ pub fn build(b: *std.Build) void {
     });
 
     // exe_c.linkLibC(); // 无需主动引入( addCSourceFiles 这里会自动引入 )
-    exe_c.addIncludePath(.{ .path = "include" });
+    exe_c.addIncludePath(b.path("include"));
     exe_c.root_module.addImport("sub", sub_mod);
     b.installArtifact(exe_c);
 
@@ -55,7 +59,7 @@ pub fn build(b: *std.Build) void {
 
     const exe = b.addExecutable(.{
         .name = "subexe",
-        .root_source_file = .{ .path = "src/main.zig" },
+        .root_source_file = b.path("src/main.zig"),
         .target = target,
         .optimize = optimize,
     });
@@ -77,7 +81,7 @@ pub fn build(b: *std.Build) void {
     // Creates a step for unit testing. This only builds the test executable
     // but does not run it.
     const lib_unit_tests = b.addTest(.{
-        .root_source_file = .{ .path = "src/root.zig" },
+        .root_source_file = b.path("src/root.zig"),
         .target = target,
         .optimize = optimize,
     });
@@ -85,7 +89,7 @@ pub fn build(b: *std.Build) void {
     const run_lib_unit_tests = b.addRunArtifact(lib_unit_tests);
 
     const exe_unit_tests = b.addTest(.{
-        .root_source_file = .{ .path = "src/main.zig" },
+        .root_source_file = b.path("src/main.zig"),
         .target = target,
         .optimize = optimize,
     });
@@ -98,4 +102,8 @@ pub fn build(b: *std.Build) void {
     const test_step = b.step("test", "Run unit tests");
     test_step.dependOn(&run_lib_unit_tests.step);
     test_step.dependOn(&run_exe_unit_tests.step);
+
+    targets.append(lib) catch @panic("OOM");
+
+    zcc.createStep(b, "cdb", targets.toOwnedSlice() catch @panic("OOM"));
 }
