@@ -1,0 +1,395 @@
+[
+	{
+		"arguments": [
+			"clang",
+			"src/hal/hal.c",
+			"-o",
+			"src/hal/hal.c.o",
+			"-std=c11",
+			"-I/home/zdz/mnt/Application/gdb/gcc-arm-none-eabi/arm-none-eabi/include"
+		],
+		"directory": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build",
+		"file": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/src/hal/hal.c",
+		"output": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/src/hal/hal.c.o"
+	},
+	{
+		"arguments": [
+			"clang",
+			"Core/Src/main.c",
+			"-o",
+			"Core/Src/main.c.o",
+			"-std=c11",
+			"-lc_nano",
+			"-lm",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Core/Inc",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/STM32F1xx_HAL_Driver/Inc",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/CMSIS/Device/ST/STM32F1xx/Include",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/CMSIS/Include",
+			"-I/home/zdz/mnt/Application/gdb/gcc-arm-none-eabi/arm-none-eabi/include"
+		],
+		"directory": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build",
+		"file": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/Core/Src/main.c",
+		"output": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/Core/Src/main.c.o"
+	},
+	{
+		"arguments": [
+			"clang",
+			"Core/Src/stm32f1xx_it.c",
+			"-o",
+			"Core/Src/stm32f1xx_it.c.o",
+			"-std=c11",
+			"-lc_nano",
+			"-lm",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Core/Inc",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/STM32F1xx_HAL_Driver/Inc",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/CMSIS/Device/ST/STM32F1xx/Include",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/CMSIS/Include",
+			"-I/home/zdz/mnt/Application/gdb/gcc-arm-none-eabi/arm-none-eabi/include"
+		],
+		"directory": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build",
+		"file": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/Core/Src/stm32f1xx_it.c",
+		"output": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/Core/Src/stm32f1xx_it.c.o"
+	},
+	{
+		"arguments": [
+			"clang",
+			"Core/Src/stm32f1xx_hal_msp.c",
+			"-o",
+			"Core/Src/stm32f1xx_hal_msp.c.o",
+			"-std=c11",
+			"-lc_nano",
+			"-lm",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Core/Inc",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/STM32F1xx_HAL_Driver/Inc",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/CMSIS/Device/ST/STM32F1xx/Include",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/CMSIS/Include",
+			"-I/home/zdz/mnt/Application/gdb/gcc-arm-none-eabi/arm-none-eabi/include"
+		],
+		"directory": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build",
+		"file": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/Core/Src/stm32f1xx_hal_msp.c",
+		"output": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/Core/Src/stm32f1xx_hal_msp.c.o"
+	},
+	{
+		"arguments": [
+			"clang",
+			"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio_ex.c",
+			"-o",
+			"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio_ex.c.o",
+			"-std=c11",
+			"-lc_nano",
+			"-lm",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Core/Inc",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/STM32F1xx_HAL_Driver/Inc",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/CMSIS/Device/ST/STM32F1xx/Include",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/CMSIS/Include",
+			"-I/home/zdz/mnt/Application/gdb/gcc-arm-none-eabi/arm-none-eabi/include"
+		],
+		"directory": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build",
+		"file": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio_ex.c",
+		"output": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio_ex.c.o"
+	},
+	{
+		"arguments": [
+			"clang",
+			"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.c",
+			"-o",
+			"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.c.o",
+			"-std=c11",
+			"-lc_nano",
+			"-lm",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Core/Inc",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/STM32F1xx_HAL_Driver/Inc",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/CMSIS/Device/ST/STM32F1xx/Include",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/CMSIS/Include",
+			"-I/home/zdz/mnt/Application/gdb/gcc-arm-none-eabi/arm-none-eabi/include"
+		],
+		"directory": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build",
+		"file": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.c",
+		"output": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.c.o"
+	},
+	{
+		"arguments": [
+			"clang",
+			"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.c",
+			"-o",
+			"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.c.o",
+			"-std=c11",
+			"-lc_nano",
+			"-lm",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Core/Inc",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/STM32F1xx_HAL_Driver/Inc",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/CMSIS/Device/ST/STM32F1xx/Include",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/CMSIS/Include",
+			"-I/home/zdz/mnt/Application/gdb/gcc-arm-none-eabi/arm-none-eabi/include"
+		],
+		"directory": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build",
+		"file": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.c",
+		"output": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.c.o"
+	},
+	{
+		"arguments": [
+			"clang",
+			"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c",
+			"-o",
+			"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c.o",
+			"-std=c11",
+			"-lc_nano",
+			"-lm",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Core/Inc",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/STM32F1xx_HAL_Driver/Inc",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/CMSIS/Device/ST/STM32F1xx/Include",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/CMSIS/Include",
+			"-I/home/zdz/mnt/Application/gdb/gcc-arm-none-eabi/arm-none-eabi/include"
+		],
+		"directory": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build",
+		"file": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c",
+		"output": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c.o"
+	},
+	{
+		"arguments": [
+			"clang",
+			"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.c",
+			"-o",
+			"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.c.o",
+			"-std=c11",
+			"-lc_nano",
+			"-lm",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Core/Inc",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/STM32F1xx_HAL_Driver/Inc",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/CMSIS/Device/ST/STM32F1xx/Include",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/CMSIS/Include",
+			"-I/home/zdz/mnt/Application/gdb/gcc-arm-none-eabi/arm-none-eabi/include"
+		],
+		"directory": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build",
+		"file": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.c",
+		"output": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.c.o"
+	},
+	{
+		"arguments": [
+			"clang",
+			"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c",
+			"-o",
+			"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c.o",
+			"-std=c11",
+			"-lc_nano",
+			"-lm",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Core/Inc",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/STM32F1xx_HAL_Driver/Inc",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/CMSIS/Device/ST/STM32F1xx/Include",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/CMSIS/Include",
+			"-I/home/zdz/mnt/Application/gdb/gcc-arm-none-eabi/arm-none-eabi/include"
+		],
+		"directory": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build",
+		"file": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c",
+		"output": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c.o"
+	},
+	{
+		"arguments": [
+			"clang",
+			"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.c",
+			"-o",
+			"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.c.o",
+			"-std=c11",
+			"-lc_nano",
+			"-lm",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Core/Inc",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/STM32F1xx_HAL_Driver/Inc",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/CMSIS/Device/ST/STM32F1xx/Include",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/CMSIS/Include",
+			"-I/home/zdz/mnt/Application/gdb/gcc-arm-none-eabi/arm-none-eabi/include"
+		],
+		"directory": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build",
+		"file": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.c",
+		"output": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.c.o"
+	},
+	{
+		"arguments": [
+			"clang",
+			"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_dma.c",
+			"-o",
+			"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_dma.c.o",
+			"-std=c11",
+			"-lc_nano",
+			"-lm",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Core/Inc",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/STM32F1xx_HAL_Driver/Inc",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/CMSIS/Device/ST/STM32F1xx/Include",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/CMSIS/Include",
+			"-I/home/zdz/mnt/Application/gdb/gcc-arm-none-eabi/arm-none-eabi/include"
+		],
+		"directory": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build",
+		"file": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_dma.c",
+		"output": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_dma.c.o"
+	},
+	{
+		"arguments": [
+			"clang",
+			"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.c",
+			"-o",
+			"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.c.o",
+			"-std=c11",
+			"-lc_nano",
+			"-lm",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Core/Inc",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/STM32F1xx_HAL_Driver/Inc",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/CMSIS/Device/ST/STM32F1xx/Include",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/CMSIS/Include",
+			"-I/home/zdz/mnt/Application/gdb/gcc-arm-none-eabi/arm-none-eabi/include"
+		],
+		"directory": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build",
+		"file": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.c",
+		"output": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.c.o"
+	},
+	{
+		"arguments": [
+			"clang",
+			"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pwr.c",
+			"-o",
+			"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pwr.c.o",
+			"-std=c11",
+			"-lc_nano",
+			"-lm",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Core/Inc",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/STM32F1xx_HAL_Driver/Inc",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/CMSIS/Device/ST/STM32F1xx/Include",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/CMSIS/Include",
+			"-I/home/zdz/mnt/Application/gdb/gcc-arm-none-eabi/arm-none-eabi/include"
+		],
+		"directory": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build",
+		"file": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pwr.c",
+		"output": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pwr.c.o"
+	},
+	{
+		"arguments": [
+			"clang",
+			"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash.c",
+			"-o",
+			"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash.c.o",
+			"-std=c11",
+			"-lc_nano",
+			"-lm",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Core/Inc",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/STM32F1xx_HAL_Driver/Inc",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/CMSIS/Device/ST/STM32F1xx/Include",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/CMSIS/Include",
+			"-I/home/zdz/mnt/Application/gdb/gcc-arm-none-eabi/arm-none-eabi/include"
+		],
+		"directory": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build",
+		"file": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash.c",
+		"output": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash.c.o"
+	},
+	{
+		"arguments": [
+			"clang",
+			"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash_ex.c",
+			"-o",
+			"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash_ex.c.o",
+			"-std=c11",
+			"-lc_nano",
+			"-lm",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Core/Inc",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/STM32F1xx_HAL_Driver/Inc",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/CMSIS/Device/ST/STM32F1xx/Include",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/CMSIS/Include",
+			"-I/home/zdz/mnt/Application/gdb/gcc-arm-none-eabi/arm-none-eabi/include"
+		],
+		"directory": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build",
+		"file": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash_ex.c",
+		"output": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash_ex.c.o"
+	},
+	{
+		"arguments": [
+			"clang",
+			"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_exti.c",
+			"-o",
+			"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_exti.c.o",
+			"-std=c11",
+			"-lc_nano",
+			"-lm",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Core/Inc",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/STM32F1xx_HAL_Driver/Inc",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/CMSIS/Device/ST/STM32F1xx/Include",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/CMSIS/Include",
+			"-I/home/zdz/mnt/Application/gdb/gcc-arm-none-eabi/arm-none-eabi/include"
+		],
+		"directory": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build",
+		"file": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_exti.c",
+		"output": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_exti.c.o"
+	},
+	{
+		"arguments": [
+			"clang",
+			"Core/Src/system_stm32f1xx.c",
+			"-o",
+			"Core/Src/system_stm32f1xx.c.o",
+			"-std=c11",
+			"-lc_nano",
+			"-lm",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Core/Inc",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/STM32F1xx_HAL_Driver/Inc",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/CMSIS/Device/ST/STM32F1xx/Include",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/CMSIS/Include",
+			"-I/home/zdz/mnt/Application/gdb/gcc-arm-none-eabi/arm-none-eabi/include"
+		],
+		"directory": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build",
+		"file": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/Core/Src/system_stm32f1xx.c",
+		"output": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/Core/Src/system_stm32f1xx.c.o"
+	},
+	{
+		"arguments": [
+			"clang",
+			"Core/Src/sysmem.c",
+			"-o",
+			"Core/Src/sysmem.c.o",
+			"-std=c11",
+			"-lc_nano",
+			"-lm",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Core/Inc",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/STM32F1xx_HAL_Driver/Inc",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/CMSIS/Device/ST/STM32F1xx/Include",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/CMSIS/Include",
+			"-I/home/zdz/mnt/Application/gdb/gcc-arm-none-eabi/arm-none-eabi/include"
+		],
+		"directory": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build",
+		"file": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/Core/Src/sysmem.c",
+		"output": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/Core/Src/sysmem.c.o"
+	},
+	{
+		"arguments": [
+			"clang",
+			"Core/Src/syscalls.c",
+			"-o",
+			"Core/Src/syscalls.c.o",
+			"-std=c11",
+			"-lc_nano",
+			"-lm",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Core/Inc",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/STM32F1xx_HAL_Driver/Inc",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/CMSIS/Device/ST/STM32F1xx/Include",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/hal/Drivers/CMSIS/Include",
+			"-I/home/zdz/mnt/Application/gdb/gcc-arm-none-eabi/arm-none-eabi/include"
+		],
+		"directory": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build",
+		"file": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/Core/Src/syscalls.c",
+		"output": "/home/zdz/Documents/Try/Zig/zig-pro/stm32_hal_build/Core/Src/syscalls.c.o"
+	}
+]

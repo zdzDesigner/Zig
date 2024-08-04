@@ -1,14 +1,12 @@
 .{
     .name = "sub",
     .version = "0.1.0",
-    .dependencies = .{},
+    .dependencies = .{
+        .compile_commands = .{
+            .path = "../../zig-compile-commands",
+        },
+    },
     .paths = .{
         ".",
-        // For example...
-        //"build.zig",
-        //"build.zig.zon",
-        //"src",
-        //"LICENSE",
-        //"README.md",
     },
 }

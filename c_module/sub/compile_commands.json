@@ -1,0 +1,14 @@
+[
+	{
+		"arguments": [
+			"clang",
+			"sum.c",
+			"-o",
+			"sum.c.o",
+			"-I/home/zdz/Documents/Try/Zig/zig-pro/c_module/sub/include"
+		],
+		"directory": "/home/zdz/Documents/Try/Zig/zig-pro/c_module/sub",
+		"file": "/home/zdz/Documents/Try/Zig/zig-pro/c_module/sub/sum.c",
+		"output": "/home/zdz/Documents/Try/Zig/zig-pro/c_module/sub/sum.c.o"
+	}
+]

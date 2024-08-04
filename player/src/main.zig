@@ -207,9 +207,10 @@ pub fn main() !void {
     // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/enya";
     // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/piano";
 
-    const dirpath = args.get("dir") orelse "/home/zdz/temp/music/WP";
     // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/WP";
-    // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/listened";
+    // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/WP";
+    const dirpath = args.get("dir") orelse "/home/zdz/temp/music/listened";
+    // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/listening";
     // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/ape-resource";
     // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/ape-resource2";
     readSongList(ally, dirpath) catch |err| {
@@ -335,46 +336,46 @@ fn controller(
 fn audoPlay(ctx: *AudioCxt, sub: Sub) !void {
     while (true) {
         time.sleep(1e9);
-        if (ctx.sound.isPlaying()) { // 正常结束不会调用
-            // std.debug.print("position:{any}\n", .{ctx.sound.getPosition()});
-            // const seconds = try ctx.sound.getCursorInSeconds();
-            // std.debug.print("seconds:{d}\n", .{@as(u32, @intFromFloat(@trunc(seconds * 1000))) * ctx.channels * ctx.frames * 32});
+        // if (ctx.sound.isPlaying()) { // 正常结束不会调用
+        // std.debug.print("position:{any}\n", .{ctx.sound.getPosition()});
+        // const seconds = try ctx.sound.getCursorInSeconds();
+        // std.debug.print("seconds:{d}\n", .{@as(u32, @intFromFloat(@trunc(seconds * 1000))) * ctx.channels * ctx.frames * 32});
 
-            // const frames_cur = try ctx.sound.getCursorInPcmFrames();
-            // std.debug.print("frames_cur:{d}\n", .{frames_cur});
-            // const frames_cur = ctx.sound.getTime();
-            // std.debug.print("frames_cur:{d}\n", .{frames_cur});
+        // const frames_cur = try ctx.sound.getCursorInPcmFrames();
+        // std.debug.print("frames_cur:{d}\n", .{frames_cur});
+        // const frames_cur = ctx.sound.getTime();
+        // std.debug.print("frames_cur:{d}\n", .{frames_cur});
 
-            // const seconds_total = try ctx.sound.getLengthInSeconds();
-            // std.debug.print("total:{d}\n", .{@trunc(seconds_total * 100)});
+        // const seconds_total = try ctx.sound.getLengthInSeconds();
+        // std.debug.print("total:{d}\n", .{@trunc(seconds_total * 100)});
 
-            // const frames = ctx.sound.getTimeInPcmFrames();
-            // std.debug.print("frames:{d},channels:{d},format:{any}\n", .{ ctx.frames, ctx.channels, ctx.format });
+        // const frames = ctx.sound.getTimeInPcmFrames();
+        // std.debug.print("frames:{d},channels:{d},format:{any}\n", .{ ctx.frames, ctx.channels, ctx.format });
 
-            // // ctx.sound.setPosition(v: [3]f32)
-            // if (frames_cur > ctx.frames_total / 10 and frames_cur < ctx.frames_total / 9) {
-            //     std.debug.print("set time: =============== ", .{});
-            //     // ctx.sound.setStartTimeInPcmFrames(60 * 1000);
-            //     // ctx.sound.setStartTimeInMilliseconds(15 * 1000);
-            //     // try ctx.sound.stop();
-            //     ctx.sound.seekToPcmFrame(ctx.frames_total / 2) catch |err| {
-            //         std.debug.print("err ============\n:{any}\n =============\n", .{err});
-            //     };
-            //     // try ctx.sound.start();
-            // }
+        // // ctx.sound.setPosition(v: [3]f32)
+        // if (frames_cur > ctx.frames_total / 10 and frames_cur < ctx.frames_total / 9) {
+        //     std.debug.print("set time: =============== ", .{});
+        //     // ctx.sound.setStartTimeInPcmFrames(60 * 1000);
+        //     // ctx.sound.setStartTimeInMilliseconds(15 * 1000);
+        //     // try ctx.sound.stop();
+        //     ctx.sound.seekToPcmFrame(ctx.frames_total / 2) catch |err| {
+        //         std.debug.print("err ============\n:{any}\n =============\n", .{err});
+        //     };
+        //     // try ctx.sound.start();
+        // }
 
-            // 未知 采样数据?==================================
-            // const t = ctx.sound.getTime();
-            // std.debug.print("t:{d}\n", .{t});
-            // // std.debug.print("seconds:{d}\n", .{@floatFromInt( seconds * 100)});
-            // if (seconds > 5 and seconds < 10) {
-            //     std.debug.print("set time: =============== ", .{});
-            //     try ctx.sound.setTime(20 * 1000 * 411);
-            // }
-            // ==================================
+        // 未知 采样数据?==================================
+        // const t = ctx.sound.getTime();
+        // std.debug.print("t:{d}\n", .{t});
+        // // std.debug.print("seconds:{d}\n", .{@floatFromInt( seconds * 100)});
+        // if (seconds > 5 and seconds < 10) {
+        //     std.debug.print("set time: =============== ", .{});
+        //     try ctx.sound.setTime(20 * 1000 * 411);
+        // }
+        // ==================================
 
-            // std.debug.print("=========== not playing ========", .{});
-        }
+        // std.debug.print("=========== not playing ========", .{});
+        // }
         if (ctx.sound.isAtEnd()) {
             std.debug.print("=========== end ===========\n", .{});
             sub(ctx, 'P');

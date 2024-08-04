@@ -1,7 +1,10 @@
 const std = @import("std");
 const newlib = @import("hal").newlib;
+const zcc = @import("compile_commands");
 
 pub fn build(b: *std.Build) void {
+    var targets = std.ArrayList(*std.Build.Step.Compile).init(b.allocator);
+
     const optimize = b.standardOptimizeOption(.{});
     const target = b.resolveTargetQuery(.{
         .cpu_arch = .thumb,
@@ -70,6 +73,6 @@ pub fn build(b: *std.Build) void {
 
     b.installArtifact(blinky_exe);
 
-    // const flash = b.step("falsh", "download to device");
-
+    targets.append(blinky_exe) catch @panic("OOM");
+    zcc.createStep(b, "cdb", targets.toOwnedSlice() catch @panic("OOM"));
 }
