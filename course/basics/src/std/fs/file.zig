@@ -48,7 +48,7 @@ test "read file2:" {
     const reader = f.reader();
     while (true) {
         reader.streamUntilDelimiter(list.writer(), '\n', null) catch |err| {
-            if (error.EndOfStream != err) break;
+            if (error.EndOfStream != err) return err;
             std.debug.print("file file2:{s}\n", .{list.items});
             break;
         };
