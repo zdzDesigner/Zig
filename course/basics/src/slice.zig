@@ -217,3 +217,13 @@ test "struct field append::" {
 
     std.debug.print("list:{s}\n", .{songlist.list.items});
 }
+
+fn write(buffer: []u8) void {
+    buffer[0] = 'a';
+}
+
+test "list" {
+    var buffer: [3]u8 = undefined;
+    write(buffer[0..]);
+    std.debug.print("buffer:{s}\n", .{buffer});
+}
