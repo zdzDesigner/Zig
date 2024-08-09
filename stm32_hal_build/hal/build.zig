@@ -100,7 +100,7 @@ pub fn build(b: *std.Build) void {
             "Core/Src/sysmem.c",
             "Core/Src/syscalls.c",
         },
-        .flags = &.{"-std=c11"},
+        .flags = &.{ "-std=c11", "-fno-lto" },
         // .flags = &.{ "-Og", "-std=c11" },
     });
 

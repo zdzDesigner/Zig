@@ -7,15 +7,15 @@ pub fn logic() void {
     std.debug.print("root runner: {any}\n", .{runner}); // runner: main
     std.debug.print("typeof root runner: {any}\n", .{@TypeOf(runner)}); //
     std.debug.print("typeinfo root runner: {any}\n", .{@typeInfo(runner)}); //
-    // typeinfo root runner: 
-    // builtin.Type{ 
-    //   .Struct = builtin.Type.Struct{ 
-    //     .layout = builtin.Type.ContainerLayout.Auto, 
-    //     .backing_integer = null, 
-    //     .fields = {  }, 
-    //     .decls = { builtin.Type.Declaration{ ... } }, 
-    //     .is_tuple = false 
-    //   } 
+    // typeinfo root runner:
+    // builtin.Type{
+    //   .Struct = builtin.Type.Struct{
+    //     .layout = builtin.Type.ContainerLayout.Auto,
+    //     .backing_integer = null,
+    //     .fields = {  },
+    //     .decls = { builtin.Type.Declaration{ ... } },
+    //     .is_tuple = false
+    //   }
     // }
 
 }
@@ -29,4 +29,25 @@ fn conv() void {
 test "root" {
     const build_runner = @import("root");
     std.debug.print("build_runner: {any}\n", .{build_runner}); // test_runner
+}
+
+test "must be intCast?:" {
+    // const i:u8 = @intCast(3 & 0x7F); // 不需要@intCast
+    // const i: u8 = 3 & 0x7F;
+    const i: u8 = 11113 & 0x7F;
+    std.debug.print("i:{}\n", .{i});
+}
+
+// 整除, 编译时计算
+test "@divExact:" {
+    std.debug.print("@divExact:{}\n", .{@divExact(3, 1)});
+    std.debug.print("@divExact:{}\n", .{3 / 2});
+
+    std.debug.print("@typeInfo(u16).Int.bits:{}\n", .{@typeInfo(u16).Int.bits}); // 16
+}
+
+// 大小端转换
+test "@byteSwap:" {
+    const v: u16 = 300; // 0x012c
+    std.debug.print("@byteSwap:{}\n", .{@byteSwap(v)}); // 0x2c01
 }
