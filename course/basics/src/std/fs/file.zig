@@ -88,14 +88,12 @@ test "read file5:" {
     const f = try std.fs.openFileAbsolute("/home/zdz/Documents/Try/Zig/zig-pro/course/basics/src/std/fs/system_file.json", .{ .mode = .read_write });
     defer f.close();
 
-    var bufs: []u8 = try allocator.alloc(u8, 0);
-    std.debug.print("len:{}", .{bufs.len});
+    var bufs: []u8 = allocator.alloc(u8, 0) catch @panic("OOM");
     while (true) {
         var buf: [2]u8 = undefined;
         const size = try f.readAll(&buf);
-        std.debug.print("----------\n", .{});
         const newbufs = try std.fmt.allocPrint(allocator, "{s}{s}", .{ bufs, buf[0..size] });
-        defer allocator.free(newbufs);
+        allocator.free(bufs);
         // const bufs2 = try allocator.alloc(u8, newbufs.len);
         // defer allocator.free(bufs2);
         // @memcpy(bufs[0..newbufs.len], newbufs);
