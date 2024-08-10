@@ -42,10 +42,11 @@ test "read file:" {
 test "read file2:" {
     const f = try std.fs.openFileAbsolute("/home/zdz/Documents/Try/Zig/zig-pro/course/basics/src/std/fs/system_file.json", .{ .mode = .read_write });
     defer f.close();
+    const reader = f.reader();
 
     var list = std.ArrayList(u8).init(std.testing.allocator);
     defer list.deinit();
-    const reader = f.reader();
+
     while (true) {
         reader.streamUntilDelimiter(list.writer(), '\n', null) catch |err| {
             if (error.EndOfStream != err) return err;
