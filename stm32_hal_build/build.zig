@@ -46,7 +46,7 @@ pub fn build(b: *std.Build) void {
         .files = &.{
             "src/hal/hal.c",
         },
-        .flags = &.{ "-std=c11", "-DUSE_HAL_DRIVER", "-DSTM32F103xB" },
+        .flags = &.{ "-std=c11", "-DUSE_HAL_DRIVER", "-DSTM32F103xB", "-fno-lto" },
     });
 
     blinky_exe.addAssemblyFile(b.path("./hal/startup_stm32f103xb.s"));

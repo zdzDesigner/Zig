@@ -8,12 +8,14 @@ test "@src().file:" {
     std.debug.print("curpath:{s}\n", .{@src().file});
 }
 
-test "path:" {
+// 相对目录
+test "resolve:" {
     const v = try std.fs.path.resolve(std.testing.allocator, &.{ root(), "../../" });
     defer std.testing.allocator.free(v);
     std.debug.print("resolve::path:{s}\n", .{v});
 }
 
+// 是否为绝对目录
 test "isAbsolute:" {
     std.debug.print("isAbsolute:{}\n", .{std.fs.path.isAbsolute("ssss")}); // false
     std.debug.print("isAbsolute:{}\n", .{std.fs.path.isAbsolute("ssss/vvv")}); // false
@@ -43,4 +45,12 @@ test "dirname:" {
 test "basename:" {
     const filepath = "temp/app/xxx/cc.exe";
     std.debug.print("basename:{s}\n", .{std.fs.path.basename(filepath)}); // cc.exe
+}
+
+pub fn pathJoin(allocator: std.mem.Allocator, paths: []const []const u8) []u8 {
+    return std.fs.path.join(allocator, paths) catch @panic("OOM");
+}
+
+test "join::" {
+    std.debug.print("ret:{s}\n", .{pathJoin(std.testing.allocator, &.{ "aaa", "bbb", "ccc" })}); // aaa/bbb/ccc
 }

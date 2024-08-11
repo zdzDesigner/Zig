@@ -24,16 +24,6 @@ test "merge string:" {
     std.debug.print("merge string:{s}\n", .{intToStr(10, "val:{s}", .{"xxx"})});
 }
 
-test "fmt::count:" {
-    std.debug.print("count:{}\n", .{std.fmt.count("aa:{s}", .{"cc"})}); // 5
-}
-
-// comptimePrint 会调用 bufPrint
-test "tostring:" {
-    std.debug.print("comptimePrint:{s}\n", .{std.fmt.comptimePrint("aa:{}", .{99})}); // aa:99
-    std.debug.print("comptimePrint:{s}\n", .{std.fmt.comptimePrint("aa:{s}", .{"bb"})}); // aa:bb
-}
-
 test "int to str:" {
     std.debug.print("intToStr:{s}\n", .{intToStr(20, "ddd{}\r\n", .{8})});
 }
@@ -77,8 +67,32 @@ test "fmtId" {
     try expectFmt("@\"\\x00\"", "{}", .{fmtId("\x00")});
 }
 
+test "fmt::count:" {
+    std.debug.print("count:{}\n", .{std.fmt.count("aa:{s}", .{"cc"})}); // 5
+}
+
+// 内部实现, 编译器完成计算
+pub inline fn comptimePrint(comptime fmt: []const u8, args: anytype) *const [std.fmt.count(fmt, args):0]u8 {
+    comptime {
+        var buf: [std.fmt.count(fmt, args):0]u8 = undefined;
+        _ = std.fmt.bufPrint(&buf, fmt, args) catch unreachable;
+        buf[buf.len] = 0;
+        const final = buf;
+        return &final;
+    }
+}
+
+// comptimePrint 会调用 bufPrint
+test "comptimePrint:" {
+    std.debug.print("comptimePrint:{s}\n", .{std.fmt.comptimePrint("aa:{}", .{99})}); // aa:99
+    std.debug.print("comptimePrint:{s}\n", .{std.fmt.comptimePrint("aa:{s}", .{"bb"})}); // aa:bb
+}
+
+// 分配
 test "allocPrint:" {
-    try std.fmt.allocPrint(std.testing.allocator, "{s}", .{"vvvvvvvvvv"});
+    const v = try std.fmt.allocPrint(std.testing.allocator, "{s}", .{"vvvvvvvvvv"});
+    defer std.testing.allocator.free(v);
+    std.debug.print("v:{s}\n", .{v});
 }
 
 test "allocPrintZ:" {}

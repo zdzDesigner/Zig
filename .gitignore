@@ -8,6 +8,7 @@ zig-out/
 *.elf
 *.bin
 *.o
+*.out
 .xmake
 .tmp
 build

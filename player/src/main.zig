@@ -203,13 +203,15 @@ pub fn main() !void {
     // const dirpath = args.get("dir") orelse "/home/zdz/temp/music";
     // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/wb";
     // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/lj-resource/李健-2005 为你而来";
+    // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/lj-resource";
+    const dirpath = args.get("dir") orelse "/home/zdz/temp/music";
 
     // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/enya";
     // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/piano";
 
     // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/WP";
     // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/WP";
-    const dirpath = args.get("dir") orelse "/home/zdz/temp/music/listened";
+    // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/listened";
     // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/listening";
     // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/ape-resource";
     // const dirpath = args.get("dir") orelse "/home/zdz/temp/music/ape-resource2";
@@ -217,6 +219,8 @@ pub fn main() !void {
         std.debug.print("not found file:{s}:{}\n", .{ dirpath, err });
         return;
     };
+    songlist.random();
+    std.debug.print("songlist.list:{s}\n", .{songlist.list.items});
 
     zaudio.init(ally);
     defer zaudio.deinit();
@@ -391,10 +395,15 @@ const validtype = struct {
         }
         return false;
     }
+    fn isDir(kind: std.fs.File.Kind) bool {
+        // std.debug.print("kind == std.fs.File.Kind.directory:{}\n", .{kind == std.fs.File.Kind.directory});
+        return kind == std.fs.File.Kind.directory;
+    }
 };
 
 // "/home/zdz/temp/music/lz/wanj"
 fn readSongList(ally: mem.Allocator, dirpath: []const u8) !void {
+    // std.debug.print("dirpath=======:{s}\n", .{dirpath});
     var dir = try std.fs.openDirAbsolute(dirpath, .{ .iterate = true });
     defer dir.close();
     // std.debug.print("dir:{}\n", .{dir});
@@ -405,6 +414,7 @@ fn readSongList(ally: mem.Allocator, dirpath: []const u8) !void {
     var dirit = dir.iterate();
     while (try dirit.next()) |v| {
         // if (!std.mem.endsWith(u8, v.name, ".flac") and !std.mem.endsWith(u8, v.name, ".mp3")) continue;
+        if (validtype.isDir(v.kind)) try readSongList(ally, try std.fs.path.join(ally, &.{ dirpath, v.name }));
         if (!validtype.chek(v.name)) continue;
         // std.debug.print("kind:{} \t name:{s:<30} \n", .{
         //     v.kind,
@@ -419,8 +429,6 @@ fn readSongList(ally: mem.Allocator, dirpath: []const u8) !void {
     }
 
     if (songlist.lastIndex() == null) return Error.ErrorEmpty;
-
-    songlist.random();
 }
 
 fn readFile(filepath: []const u8) ![1]u8 {
