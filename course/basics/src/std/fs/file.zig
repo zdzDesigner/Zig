@@ -42,10 +42,11 @@ test "read file:" {
 test "read file2:" {
     const f = try std.fs.openFileAbsolute("/home/zdz/Documents/Try/Zig/zig-pro/course/basics/src/std/fs/system_file.json", .{ .mode = .read_write });
     defer f.close();
+    const reader = f.reader();
 
     var list = std.ArrayList(u8).init(std.testing.allocator);
     defer list.deinit();
-    const reader = f.reader();
+
     while (true) {
         reader.streamUntilDelimiter(list.writer(), '\n', null) catch |err| {
             if (error.EndOfStream != err) return err;
@@ -132,10 +133,10 @@ test "read file7:" {
         const size = try f.readAll(&buf);
 
         const total = bufs.len + size;
-        const newbufs = try allocator.alloc(u8, total);
-        @memcpy(newbufs[0..bufs.len], bufs);
-        @memcpy(newbufs[bufs.len..total], buf[0..size]);
-        allocator.free(bufs);
+        const newbufs = try allocator.alloc(u8, total); // 分配
+        @memcpy(newbufs[0..bufs.len], bufs); // 拷贝
+        @memcpy(newbufs[bufs.len..total], buf[0..size]); // 拷贝
+        allocator.free(bufs); // 释放
 
         bufs = newbufs;
 
