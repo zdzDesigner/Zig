@@ -227,3 +227,35 @@ test "pointer.child:" {
     var a = [_]u8{ 1, 2, 3, 4, 5 };
     multiPointer((&a));
 }
+
+// @ptrCast ================================
+
+fn toPtr(user: *const User) *const User {
+    return @ptrCast(user);
+}
+test "@ptrCast:" {
+    const user = std.mem.zeroes(User);
+    std.debug.print("user :{}\n", .{user});
+    std.debug.print("user ptr:{*}\n", .{&user});
+    std.debug.print("toPtr user :{*}\n", .{toPtr(&user)});
+}
+fn toPtr2(user: *User) *User {
+    return @ptrCast(user);
+}
+test "@ptrCast2:" {
+    const user = std.mem.zeroes(User);
+    std.debug.print("user :{}\n", .{user});
+    std.debug.print("user ptr:{*}\n", .{&user});
+    std.debug.print("toPtr user :{*}\n", .{toPtr(&user)});
+}
+
+// const V = struct {
+//     fn toPtr(v: *const V) *const V {
+//         return @ptrCast(v);
+//     }
+// };
+// const v = V{};
+//
+// test "@ptrCast2:" {
+//     std.debug.print("v:{}\n", .{v});
+// }
