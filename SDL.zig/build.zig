@@ -59,12 +59,15 @@ pub fn build(b: *std.Build) !void {
         .optimize = optimize,
     });
     // 指定编译后的路径 =====================
-    demo_wrapper.addIncludePath(b.path("./SDL_ttf"));
-    demo_wrapper.addLibraryPath(b.path("./SDL_ttf/.libs"));
-    // demo_wrapper.addCSourceFiles(.{ .files = &.{"./SDL_ttf/SDL_ttf.c"} });
 
     sdk.link(demo_wrapper, sdl_linkage, .SDL2);
-    sdk.link(demo_wrapper, sdl_linkage, .SDL2_ttf);
+    demo_wrapper.addIncludePath(b.path("./SDL_ttf"));
+    // 动态库 ==============
+    // demo_wrapper.addLibraryPath(b.path("./SDL_ttf/.libs"));
+    // sdk.link(demo_wrapper, sdl_linkage, .SDL2_ttf);
+    // 静态库 ==============
+    demo_wrapper.addObjectFile(b.path("./SDL_ttf/.libs/libSDL2_ttf.a"));
+
     demo_wrapper.root_module.addImport("sdl2", sdk.getWrapperModule());
     b.installArtifact(demo_wrapper);
     const run_demo_wrappr = b.addRunArtifact(demo_wrapper);

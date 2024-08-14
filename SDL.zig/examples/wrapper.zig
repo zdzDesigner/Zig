@@ -14,7 +14,7 @@ pub fn main() !void {
     try ttf.init();
     defer ttf.quit();
 
-    std.time.sleep(5 * std.time.ns_per_s);
+    // std.time.sleep(5 * std.time.ns_per_s);
 
     var window = try sdl.createWindow(
         "sdl.zig Basic Demo",
@@ -25,6 +25,11 @@ pub fn main() !void {
         .{ .vis = .shown },
     );
     defer window.destroy();
+    const window_info = try window.getWMInfo();
+    // window.setVisible(false);
+    _ = window.setWindowOpacity(0);
+
+    std.debug.print("window:info:{}\n", .{window_info});
 
     var render = try sdl.createRenderer(window, null, .{ .accelerated = true });
     defer render.destroy();
@@ -45,7 +50,7 @@ pub fn main() !void {
     const font_texture = try sdl.createTextureFromSurface(render, font_surface);
     // font_surface.destroy();
     defer font_texture.destroy();
-    const font_rect = sdl.Rectangle{ .x = 0, .y = 0, .width = 380, .height = 80 };
+    const font_rect = sdl.Rectangle{ .x = 0, .y = 0, .width = 380, .height = 20 };
 
     const p = [_]sdl.Point{
         .{ .x = 0, .y = 0 },
@@ -75,7 +80,8 @@ pub fn main() !void {
             else => {},
         }
 
-        try render.setColorRGB(0, 0, 0);
+        // try render.setColorRGB(0, 0, 0);
+        try render.setColorRGBA(10, 10, 10, 10);
         try render.clear();
 
         try render.setColor(sdl.Color.parse("#F7A41D") catch unreachable);
@@ -86,7 +92,7 @@ pub fn main() !void {
             .height = 50,
         });
         try render.drawRect(sdl.Rectangle{
-            .x = 270,
+            .x = Random.intRange(u8, 0, 255),
             .y = 215,
             .width = 100,
             .height = 50,
@@ -127,3 +133,25 @@ pub fn main() !void {
         render.present();
     }
 }
+
+const Random = struct {
+    var instance: ?std.rand.DefaultPrng = null;
+
+    pub fn intRange(comptime T: type, min: T, max: T) T {
+        var r = random();
+        return r.intRangeAtMost(T, min, max);
+    }
+
+    pub fn shuffle(comptime T: type, buf: []T) void {
+        return random().shuffle(T, buf);
+    }
+
+    pub fn random() std.rand.Random {
+        if (instance == null) {
+            var seed: u64 = undefined;
+            std.posix.getrandom(std.mem.asBytes(&seed)) catch unreachable;
+            instance = std.rand.DefaultPrng.init(seed);
+        }
+        return instance.?.random();
+    }
+};
