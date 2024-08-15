@@ -3,6 +3,10 @@ const sdl = @import("sdl2");
 const ttf = sdl.ttf;
 const target_os = @import("builtin").os;
 
+pub extern fn printTest([*c]const u8) void;
+pub extern fn setWindowTransparency(display: sdl.c.SDL_SysWMInfo_Display, window: c_ulong, opacity: c_ulong) void;
+// pub extern fn setWindowTransparency(info: *sdl.c.SDL_SysWMInfo, opacity: c_ulong) void;
+
 pub fn main() !void {
     try sdl.init(.{
         // .video = true,
@@ -25,12 +29,21 @@ pub fn main() !void {
         .{ .centered = {} },
         window_width,
         window_height,
-        .{ .vis = .shown },
+        .{ .vis = .shown, .context = .opengl },
     );
     defer window.destroy();
     const window_info = try window.getWMInfo();
+
+    printTest("xxxxxx");
     // window.setVisible(false);
-    _ = window.setWindowOpacity(0);
+    // _ = window.setWindowOpacity(0);
+    //     Display *display = info.info.x11.display;
+    // Window xwindow = info.info.x11.window;
+
+    // Set window transparency (0x80000000 for 50% transparent)
+    setWindowTransparency(window_info.u.x11.display, window_info.u.x11.window, 0x100000000 * 80 / 100);
+    // setWindowTransparency(&window_info, 0x80000000);
+    // setWindowTransparency(window_info, 0);
 
     std.debug.print("window:info:{}\n", .{window_info});
 
@@ -38,7 +51,6 @@ pub fn main() !void {
     defer render.destroy();
 
     // font ============================
-    // const font = try ttf.openFont("./assets/fonts/8bitOperatorPlus8-Regular.ttf", 32);
     // const ft = "/home/zdz/Documents/Try/Zig/fork/SDL.zig/examples/assets/fonts/8bitOperatorPlus8-Regular.ttf";
     // const ft = "/home/zdz/.local/share/fonts/NerdFonts/monofur Nerd Font Complete Mono.ttf";
     const ft = "/usr/share/fonts/truetype/wqy/wqy-microhei.ttc";
@@ -50,19 +62,19 @@ pub fn main() !void {
     // 输出成SDL_Surface 意味着文字已经转换一个图像数据
     // const font_surface = try font.renderTextSolid("ab一二", sdl.Color{ .r = 200, .g = 200, .b = 200 });
     const font_surface = try font.renderUtf8Solid("请充电!", sdl.Color{ .r = 200, .g = 20, .b = 20 });
-    const font_rect = sdl.Rectangle{ .x = window_width / 2 - 150, .y = window_height / 2 - 50, .width = 300, .height = 100 };
+    const font_rect = sdl.Rectangle{ .x = window_width / 2 - font_size * 3 / 2, .y = window_height / 2 - font_size / 2, .width = font_size * 3, .height = font_size };
     // const font_surface = try font.renderUnicodESolid("ab你好赢", sdl.Color{ .r = 200, .g = 200, .b = 200 });
     const font_texture = try sdl.createTextureFromSurface(render, font_surface);
-    // font_surface.destroy();
+    font_surface.destroy();
     defer font_texture.destroy();
 
-    const p = [_]sdl.Point{
-        .{ .x = 0, .y = 0 },
-        .{ .x = 200, .y = 10 },
-        .{ .x = 100, .y = 300 },
-        .{ .x = 400, .y = 400 },
-        .{ .x = 640, .y = 480 },
-    };
+    // const p = [_]sdl.Point{
+    //     .{ .x = 0, .y = 0 },
+    //     .{ .x = 200, .y = 10 },
+    //     .{ .x = 100, .y = 300 },
+    //     .{ .x = 400, .y = 400 },
+    //     .{ .x = 640, .y = 480 },
+    // };
 
     mainLoop: while (true) {
         // while (sdl.pollEvent()) |ev| {
@@ -84,31 +96,32 @@ pub fn main() !void {
             else => {},
         }
 
-        // try render.setColorRGB(0, 0, 0);
-        try render.setColorRGBA(10, 10, 10, 10);
+        // try render.setColorRGB(255, 255, 255);
+        // try render.setColorRGBA(10, 10, 10, 10);
         try render.clear();
 
-        try render.setColor(sdl.Color.parse("#F7A41D") catch unreachable);
-        try render.drawRect(sdl.Rectangle{
-            .x = 70,
-            .y = 215,
-            .width = 100,
-            .height = 50,
-        });
-        try render.drawRect(sdl.Rectangle{
-            .x = Random.intRange(u8, 0, 255),
-            .y = 215,
-            .width = 100,
-            .height = 50,
-        });
-
-        try render.setColor(sdl.Color.parse("#22A41D") catch unreachable);
-        try render.drawLines(&p);
-
-        try render.setColor(sdl.Color.parse("#FF0000") catch unreachable);
-        try render.drawPoints(&p);
+        // try render.setColor(sdl.Color.parse("#F7A41D") catch unreachable);
+        // try render.drawRect(sdl.Rectangle{
+        //     .x = 70,
+        //     .y = 215,
+        //     .width = 100,
+        //     .height = 50,
+        // });
+        // try render.drawRect(sdl.Rectangle{
+        //     .x = Random.intRange(u8, 0, 255),
+        //     .y = 215,
+        //     .width = 100,
+        //     .height = 50,
+        // });
+        //
+        // try render.setColor(sdl.Color.parse("#22A41D") catch unreachable);
+        // try render.drawLines(&p);
+        //
+        // try render.setColor(sdl.Color.parse("#FF0000") catch unreachable);
+        // try render.drawPoints(&p);
 
         try render.copy(font_texture, font_rect, null);
+
         // try render.setColor(sdl.Color.parse("#ffffff") catch unreachable);
         // try render.drawRect(font_rect);
 
@@ -135,6 +148,8 @@ pub fn main() !void {
         // }
 
         render.present();
+        std.time.sleep(1 * std.time.ns_per_s);
+        break :mainLoop;
     }
 }
 

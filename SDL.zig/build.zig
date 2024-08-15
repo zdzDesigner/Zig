@@ -53,8 +53,9 @@ pub fn build(b: *std.Build) !void {
 
     // ===========================================
     const demo_wrapper = b.addExecutable(.{
-        .name = "demo-wrapper",
-        .root_source_file = .{ .cwd_relative = "examples/wrapper.zig" },
+        // .name = "demo-wrapper",
+        .name = "power",
+        .root_source_file = .{ .cwd_relative = "examples/power.zig" },
         .target = target,
         .optimize = optimize,
     });
@@ -67,6 +68,11 @@ pub fn build(b: *std.Build) !void {
     // sdk.link(demo_wrapper, sdl_linkage, .SDL2_ttf);
     // 静态库 ==============
     demo_wrapper.addObjectFile(b.path("./SDL_ttf/.libs/libSDL2_ttf.a"));
+    demo_wrapper.addCSourceFiles(.{ .files = &.{"./src/x11/opacity.c"} });
+    // demo_wrapper.addCSourceFiles(.{ .files = &.{"./src/x11/opacity.c"}, .flags = &.{"-lX11"} });
+    // demo_wrapper.addCSourceFiles(.{ .files = &.{"./src/x11/opacity.c"}, .flags = &.{"-DSDL_VIDEO_DRIVER_X11"} });
+    // demo_wrapper.addCSourceFiles(.{ .files = &.{"./src/x11/opacity.c"}, .flags = &.{ "-DSDL_VIDEO_DRIVER_X11", "-lX11" } });
+    demo_wrapper.linkSystemLibrary("x11");
 
     demo_wrapper.root_module.addImport("sdl2", sdk.getWrapperModule());
     b.installArtifact(demo_wrapper);
