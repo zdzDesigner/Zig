@@ -19,7 +19,7 @@ pub fn main() !void {
     defer ttf.quit();
 
     const window_width = 640;
-    const window_height = 240;
+    const window_height = 200;
 
     // std.time.sleep(5 * std.time.ns_per_s);
 
@@ -42,8 +42,6 @@ pub fn main() !void {
 
     // Set window transparency (0x80000000 for 50% transparent)
     setWindowTransparency(window_info.u.x11.display, window_info.u.x11.window, 0x100000000 * 80 / 100);
-    // setWindowTransparency(&window_info, 0x80000000);
-    // setWindowTransparency(window_info, 0);
 
     std.debug.print("window:info:{}\n", .{window_info});
 
@@ -54,27 +52,21 @@ pub fn main() !void {
     // const ft = "/home/zdz/Documents/Try/Zig/fork/SDL.zig/examples/assets/fonts/8bitOperatorPlus8-Regular.ttf";
     // const ft = "/home/zdz/.local/share/fonts/NerdFonts/monofur Nerd Font Complete Mono.ttf";
     const ft = "/usr/share/fonts/truetype/wqy/wqy-microhei.ttc";
-    const font_size = 100;
+    const font_size = 60;
     const font = try ttf.openFont(ft, font_size);
     defer font.close();
     // font.setSize(10);
     // font.setStyle(.{ .italic = true });
     // 输出成SDL_Surface 意味着文字已经转换一个图像数据
     // const font_surface = try font.renderTextSolid("ab一二", sdl.Color{ .r = 200, .g = 200, .b = 200 });
-    const font_surface = try font.renderUtf8Solid("请充电!", sdl.Color{ .r = 200, .g = 20, .b = 20 });
+    //177, 7, 184
+    //144, 6, 123
+    const bg_color = sdl.Color{ .r = 144, .g = 6, .b = 123 };
+    const font_surface = try font.renderUtf8Solid("请充电!", sdl.Color{ .r = 255, .g = 255, .b = 255 });
     const font_rect = sdl.Rectangle{ .x = window_width / 2 - font_size * 3 / 2, .y = window_height / 2 - font_size / 2, .width = font_size * 3, .height = font_size };
-    // const font_surface = try font.renderUnicodESolid("ab你好赢", sdl.Color{ .r = 200, .g = 200, .b = 200 });
     const font_texture = try sdl.createTextureFromSurface(render, font_surface);
     font_surface.destroy();
     defer font_texture.destroy();
-
-    // const p = [_]sdl.Point{
-    //     .{ .x = 0, .y = 0 },
-    //     .{ .x = 200, .y = 10 },
-    //     .{ .x = 100, .y = 300 },
-    //     .{ .x = 400, .y = 400 },
-    //     .{ .x = 640, .y = 480 },
-    // };
 
     mainLoop: while (true) {
         // while (sdl.pollEvent()) |ev| {
@@ -96,56 +88,10 @@ pub fn main() !void {
             else => {},
         }
 
-        // try render.setColorRGB(255, 255, 255);
-        // try render.setColorRGBA(10, 10, 10, 10);
+        try render.setColorRGB(bg_color.r, bg_color.g, bg_color.b);
         try render.clear();
 
-        // try render.setColor(sdl.Color.parse("#F7A41D") catch unreachable);
-        // try render.drawRect(sdl.Rectangle{
-        //     .x = 70,
-        //     .y = 215,
-        //     .width = 100,
-        //     .height = 50,
-        // });
-        // try render.drawRect(sdl.Rectangle{
-        //     .x = Random.intRange(u8, 0, 255),
-        //     .y = 215,
-        //     .width = 100,
-        //     .height = 50,
-        // });
-        //
-        // try render.setColor(sdl.Color.parse("#22A41D") catch unreachable);
-        // try render.drawLines(&p);
-        //
-        // try render.setColor(sdl.Color.parse("#FF0000") catch unreachable);
-        // try render.drawPoints(&p);
-
         try render.copy(font_texture, font_rect, null);
-
-        // try render.setColor(sdl.Color.parse("#ffffff") catch unreachable);
-        // try render.drawRect(font_rect);
-
-        // if (target_os.tag != .linux) {
-        //     // Ubuntu CI doesn't have this function available yet
-        //     try render.drawGeometry(
-        //         null,
-        //         &[_]sdl.Vertex{
-        //             .{
-        //                 .position = .{ .x = 400, .y = 150 },
-        //                 .color = sdl.Color.rgb(255, 0, 0),
-        //             },
-        //             .{
-        //                 .position = .{ .x = 350, .y = 200 },
-        //                 .color = sdl.Color.rgb(0, 0, 255),
-        //             },
-        //             .{
-        //                 .position = .{ .x = 450, .y = 200 },
-        //                 .color = sdl.Color.rgb(0, 255, 0),
-        //             },
-        //         },
-        //         null,
-        //     );
-        // }
 
         render.present();
         std.time.sleep(1 * std.time.ns_per_s);
