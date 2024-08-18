@@ -94,7 +94,8 @@ pub fn main() !void {
         try render.copy(font_texture, font_rect, null);
 
         render.present();
-        std.time.sleep(1 * std.time.ns_per_s);
+        // std.time.sleep(1 * std.time.ns_per_s);
+        sdl.delay(1000);
         break :mainLoop;
     }
 }

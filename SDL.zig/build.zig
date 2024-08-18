@@ -53,9 +53,10 @@ pub fn build(b: *std.Build) !void {
 
     // ===========================================
     const demo_wrapper = b.addExecutable(.{
-        // .name = "demo-wrapper",
-        .name = "power",
-        .root_source_file = .{ .cwd_relative = "examples/power.zig" },
+        // .name = "power",
+        // .root_source_file = .{ .cwd_relative = "examples/power.zig" },
+        .name = "wrapper",
+        .root_source_file = .{ .cwd_relative = "examples/wrapper.zig" },
         .target = target,
         .optimize = optimize,
     });
@@ -73,6 +74,11 @@ pub fn build(b: *std.Build) !void {
     // demo_wrapper.addCSourceFiles(.{ .files = &.{"./src/x11/opacity.c"}, .flags = &.{"-DSDL_VIDEO_DRIVER_X11"} });
     // demo_wrapper.addCSourceFiles(.{ .files = &.{"./src/x11/opacity.c"}, .flags = &.{ "-DSDL_VIDEO_DRIVER_X11", "-lX11" } });
     demo_wrapper.linkSystemLibrary("x11");
+    demo_wrapper.linkSystemLibrary("sdl2_image");
+    demo_wrapper.linkSystemLibrary("jpeg");
+    demo_wrapper.linkSystemLibrary("libpng");
+    demo_wrapper.linkSystemLibrary("tiff");
+    demo_wrapper.linkSystemLibrary("webp");
 
     demo_wrapper.root_module.addImport("sdl2", sdk.getWrapperModule());
     b.installArtifact(demo_wrapper);
