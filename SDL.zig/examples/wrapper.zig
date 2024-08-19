@@ -14,7 +14,7 @@ pub fn main() !void {
     try ttf.init();
     defer ttf.quit();
 
-    std.time.sleep(5 * std.time.ns_per_s);
+    // std.time.sleep(5 * std.time.ns_per_s);
 
     var window = try sdl.createWindow(
         "sdl.zig Basic Demo",
@@ -33,7 +33,8 @@ pub fn main() !void {
     // const font = try ttf.openFont("./assets/fonts/8bitOperatorPlus8-Regular.ttf", 32);
     // const ft = "/home/zdz/Documents/Try/Zig/fork/SDL.zig/examples/assets/fonts/8bitOperatorPlus8-Regular.ttf";
     // const ft = "/home/zdz/.local/share/fonts/NerdFonts/monofur Nerd Font Complete Mono.ttf";
-    const ft = "/usr/share/fonts/truetype/wqy/wqy-microhei.ttc";
+    // const ft = "/usr/share/fonts/truetype/wqy/wqy-microhei.ttc";
+    const ft = "/usr/share/fonts/wenquanyi/wqy-zenhei/wqy-zenhei.ttc";
     const font = try ttf.openFont(ft, 42);
     defer font.close();
     // font.setSize(10);
