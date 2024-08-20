@@ -6,7 +6,7 @@ INFILE=/home/zdz/Documents/Try/Zig/fork/SDL.zig/SDL/include/SDL.h
 
 # The output file name of this script.
 # this should not be changed
-OUTFILE="src/binding/sdl.zig"
+OUTFILE="src/binding/sdl2.zig"
 
 set -e #setopt -e
 clear
