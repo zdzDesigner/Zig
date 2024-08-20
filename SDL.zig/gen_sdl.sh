@@ -2,7 +2,8 @@
 
 # The input file name to the SDL2 main header
 # INFILE="/home/felix/projects/SDL/include/SDL.h"
-INFILE=/home/zdz/Documents/Try/Zig/fork/SDL.zig/SDL/include/SDL.h
+# INFILE=/home/zdz/Documents/Try/Zig/fork/SDL.zig/SDL/include/SDL.h
+INFILE=/home/zdz/Documents/Try/Zig/fork/SDL.zig/api-conversion/SDL.h
 
 # The output file name of this script.
 # this should not be changed

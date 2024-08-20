@@ -456,11 +456,25 @@ int yy_flex_debug = 0;
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
-#line 1 "./calc_v1.l"
-#line 4 "./calc_v1.l"
-    #include <stdio.h>
-#line 463 "lex.yy.c"
-#line 464 "lex.yy.c"
+#line 1 "calc_v2.l"
+#line 4 "calc_v2.l"
+ #include <stdio.h>
+ enum yytokentype {
+       PRINT = 258,
+       IDENTIFIER = 259,
+       CHAR = 260,
+       COMMA = 261,
+       LEFT_BRACKET = 262,
+       RIGHT_BRACKET = 263,
+       ASSIGN = 264,
+       UNION = 265,
+       INTERSECT = 266,
+       SUBSTRACT = 267,
+       NEWLINE = 268
+ };
+ char yylval;
+#line 477 "lex.yy.c"
+#line 478 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -677,10 +691,10 @@ YY_DECL
 		}
 
 	{
-#line 7 "./calc_v1.l"
+#line 21 "calc_v2.l"
 
 
-#line 684 "lex.yy.c"
+#line 698 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -739,81 +753,81 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 9 "./calc_v1.l"
-{ printf("PRINT, '%s'\n", yytext); } 
+#line 23 "calc_v2.l"
+{ return PRINT; } 
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 10 "./calc_v1.l"
-{ printf("IDENTIFIER, '%s'\n", yytext); }
+#line 24 "calc_v2.l"
+{ yylval = yytext[0]; return IDENTIFIER;}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 11 "./calc_v1.l"
-{ printf("STRING, '%s'\n", yytext); }
+#line 25 "calc_v2.l"
+{ yylval = yytext[0]; return CHAR;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 12 "./calc_v1.l"
-{ printf("COMMA, '%s'\n", yytext); }
+#line 26 "calc_v2.l"
+{ return COMMA; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 13 "./calc_v1.l"
-{ printf("LEFT_BRACKET, '%s'\n", yytext); }
+#line 27 "calc_v2.l"
+{ return LEFT_BRACKET; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 14 "./calc_v1.l"
-{ printf("RIGHT_BRACKET, '%s'\n", yytext); }
+#line 28 "calc_v2.l"
+{ return RIGHT_BRACKET; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 15 "./calc_v1.l"
-{ printf("ASSIGN, '%s'\n", yytext); }
+#line 29 "calc_v2.l"
+{ return ASSIGN; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 16 "./calc_v1.l"
-{ printf("UNION, '%s'\n", yytext); }
+#line 30 "calc_v2.l"
+{ return UNION; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 17 "./calc_v1.l"
-{ printf("INTERSECT, '%s'\n", yytext); }
+#line 31 "calc_v2.l"
+{ return INTERSECT; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 18 "./calc_v1.l"
-{ printf("SUBSTRACT, '%s'\n", yytext); }
+#line 32 "calc_v2.l"
+{ return SUBSTRACT; }
 	YY_BREAK
 case 11:
 /* rule 11 can match eol */
 YY_RULE_SETUP
-#line 19 "./calc_v1.l"
-{ printf("NEWLINE\n"); }
+#line 33 "calc_v2.l"
+{ return NEWLINE; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 20 "./calc_v1.l"
-{ printf("comment: %s\n", yytext); }
+#line 34 "calc_v2.l"
+{ /* --- comment --- */ }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 21 "./calc_v1.l"
-{ printf("space or tab\n"); }
+#line 35 "calc_v2.l"
+{ /* space or tab\n */ }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 22 "./calc_v1.l"
-{ printf("unexpected token: (%s)\n", yytext); }
+#line 36 "calc_v2.l"
+{ printf("unexpected token: (%s)\n", yytext); return -1;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 24 "./calc_v1.l"
+#line 38 "calc_v2.l"
 ECHO;
 	YY_BREAK
-#line 817 "lex.yy.c"
+#line 831 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1818,12 +1832,20 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 24 "./calc_v1.l"
+#line 38 "calc_v2.l"
 
 
 int main()
 {
-    yylex(); 
+  int t_token;
+  while(t_token = yylex()){
+    printf("toke type:%d", t_token);
+    if(t_token == IDENTIFIER || t_token == CHAR){
+      printf(", val:%c\n", yylval);
+    }else{
+      printf("\n");
+    }
+  }
 }
 
 

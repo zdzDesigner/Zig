@@ -363,7 +363,7 @@ pub fn link(
     const b = sdk.build;
     const target = exe.root_module.resolved_target.?;
     const is_native = target.query.isNativeOs();
-    // std.debug.print("is_native:{}\n", .{is_native});
+    std.debug.print("is_native:{}\n", .{is_native});
 
     exe.linkLibC();
 
@@ -623,10 +623,7 @@ const CacheBuilder = struct {
         return Self{
             .build = builder,
             .hasher = std.crypto.hash.Sha1.init(.{}),
-            .subdir = if (subdir) |s|
-                builder.dupe(s)
-            else
-                null,
+            .subdir = if (subdir) |s| builder.dupe(s) else null,
         };
     }
 
