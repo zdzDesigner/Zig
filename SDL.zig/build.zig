@@ -57,20 +57,23 @@ pub fn build(b: *std.Build) !void {
         // .root_source_file = .{ .cwd_relative = "examples/power.zig" },
         // .name = "wrapper",
         // .root_source_file = .{ .cwd_relative = "examples/wrapper.zig" },
-        .name = "nk",
-        .root_source_file = .{ .cwd_relative = "examples/nk.zig" },
+
+        .name = "sprite",
+        .root_source_file = .{ .cwd_relative = "examples/sprite.zig" },
+        // .name = "nk",
+        // .root_source_file = .{ .cwd_relative = "examples/nk.zig" },
         .target = target,
         .optimize = optimize,
     });
     // 指定编译后的路径 =====================
 
     sdk.link(demo_wrapper, sdl_linkage, .SDL2);
-    demo_wrapper.addIncludePath(b.path("./SDL_ttf"));
+    // demo_wrapper.addIncludePath(b.path("./SDL_ttf"));
     // 动态库 ==============
     // demo_wrapper.addLibraryPath(b.path("./SDL_ttf/.libs"));
-    // sdk.link(demo_wrapper, sdl_linkage, .SDL2_ttf);
+    sdk.link(demo_wrapper, sdl_linkage, .SDL2_ttf);
     // 静态库 ==============
-    demo_wrapper.addObjectFile(b.path("./SDL_ttf/.libs/libSDL2_ttf.a"));
+    // demo_wrapper.addObjectFile(b.path("./SDL_ttf/.libs/libSDL2_ttf.a"));
     demo_wrapper.addCSourceFiles(.{ .files = &.{"./src/x11/opacity.c"} });
     // demo_wrapper.addCSourceFiles(.{ .files = &.{"./src/x11/opacity.c"}, .flags = &.{"-lX11"} });
     // demo_wrapper.addCSourceFiles(.{ .files = &.{"./src/x11/opacity.c"}, .flags = &.{"-DSDL_VIDEO_DRIVER_X11"} });

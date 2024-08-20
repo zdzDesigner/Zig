@@ -95,16 +95,53 @@ test "read file5:" {
         const size = try f.readAll(&buf);
         const newbufs = try std.fmt.allocPrint(allocator, "{s}{s}", .{ bufs, buf[0..size] });
         allocator.free(bufs);
-        // const bufs2 = try allocator.alloc(u8, newbufs.len);
-        // defer allocator.free(bufs2);
-        // @memcpy(bufs[0..newbufs.len], newbufs);
         bufs = newbufs;
-        // const cpbufs = try allocator.dupe(u8, bufs);
-        // bufs = try std.mem.join(allocator, "", &.{ cpbufs, buf[0..size] });
-        // allocator.free(cpbufs);
 
         if (size < 2) break;
     }
     std.debug.print("read file5:{s}\n", .{bufs});
+    allocator.free(bufs);
+}
+test "read file6:" {
+    const allocator = std.testing.allocator;
+    const f = try std.fs.openFileAbsolute("/home/zdz/Documents/Try/Zig/zig-pro/course/basics/src/std/fs/system_file.json", .{ .mode = .read_write });
+    defer f.close();
+
+    var bufs: []u8 = allocator.alloc(u8, 0) catch @panic("OOM");
+    while (true) {
+        var buf: [2]u8 = undefined;
+        const size = try f.readAll(&buf);
+
+        const newbufs = try std.mem.join(allocator, "", &.{ bufs, buf[0..size] });
+        allocator.free(bufs);
+
+        bufs = newbufs;
+
+        if (size < 2) break;
+    }
+    std.debug.print("read file6:{s}\n", .{bufs});
+    allocator.free(bufs);
+}
+test "read file7:" {
+    const allocator = std.testing.allocator;
+    const f = try std.fs.openFileAbsolute("/home/zdz/Documents/Try/Zig/zig-pro/course/basics/src/std/fs/system_file.json", .{ .mode = .read_write });
+    defer f.close();
+
+    var bufs: []u8 = allocator.alloc(u8, 0) catch @panic("OOM");
+    while (true) {
+        var buf: [2]u8 = undefined;
+        const size = try f.readAll(&buf);
+
+        const total = bufs.len + size;
+        const newbufs = try allocator.alloc(u8, total); // 分配
+        @memcpy(newbufs[0..bufs.len], bufs); // 拷贝
+        @memcpy(newbufs[bufs.len..total], buf[0..size]); // 拷贝
+        allocator.free(bufs); // 释放
+
+        bufs = newbufs;
+
+        if (size < 2) break;
+    }
+    std.debug.print("read file7:{s}\n", .{bufs});
     allocator.free(bufs);
 }

@@ -666,11 +666,22 @@ pub fn createRgbSurfaceWithFormat(width: u31, height: u31, format: PixelFormatEn
     return Surface{ .ptr = c.SDL_CreateRGBSurfaceWithFormat(undefined, width, height, undefined, @intFromEnum(format)) orelse return error.SdlError };
 }
 
-pub fn blitScaled(src: Surface, src_rectangle: ?*Rectangle, dest: Surface, dest_rectangle: ?*Rectangle) !void {
+// 精灵图:缩放
+pub fn blitScaled(src: Surface, src_rectangle: ?Rectangle, dest: Surface, dest_rectangle: ?Rectangle) !void {
     if (c.SDL_BlitScaled(
         src.ptr,
         if (src_rectangle) |rect| rect.getSdlPtr() else null,
         dest.ptr,
+        if (dest_rectangle) |rect| rect.getSdlPtr() else null,
+    ) < 0) return error.SdlError;
+}
+
+// 精灵图:
+pub fn blitSurface(src: ?Surface, src_rectangle: ?Rectangle, dest: ?Surface, dest_rectangle: ?*Rectangle) !void {
+    if (c.SDL_BlitSurface(
+        if (src) |s| s.ptr else null,
+        if (src_rectangle) |rect| rect.getConstSdlPtr() else null,
+        if (dest) |d| d.ptr else null,
         if (dest_rectangle) |rect| rect.getSdlPtr() else null,
     ) < 0) return error.SdlError;
 }
