@@ -63,12 +63,12 @@ pub fn build(b: *std.Build) !void {
     // 指定编译后的路径 =====================
 
     sdk.link(demo_wrapper, sdl_linkage, .SDL2);
-    demo_wrapper.addIncludePath(b.path("./SDL_ttf"));
+    // demo_wrapper.addIncludePath(b.path("./SDL_ttf"));
     // 动态库 ==============
     // demo_wrapper.addLibraryPath(b.path("./SDL_ttf/.libs"));
-    // sdk.link(demo_wrapper, sdl_linkage, .SDL2_ttf);
+    sdk.link(demo_wrapper, sdl_linkage, .SDL2_ttf);
     // 静态库 ==============
-    demo_wrapper.addObjectFile(b.path("./SDL_ttf/.libs/libSDL2_ttf.a"));
+    // demo_wrapper.addObjectFile(b.path("./SDL_ttf/.libs/libSDL2_ttf.a"));
     demo_wrapper.addCSourceFiles(.{ .files = &.{"./src/x11/opacity.c"} });
     // demo_wrapper.addCSourceFiles(.{ .files = &.{"./src/x11/opacity.c"}, .flags = &.{"-lX11"} });
     // demo_wrapper.addCSourceFiles(.{ .files = &.{"./src/x11/opacity.c"}, .flags = &.{"-DSDL_VIDEO_DRIVER_X11"} });
