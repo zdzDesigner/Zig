@@ -57,8 +57,11 @@ pub fn build(b: *std.Build) !void {
         // .root_source_file = .{ .cwd_relative = "examples/power.zig" },
         // .name = "wrapper",
         // .root_source_file = .{ .cwd_relative = "examples/wrapper.zig" },
-        .name = "nk",
-        .root_source_file = .{ .cwd_relative = "examples/nk.zig" },
+
+        .name = "sprite",
+        .root_source_file = .{ .cwd_relative = "examples/sprite.zig" },
+        // .name = "nk",
+        // .root_source_file = .{ .cwd_relative = "examples/nk.zig" },
         .target = target,
         .optimize = optimize,
     });
