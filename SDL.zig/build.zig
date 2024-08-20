@@ -53,18 +53,33 @@ pub fn build(b: *std.Build) !void {
 
     // ===========================================
     const demo_wrapper = b.addExecutable(.{
-        .name = "demo-wrapper",
+        // .name = "power",
+        // .root_source_file = .{ .cwd_relative = "examples/power.zig" },
+        .name = "wrapper",
         .root_source_file = .{ .cwd_relative = "examples/wrapper.zig" },
         .target = target,
         .optimize = optimize,
     });
     // 指定编译后的路径 =====================
-    demo_wrapper.addIncludePath(b.path("./SDL_ttf"));
-    demo_wrapper.addLibraryPath(b.path("./SDL_ttf/.libs"));
-    // demo_wrapper.addCSourceFiles(.{ .files = &.{"./SDL_ttf/SDL_ttf.c"} });
 
     sdk.link(demo_wrapper, sdl_linkage, .SDL2);
-    sdk.link(demo_wrapper, sdl_linkage, .SDL2_ttf);
+    demo_wrapper.addIncludePath(b.path("./SDL_ttf"));
+    // 动态库 ==============
+    // demo_wrapper.addLibraryPath(b.path("./SDL_ttf/.libs"));
+    // sdk.link(demo_wrapper, sdl_linkage, .SDL2_ttf);
+    // 静态库 ==============
+    demo_wrapper.addObjectFile(b.path("./SDL_ttf/.libs/libSDL2_ttf.a"));
+    demo_wrapper.addCSourceFiles(.{ .files = &.{"./src/x11/opacity.c"} });
+    // demo_wrapper.addCSourceFiles(.{ .files = &.{"./src/x11/opacity.c"}, .flags = &.{"-lX11"} });
+    // demo_wrapper.addCSourceFiles(.{ .files = &.{"./src/x11/opacity.c"}, .flags = &.{"-DSDL_VIDEO_DRIVER_X11"} });
+    // demo_wrapper.addCSourceFiles(.{ .files = &.{"./src/x11/opacity.c"}, .flags = &.{ "-DSDL_VIDEO_DRIVER_X11", "-lX11" } });
+    demo_wrapper.linkSystemLibrary("x11");
+    demo_wrapper.linkSystemLibrary("sdl2_image");
+    demo_wrapper.linkSystemLibrary("jpeg");
+    demo_wrapper.linkSystemLibrary("libpng");
+    demo_wrapper.linkSystemLibrary("tiff");
+    demo_wrapper.linkSystemLibrary("webp");
+
     demo_wrapper.root_module.addImport("sdl2", sdk.getWrapperModule());
     b.installArtifact(demo_wrapper);
     const run_demo_wrappr = b.addRunArtifact(demo_wrapper);

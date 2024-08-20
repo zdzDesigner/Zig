@@ -16,16 +16,25 @@ test "parseInt" {
     std.debug.print("parseInt:{any}\n", .{std.fmt.parseInt(u32, "0xa", 0)}); // 10
 }
 
-pub inline fn intToStr(comptime size: comptime_int, comptime format: []const u8, val: anytype) []const u8 {
-    var buf: [size]u8 = undefined;
-    return std.fmt.bufPrint(&buf, format, val) catch "\r\n";
-}
-test "merge string:" {
-    std.debug.print("merge string:{s}\n", .{intToStr(10, "val:{s}", .{"xxx"})});
+test "parseFloat" {
+    std.debug.print("parseFloat:{any}\n", .{std.fmt.parseFloat(f32, "23")});
+    std.debug.print("parseFloat:{any}\n", .{std.fmt.parseFloat(f64, "23")});
+    std.debug.print("parseFloat:{any}\n", .{std.fmt.parseFloat(f32, "0x23")});
 }
 
-test "int to str:" {
-    std.debug.print("intToStr:{s}\n", .{intToStr(20, "ddd{}\r\n", .{8})});
+test "formatFloat" {
+    var buf: [100]u8 = undefined;
+    const fval: f32 = 24234;
+    std.debug.print("formatFloat:{s}\n", .{try std.fmt.formatFloat(&buf, fval, .{})});
+}
+
+test "formatInt" {
+    // std.fmt.formatInt(value: anytype, base: u8, case: Case, options: FormatOptions, writer: anytype)
+}
+
+test "bytesToHex" {
+    // const v: u8 = 32;
+    // std.debug.print("hex:{any}\n", .{std.fmt.bytesToHex(v, .lower)});
 }
 
 const fmtId = std.zig.fmtId;
@@ -71,6 +80,19 @@ test "fmt::count:" {
     std.debug.print("count:{}\n", .{std.fmt.count("aa:{s}", .{"cc"})}); // 5
 }
 
+// int to string =======================
+pub inline fn intToStr(comptime size: comptime_int, comptime format: []const u8, val: anytype) []const u8 {
+    var buf: [size]u8 = undefined;
+    return std.fmt.bufPrint(&buf, format, val) catch "\r\n";
+}
+test "merge string:" {
+    std.debug.print("merge string:{s}\n", .{intToStr(10, "val:{s}", .{"xxx"})});
+}
+
+test "int to str:" {
+    std.debug.print("intToStr:{s}\n", .{intToStr(20, "ddd{}\r\n", .{8})});
+}
+
 // 内部实现, 编译器完成计算
 pub inline fn comptimePrint(comptime fmt: []const u8, args: anytype) *const [std.fmt.count(fmt, args):0]u8 {
     comptime {
@@ -86,6 +108,13 @@ pub inline fn comptimePrint(comptime fmt: []const u8, args: anytype) *const [std
 test "comptimePrint:" {
     std.debug.print("comptimePrint:{s}\n", .{std.fmt.comptimePrint("aa:{}", .{99})}); // aa:99
     std.debug.print("comptimePrint:{s}\n", .{std.fmt.comptimePrint("aa:{s}", .{"bb"})}); // aa:bb
+    const v = 33;
+    std.debug.print("comptimePrint:{s}\n", .{std.fmt.comptimePrint("aa:{d}", .{v})}); // aa:33
+}
+
+test "int to hex:" {
+    std.debug.print("hex:{any}\n", .{std.fmt.bytesToHex("32", .lower)});
+    std.debug.print("hex:{s}\n", .{std.fmt.comptimePrint("0x{x}", .{32})}); // aa:33
 }
 
 // 分配

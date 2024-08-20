@@ -6,6 +6,13 @@ test "copy::copyForwards:" {
     std.mem.copyForwards(u8, &buf, source);
 
     std.debug.print("buf:{s}\n", .{buf});
+
+    var buf2: [8]u8 = std.mem.zeroes([8]u8);
+    std.mem.copyForwards(u8, buf2[0..2], "FF");
+    std.mem.copyForwards(u8, buf2[2..4], "FA");
+    std.mem.copyForwards(u8, buf2[4..6], "FA");
+    std.mem.copyForwards(u8, buf2[6..8], "FA");
+    std.debug.print("buf2:{s}\n", .{buf2});
 }
 
 test "std.mem.indexOfDiff:" {

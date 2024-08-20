@@ -189,8 +189,7 @@ pub const Color = extern struct {
 
             // #RGB, RGBA
             4 => {
-                if (str[0] == '#')
-                    return parse(str[1..]);
+                if (str[0] == '#') return parse(str[1..]);
 
                 const r = try std.fmt.parseInt(u8, str[0..1], 16);
                 const g = try std.fmt.parseInt(u8, str[1..2], 16);
@@ -236,6 +235,20 @@ pub const Color = extern struct {
 
             else => return error.UnknownFormat,
         }
+    }
+    pub fn unParse(self: Color) f32 {
+        _ = self;
+        // var buf: [8]u8 = std.mem.zeroes([8]u8);
+        // std.mem.copyForwards(u8, buf[0..2], intToStr(2, "{x}", self.r));
+        // std.mem.copyForwards(u8, buf[2..4], intToStr(2, "{x}", self.g));
+        // std.mem.copyForwards(u8, buf[4..6], intToStr(2, "{x}", self.b));
+        // std.mem.copyForwards(u8, buf[6..8], intToStr(2, "{x}", self.a));
+        // return try std.fmt.parseFloat(f32, intToStr(10, "0x{s}", buf));
+        return 0x10101010;
+    }
+    pub inline fn intToStr(comptime size: comptime_int, comptime format: []const u8, val: anytype) []const u8 {
+        var buf: [size]u8 = undefined;
+        return std.fmt.bufPrint(&buf, format, val) catch "";
     }
 
     test "Color.parse" {
@@ -450,6 +463,10 @@ pub const Window = struct {
         if (c.SDL_SetWindowFullscreen(w.ptr, flags) != 0) {
             return makeError();
         }
+    }
+
+    pub fn setWindowOpacity(w: Window, opacity: f32) c_int {
+        return c.SDL_SetWindowOpacity(w.ptr, opacity);
     }
 };
 
@@ -726,7 +743,7 @@ pub const Renderer = struct {
             return makeError();
     }
 
-    pub fn drawLines(ren: Renderer, points: [] const Point) !void {
+    pub fn drawLines(ren: Renderer, points: []const Point) !void {
         if (c.SDL_RenderDrawLines(ren.ptr, @ptrCast(points.ptr), @intCast(points.len)) < 0)
             return makeError();
     }
@@ -736,7 +753,7 @@ pub const Renderer = struct {
             return makeError();
     }
 
-    pub fn drawLinesF(ren: Renderer, points: [] const PointF) !void {
+    pub fn drawLinesF(ren: Renderer, points: []const PointF) !void {
         if (c.SDL_RenderDrawLinesF(ren.ptr, @ptrCast(points.ptr), @intCast(points.len)) < 0)
             return makeError();
     }
@@ -746,7 +763,7 @@ pub const Renderer = struct {
             return makeError();
     }
 
-    pub fn drawPoints(ren: Renderer, points: [] const Point) !void {
+    pub fn drawPoints(ren: Renderer, points: []const Point) !void {
         if (c.SDL_RenderDrawPoints(ren.ptr, @ptrCast(points.ptr), @intCast(points.len)) < 0)
             return makeError();
     }
@@ -756,7 +773,7 @@ pub const Renderer = struct {
             return makeError();
     }
 
-    pub fn drawPointsF(ren: Renderer, points: [] const PointF) !void {
+    pub fn drawPointsF(ren: Renderer, points: []const PointF) !void {
         if (c.SDL_RenderDrawPointsF(ren.ptr, @ptrCast(points.ptr), @intCast(points.len)) < 0)
             return makeError();
     }
@@ -766,7 +783,7 @@ pub const Renderer = struct {
             return makeError();
     }
 
-    pub fn fillRects(ren: Renderer, rects: [] const Rectangle) !void {
+    pub fn fillRects(ren: Renderer, rects: []const Rectangle) !void {
         if (c.SDL_RenderFillRects(ren, @ptrCast(rects.ptr), @intCast(rects.len)) < 0)
             return makeError();
     }
@@ -776,7 +793,7 @@ pub const Renderer = struct {
             return makeError();
     }
 
-    pub fn fillRectsF(ren: Renderer, rects: [] const RectangleF) !void {
+    pub fn fillRectsF(ren: Renderer, rects: []const RectangleF) !void {
         if (c.SDL_RenderFillRectsF(ren, @ptrCast(rects.ptr), @intCast(rects.len)) < 0)
             return makeError();
     }
@@ -786,7 +803,7 @@ pub const Renderer = struct {
             return makeError();
     }
 
-    pub fn drawRects(ren: Renderer, rects: [] const Rectangle) !void {
+    pub fn drawRects(ren: Renderer, rects: []const Rectangle) !void {
         if (c.SDL_RenderDrawRects(ren, @ptrCast(rects.ptr), @intCast(rects.len)) < 0)
             return makeError();
     }
@@ -796,7 +813,7 @@ pub const Renderer = struct {
             return makeError();
     }
 
-    pub fn drawRectsF(ren: Renderer, rects: [] const RectangleF) !void {
+    pub fn drawRectsF(ren: Renderer, rects: []const RectangleF) !void {
         if (c.SDL_RenderDrawRectsF(ren, @ptrCast(rects.ptr), @intCast(rects.len)) < 0)
             return makeError();
     }

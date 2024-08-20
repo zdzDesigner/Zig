@@ -4,6 +4,7 @@ zig-out
 deps.zig
 gyro.lock
 .build_config
+.out
 SDL
 SDL_ttf
 assets

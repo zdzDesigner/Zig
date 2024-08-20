@@ -2694,6 +2694,8 @@ pub const SDL_SYSWM_TYPE = enum(c_int) {
     OS2,
     HAIKU,
 };
+
+pub const SDL_SysWMInfo_Display = *opaque {};
 pub const SDL_SysWMInfo = extern struct {
     version: SDL_version,
     subsystem: SDL_SYSWM_TYPE,
@@ -2704,7 +2706,7 @@ pub const SDL_SysWMInfo = extern struct {
             hinstance: std.os.windows.HINSTANCE,
         },
         x11: extern struct {
-            display: *opaque {},
+            display: SDL_SysWMInfo_Display,
             window: c_ulong,
         },
         // TODO: other variants
