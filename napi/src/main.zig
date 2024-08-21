@@ -10,7 +10,22 @@ comptime {
 }
 
 fn initModule(js: *napigen.JsContext, exports: napigen.napi_value) anyerror!napigen.napi_value {
+    const info = struct {
+        var version: u32 = undefined;
+        fn getVersion() u32 {
+            return version;
+        }
+        var version_node: u32 = undefined;
+        fn getNodeEnv() u32 {
+            return version_node;
+        }
+    };
+    info.version = try js.getEnv();
+    info.version_node = try js.getNodeEnv();
+
     try js.setNamedProperty(exports, "add", try js.createFunction(add));
+    try js.setNamedProperty(exports, "getEnv", try js.createFunction(info.getVersion));
+    try js.setNamedProperty(exports, "getNodeEnv", try js.createFunction(info.getNodeEnv));
 
     return exports;
 }
