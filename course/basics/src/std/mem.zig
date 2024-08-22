@@ -170,7 +170,8 @@ test "span:" {
 
 test "asBytes:" {
     const bs = @as(u32, 0xDEADBEEF);
-    std.debug.print("bs to bytes:{any}\n", .{std.mem.asBytes(&bs)}); // { 239, 190, 173, 222 }
+    std.debug.print("bs:{}\n", .{bs});
+    std.debug.print("bs to bytes:{any}\n", .{std.mem.asBytes(&bs)}); // { 239, 190, 173, 222 }, 0xDE:222
     const bs2: u64 = undefined;
     std.debug.print("bs to bytes:{any}\n", .{std.mem.asBytes(&bs2)}); // { 0, 0, 0, 0, 0, 0, 0, 0 }
     var bs3: u64 = undefined;
