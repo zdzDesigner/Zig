@@ -15,8 +15,8 @@ fn initModule(js: *napigen.JsContext, exports: napigen.napi_value) anyerror!napi
         fn getVersion() u32 {
             return version;
         }
-        var version_node: u32 = undefined;
-        fn getNodeEnv() u32 {
+        var version_node: []u8 = undefined;
+        fn getNodeEnv() []u8 {
             return version_node;
         }
     };
