@@ -9,15 +9,20 @@ pub fn logic() void {
     std.log.info("@errorName:{s}", .{@errorName(Err.VErr)});
 }
 
+// for 表达式:: for 有可能无break, 所以必须加else
 test "for result assignment error" {
     const arr = [_]u8{ 1, 3, 5, 7 };
-    const val = for (arr) |item| {
+    const val: u8 = for (arr) |item| {
         if (item > 100) break item;
-        // if (item > 1) break item;
-    } else {
-        std.debug.print("== error ==\n", .{});
-        std.process.exit(1);
-    };
+    } else @intCast(100);
+    std.debug.print("{d}\n", .{val});
+}
+test "for result assignment error2" {
+    const arr = [_]u8{ 1, 3, 5, 7 };
+    const val: u8 = for (arr) |item| {
+        if (item > 100) break item;
+        break 1;
+    } else @intCast(100);
     std.debug.print("{d}\n", .{val});
 }
 
@@ -113,4 +118,18 @@ test "test anyerror" {
 const ErrorManager = struct {};
 const Error = struct {};
 
-test "error " {}
+fn t() !u8 {
+    return 8;
+}
+test "catch::" {
+    // ====================
+    _ = try t();
+
+    // ====================
+    _ = t() catch "";
+
+    // ====================
+    if (t()) |res| {
+        std.debug.print("res:{}\n", .{res});
+    } else |_| {}
+}
