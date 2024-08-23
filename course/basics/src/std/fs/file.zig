@@ -145,3 +145,24 @@ test "read file7:" {
     std.debug.print("read file7:{s}\n", .{bufs});
     allocator.free(bufs);
 }
+test "read file8:" {
+    const allocator = std.testing.allocator;
+    const f = try std.fs.openFileAbsolute("/home/zdz/Documents/Try/Zig/zig-pro/course/basics/src/std/fs/system_file.json", .{ .mode = .read_write });
+    defer f.close();
+
+    var bufs: []u8 = allocator.alloc(u8, 0) catch @panic("OOM");
+    while (true) {
+        var buf: [2]u8 = undefined;
+        const size = try f.readAll(&buf);
+
+        const prelen = bufs.len;
+        const aftlen = bufs.len + size;
+        bufs = try allocator.realloc(bufs, aftlen); // 分配
+        // std.debug.print("bufs.len:{},size:{}\n", .{ bufs.len, size });
+        @memcpy(bufs[prelen..aftlen], buf[0..size]); // 拷贝
+
+        if (size < 2) break;
+    }
+    std.debug.print("read file8:{s}\n", .{bufs});
+    allocator.free(bufs);
+}
