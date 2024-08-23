@@ -2,8 +2,8 @@ const std = @import("std");
 
 fn reflect(fun: anytype) !void {
     const F = @TypeOf(fun);
-    const Args = std.meta.ArgsTuple(F); // 入参
-    const Res = @typeInfo(F).Fn.return_type.?; // 返回值
+    const Args = std.meta.ArgsTuple(F); // 入参数量和类型
+    const Res = @typeInfo(F).Fn.return_type.?; // 返回值类型
 
     std.debug.print("Args:{}\n", .{Args});
     std.debug.print("Res:{}\n", .{Res});
