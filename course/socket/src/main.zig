@@ -1,4 +1,5 @@
 const std = @import("std");
+const testing = std.testing;
 const mem = std.mem;
 const http = std.http;
 const net = std.net;
@@ -10,6 +11,7 @@ pub fn main() !void {
     // const stream = try net.connectUnixSocket(":8089");
     // const address: net.Address = .{ .in = .{ .sa = .{ .port = 8089, .addr = 0 } } };
     const address = net.Address.initIp4([4]u8{ 0, 0, 0, 0 }, 8089);
+    // var server = try address.listen(.{ .force_nonblocking = true }); // 暂不支持nonblock
     var server = try address.listen(.{}); // 生成接收socket_fd
     std.debug.print("server:{}\n", .{server});
     defer server.deinit();
@@ -52,4 +54,32 @@ fn read(reader: net.Stream.Reader) !void {
             break;
         }
     }
+}
+
+// https://github.com/ziglang/zig/blob/5c0766b6c8f1aea18815206e0698953a35384a21/lib/std/net/test.zig#L167
+test "server/client:" {
+    const localhost = try net.Address.parseIp("127.0.0.1", 0);
+
+    var server = try localhost.listen(.{});
+    defer server.deinit();
+
+    const S = struct {
+        fn clientFn(server_address: net.Address) !void {
+            const socket = try net.tcpConnectToAddress(server_address);
+            defer socket.close();
+
+            _ = try socket.writer().writeAll("Hello world!");
+        }
+    };
+
+    const t = try std.Thread.spawn(.{}, S.clientFn, .{server.listen_address});
+    defer t.join();
+
+    var client = try server.accept();
+    defer client.stream.close();
+    var buf: [16]u8 = undefined;
+    const n = try client.stream.reader().read(&buf);
+
+    try testing.expectEqual(@as(usize, 12), n);
+    try testing.expectEqualSlices(u8, "Hello world!", buf[0..n]);
 }

@@ -20,6 +20,23 @@ fn min() void {
 
 }
 
+// @memcpy 元素长度必须一致
+test "@mmecpy:" {
+    var buf: [9]u8 = undefined;
+    // In practice there would likely be more complex logic here to populate `buf`.
+    @memcpy(&buf, "some name");
+    std.debug.print("@memcpy:{}\n", .{std.mem.eql(u8, &buf, "some name")});
+
+    // =======================================================
+    // =======================================================
+    comptime var buf2: [9]u8 = undefined;
+    // In practice there would likely be more complex logic here to populate `buf`.
+    @memcpy(&buf2, "some name");
+
+    const buf_tem = buf2; // error: runtime value contains reference to comptime var
+    std.debug.print("@memcpy:{}\n", .{std.mem.eql(u8, &buf_tem, "some name")});
+}
+
 test "@trunc:" {
     const v = @trunc(3.14);
     std.debug.print("@trunc::v:{d}\n", .{v});

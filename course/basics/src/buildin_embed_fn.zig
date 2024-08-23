@@ -1,4 +1,5 @@
 const std = @import("std");
+const posix = std.posix;
 
 test "@trun:" {
     std.debug.print("typeof @trunc(58.0):{}\n", .{@TypeOf(@trunc(58.1892))}); // comptime_float
@@ -81,6 +82,8 @@ test "@as" {
     std.debug.print("@as(u5,12):{}\n", .{@as(u5, 12) << 2}); // 16
 
     std.debug.print("div:{}\n", .{@as(u3, 4) - @as(u4, 3)}); // 1
+    std.debug.print("NONBLOCK:{}\n", .{@as(u32, @bitCast(posix.O{ .NONBLOCK = true }))}); // 1<<11
+    std.debug.print("NONBLOCK:{}\n", .{@as(u32, @bitCast(posix.O{ .NONBLOCK = true }))}); // 1<<11
 }
 
 const CortexM3Interrupt = enum(u4) {

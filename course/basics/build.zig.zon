@@ -3,10 +3,6 @@
     .version = "0.1.0",
     .paths = .{"."},
     .dependencies = .{
-        .limine = .{
-            .url = "https://github.com/limine-bootloader/limine-zig/archive/trunk.tar.gz",
-            .hash = "1220889cec612d653c31a4063d20daa9ec382ac23f76e9cc60a778b0ad17377bafa1",
-        },
         .httpz = .{
             .path = "../../../fork/http.zig",
             // .url = "https://github.com/karlseguin/http.zig/archive/refs/heads/master.tar.gz",

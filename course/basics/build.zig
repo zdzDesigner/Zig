@@ -7,20 +7,17 @@ pub fn build(b: *std.Build) void {
     const optimize = b.standardOptimizeOption(.{});
 
     // 获取包
-    const limine = b.dependency("limine", .{});
     const httpz = b.dependency("httpz", .{});
 
     // 添加一个二进制可执行程序构建
     const exe = b.addExecutable(.{
         .name = "test",
-        .root_source_file = .{ .path = "src/main.zig" },
+        .root_source_file = b.path("src/main.zig"),
         .target = target,
         .optimize = optimize,
     });
 
     // 获取包中的模块
-    const limineModule = limine.module("limine");
-    exe.root_module.addImport("custom_import_limine", limineModule);
     exe.root_module.addImport("httpz", httpz.module("httpz"));
 
     // 添加到顶级 install step 中作为依赖
@@ -46,7 +43,7 @@ pub fn build(b: *std.Build) void {
     run_step.dependOn(&run_cmd.step);
 
     const unit_tests = b.addTest(.{
-        .root_source_file = .{ .path = "src/main.zig" },
+        .root_source_file = b.path("src/main.zig"),
         .target = target,
         .optimize = optimize,
     });
@@ -55,6 +52,16 @@ pub fn build(b: *std.Build) void {
     const test_step = b.step("test", "Run unit tests");
     test_step.dependOn(&run_unit_tests.step);
     // zig build test --summary all
+
+    // @export test ==================
+    const export_cmd = b.addSystemCommand(&.{ "zig", "build-obj", "./test/export.zig" });
+    const export_mv = b.addSystemCommand(&.{ "mv", "./export.o", "./export.o.o", "./zig-out/" });
+    // const export_nm = b.addSystemCommand(&.{ "nm", "-A", "./zig-out/export.o" });
+    const export_nm = b.addSystemCommand(&.{ "nm", "-A", "./zig-out/export.o.o" });
+    const export_step = b.step("export", "test @export");
+    export_mv.step.dependOn(&export_cmd.step);
+    export_nm.step.dependOn(&export_mv.step);
+    export_step.dependOn(&export_nm.step);
 }
 
 // zig-cache : 缓存目录

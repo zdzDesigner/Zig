@@ -1,4 +1,5 @@
 const std = @import("std");
+const testing = std.testing;
 
 test "parseInt" {
     // 第三个参数 ?
@@ -14,6 +15,11 @@ test "parseInt" {
     std.debug.print("parseInt:{any}\n", .{std.fmt.parseInt(i55, "-15", 16)}); // -21
     std.debug.print("parseInt:{any}\n", .{std.fmt.parseInt(u32, "0xA", 0)}); // 10
     std.debug.print("parseInt:{any}\n", .{std.fmt.parseInt(u32, "0xa", 0)}); // 10
+    std.debug.print("parseInt:{any}\n", .{std.fmt.parseInt(u32, "11", 2)}); // 3
+
+    const val = try std.fmt.allocPrint(testing.allocator, "{b}", .{11});
+    defer testing.allocator.free(val);
+    std.debug.print("unparseInt:{s}\n", .{val}); // 1011
 }
 
 test "parseFloat" {
