@@ -478,11 +478,12 @@ pub const JsContext = struct {
         try check(napi.napi_get_version(self.env, &ret));
         return ret;
     }
-    pub fn getNodeEnv(self: *JsContext) !u32 {
+    pub fn getNodeEnv(self: *JsContext) ![]u8 {
         var ret: [*c]napi.napi_node_version = undefined;
+        // var ret: [*c]napi.napi_node_version = @ptrCast(&std.mem.zeroes(napi.napi_node_version));
         try check(napi.napi_get_node_version(self.env, &ret));
-        // self.arena.allocator()
-        return ret.*.major;
+        // std.debug.print("release:{s}\n", .{ret.*.release});
+        return std.fmt.allocPrint(self.arena.allocator(), "{d}.{d}.{d}", .{ ret.*.major, ret.*.minor, ret.*.patch });
     }
 };
 
