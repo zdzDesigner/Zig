@@ -17,7 +17,7 @@ pub fn main() !void {
     const allocator = gap.allocator();
     try db.init(allocator);
 
-    while (true) {}
+    // while (true) {}
 
     const win = webui.newWindow();
     std.debug.print("win:{any}\n", .{win});
