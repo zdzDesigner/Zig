@@ -15,9 +15,12 @@ pub fn main() !void {
     var gap = heap.GeneralPurposeAllocator(.{}){};
     defer _ = gap.deinit();
     const allocator = gap.allocator();
-    try db.init(allocator);
 
-    // while (true) {}
+    var client = try db.init(allocator);
+    defer client.deinit();
+    try db.select(&client, allocator);
+
+    while (true) {}
 
     const win = webui.newWindow();
     std.debug.print("win:{any}\n", .{win});
