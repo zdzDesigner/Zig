@@ -104,6 +104,47 @@ test "@Type" {
     std.debug.print("i32:{},@TypeOf(i32):{} \n", .{ i32, @TypeOf(i32) }); // i32:i32, @TypeOf(i32):type
 
     std.debug.print("T==i32:{}\n", .{T == i32}); // true
+
+    std.debug.print("@alignOf(void):{}\n", .{@alignOf(void)}); // 1, bit
+    std.debug.print("@alignOf([]const u8):{}\n", .{@alignOf([]const u8)}); // 8, bit
+
+    // 构造Struct ======================
+    const fields: []const std.builtin.Type.StructField = &.{
+        .{
+            .name = "name",
+            .type = []const u8,
+            .is_comptime = false,
+            .alignment = @alignOf([]const u8),
+            .default_value = null,
+        },
+    };
+
+    const MyStruct = @Type(.{ .Struct = .{
+        .layout = std.builtin.Type.ContainerLayout.auto,
+        .decls = &.{},
+        .fields = fields[0..fields.len],
+        .is_tuple = false,
+    } });
+
+    const my_fields = std.meta.fields(MyStruct);
+    std.debug.print("@TypeOf(my_fields):{any}\n", .{@TypeOf(my_fields)});
+    // @TypeOf(my_fields):[]const builtin.Type.StructField
+
+    std.debug.print("my_fields:{any}\n", .{my_fields[0]});
+    // my_fields:builtin.Type.StructField{
+    //      .name = { 110, 97, 109, 101 },
+    //      .type = []const u8,
+    //      .default_value = null,
+    //      .is_comptime = false,
+    //      .alignment = 8
+    // }
+
+    var my_struct = MyStruct{ .name = "xxxx" };
+    std.debug.print("@TypeOf(my_fields):{any}\n", .{@TypeOf(my_struct)}); // @TypeOf(my_fields):type.test.@Type.MyStruct
+
+    std.debug.print("my_struct.name:{s}\n", .{my_struct.name}); // xxxx
+    @field(my_struct, "name") = "ccccccc";
+    std.debug.print("my_struct.name:{s}\n", .{my_struct.name}); // xxxx
 }
 
 // ======================================================
