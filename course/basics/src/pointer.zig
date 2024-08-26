@@ -259,3 +259,30 @@ test "@ptrCast2:" {
 // test "@ptrCast2:" {
 //     std.debug.print("v:{}\n", .{v});
 // }
+//
+//
+
+test "pointer const slice:" {
+    var val: []const u8 = undefined;
+    std.debug.print("undefined val pointer:{*}\n", .{val.ptr}); // u8@aaaaaaaaaaaaaaaa
+    val = "sss";
+    std.debug.print("sss val pointer:{*}\n", .{val.ptr}); // u8@10236c3
+    std.debug.print("val pointer:{*}\n", .{&val});
+    val = "bbbb";
+    std.debug.print("bbbb val pointer:{*}\n", .{val.ptr}); // u8@1024058
+    std.debug.print("val pointer:{*}\n", .{&val});
+    // val[0] = 'x';
+    std.debug.print("val:{s}\n", .{val});
+}
+
+test "pointer const:" {
+    const v: u8 = 8;
+    std.debug.print("@TypeOf(v):{}\n", .{@TypeOf(v)}); // u8
+    const pv: *const u8 = &v;
+    var val: *const u8 = undefined; // 指针常量
+    val = pv;
+    std.debug.print("val:{}\n", .{val.*});
+
+    // val.* = 3; // error: cannot assign to constant
+    // std.debug.print("val:{}\n", .{val.*});
+}

@@ -100,8 +100,8 @@ test "@Type" {
             .bits = 32,
         },
     });
-    std.debug.print("T:{}, @TypeOf(T):{}\n", .{ T, @TypeOf(T) });
-    std.debug.print("i32:{},@TypeOf(i32):{} \n", .{ i32, @TypeOf(i32) });
+    std.debug.print("T:{}, @TypeOf(T):{}\n", .{ T, @TypeOf(T) }); // T:i32, @TypeOf(T):type
+    std.debug.print("i32:{},@TypeOf(i32):{} \n", .{ i32, @TypeOf(i32) }); // i32:i32, @TypeOf(i32):type
 
     std.debug.print("T==i32:{}\n", .{T == i32}); // true
 }
