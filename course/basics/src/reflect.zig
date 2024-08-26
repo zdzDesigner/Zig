@@ -36,7 +36,7 @@ fn ArgumentStruct(comptime function: anytype) type {
     });
 }
 
-test "ArgumentStruct" {
+test "ArgumentStruct:" {
     const Test = struct {
         fn A(a: i32, b: bool) bool {
             return if (a > 10 and b) true else false;
