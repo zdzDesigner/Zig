@@ -2,6 +2,7 @@ const std = @import("std");
 const assert = std.debug.assert;
 
 fn ArgumentStruct(comptime function: anytype) type {
+    std.debug.print("ssssss", .{});
     const info = @typeInfo(@TypeOf(function)).Fn;
     var fields: [info.params.len + 1]std.builtin.Type.StructField = undefined;
     var count = 0;
@@ -53,13 +54,24 @@ test "ArgumentStruct:" {
     };
     const ArgA = ArgumentStruct(Test.A);
     const fieldsA = std.meta.fields(ArgA);
+    std.debug.print("fieldsA[0]:{any}\n", .{fieldsA[0]});
+    // fieldsA[0]:builtin.Type.StructField{ .name = { 48 }, .type = i32, .default_value = null, .is_comptime = false, .alignment = 4 }
+    std.debug.print("fieldsA[1]:{any}\n", .{fieldsA[1]});
+    // fieldsA[1]:builtin.Type.StructField{ .name = { 49 }, .type = bool, .default_value = null, .is_comptime = false, .alignment = 1 }
+    std.debug.print("fieldsA[2]:{any},name:{s}\n", .{ fieldsA[2], fieldsA[2].name });
+    // fieldsA[2]:builtin.Type.StructField{ .name = { 114, 101, 116, 118, 97, 108 }, .type = bool, .default_value = null, .is_comptime = false, .alignment =1 }
+    // name:retval
     assert(fieldsA.len == 3);
     assert(fieldsA[0].name[0] == '0');
     assert(fieldsA[1].name[0] == '1');
-    assert(fieldsA[2].name[0] == 'r');
+    assert(fieldsA[2].name[0] == 'r'); // retval
 
     const ArgB = ArgumentStruct(Test.B);
     const fieldsB = std.meta.fields(ArgB);
+    std.debug.print("fieldsB[0]:{any}\n", .{fieldsB[0]});
+    // fieldsB[0]:builtin.Type.StructField{ .name = { 48 }, .type = []const u8, .default_value = null, .is_comptime = false, .alignment = 8 }
+    std.debug.print("fieldsB[1]:{any}\n", .{fieldsB[1]});
+    // fieldsB[1]:builtin.Type.StructField{ .name = { 114, 101, 116, 118, 97, 108 }, .type = void, .default_value = null, .is_comptime = false, .alignment =1 }
     assert(fieldsB.len == 2);
     assert(fieldsB[0].name[0] == '0');
     assert(fieldsB[1].name[0] == 'r');
