@@ -4,7 +4,7 @@ const heap = std.heap;
 const Allocator = std.mem.Allocator;
 const webui = @import("webui");
 const json = @import("json");
-const db = @import("./db/db.zig");
+const db = @import("./db/mysql/db.zig");
 const route = @import("./route/router.zig");
 
 pub fn main() !void {

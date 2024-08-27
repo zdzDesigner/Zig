@@ -5,8 +5,8 @@ const Conn = myzql.conn.Conn;
 
 pub fn init(allocator: mem.Allocator) !Conn {
     var client = try Conn.init(allocator, &.{
-        // .username = "root",
-        // .password = "",
+        .username = "zdz",
+        .password = "0",
         .database = "badnib_zdz_3",
     });
     std.debug.print("ping .......", .{});
