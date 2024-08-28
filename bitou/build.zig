@@ -4,6 +4,12 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
+    // 打印tree
+    const tree = b.dependency("tree-fmt", .{
+        // .target = target,
+        // .optimize = optimize,
+    });
+
     const webui = b.dependency("zig-webui", .{
         .target = target,
         .optimize = optimize,
@@ -28,6 +34,7 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
 
+    exe.root_module.addImport("tree-fmt", tree.module("tree-fmt"));
     exe.root_module.addImport("webui", webui.module("webui"));
     exe.root_module.addImport("json", json.module("zig-json"));
     exe.root_module.addImport("myzql", myzql.module("myzql"));

@@ -5,6 +5,7 @@
     .dependencies = .{
         .@"zig-webui" = .{ .path = "../../fork/zig-webui" },
         .@"zig-json" = .{ .path = "../../fork/zig-json" },
+        .@"tree-fmt" = .{ .path = "../../fork/tree-fmt" },
         .myzql = .{ .path = "../../fork/myzql" },
     },
 
