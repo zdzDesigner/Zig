@@ -1,9 +1,11 @@
 const std = @import("std");
 
-test "stderr:" {
-    // try std.io.getStdOut().writer().print("aa:{s}", .{""});
-    // try std.io.getStdErr().writer().print("aa:{s}", .{""});
-    // try std.io.getStdIn().writer().print("stdin:{s}", .{"xx"});
+test "std:" {
+    try std.io.getStdOut().writer().print("std out:{s}\n", .{""});
+    try std.io.getStdErr().writer().print("std err:{s}\n", .{""});
+    try std.io.getStdIn().writer().print("std in:{s}\n", .{"xx"});
+}
+test "stdIn read:" {
     // var buf: [2]u8 = undefined;
     // const reader = std.io.getStdIn().reader();
     // // const size = try std.io.getStdIn().reader().readAll(&buf);
@@ -165,4 +167,50 @@ test "read file8:" {
     }
     std.debug.print("read file8:{s}\n", .{bufs});
     allocator.free(bufs);
+}
+
+// !!!!! 后插, 手动编辑后会换行(手动编辑后默认添加\r\n)
+test "write file:" {
+    const f = try std.fs.openFileAbsolute("/home/zdz/Documents/Try/Zig/zig-pro/course/basics/src/std/fs/system_file.json", .{ .mode = .read_write });
+    defer f.close();
+
+    // 长度限制 write()
+    // .linux => 0x7ffff000,
+    // .macos, .ios, .watchos, .tvos, .visionos => maxInt(i32),
+
+    // const size = try f.write("{xx"); //  从第一个字符开始替换
+    // std.debug.print("size:{}\n", .{size}); // 3
+
+    // const size = try f.pwrite("---", 8); //  从n个字符开始替换
+    // std.debug.print("size:{}\n", .{size}); // 3
+
+    // std.debug.print("pos:{}\n", .{try f.getPos()}); // 0
+    // try f.seekTo(30); // 设置偏移
+    // std.debug.print("pos:{}\n", .{try f.getPos()}); // 30
+    // try f.seekBy(-2); // 设置相对偏移
+    // std.debug.print("pos:{}\n", .{try f.getPos()}); // 28
+    // _ = try f.write("{xx"); //  从第一个字符开始替换
+
+    // 后插入
+    // const pos_end = try f.getEndPos();
+    // std.debug.print("pos_end:{}\n", .{pos_end});
+    // const size = try f.pwrite("---", pos_end); //  从n个字符开始替换
+    // std.debug.print("size:{}\n", .{size}); // 3
+    // 后插, 手动编辑后会换行
+    try f.seekFromEnd(0);
+    _ = try f.write("555");
+
+    // 无长度限制
+    // try f.writeAll("1234"); // 从第一个字符开始替换
+    // try writeAll(f, "abcde|");
+
+    // const writer = f.writer();
+}
+pub fn writeAll(f: std.fs.File, bytes: []const u8) std.posix.WriteError!void {
+    var index: usize = 0;
+    while (index < bytes.len) {
+        std.debug.print("index:{}\n", .{index});
+        index += try f.write(bytes[index..]);
+        std.debug.print("index:{}\n", .{index});
+    }
 }
