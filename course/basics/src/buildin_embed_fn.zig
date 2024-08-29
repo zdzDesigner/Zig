@@ -50,11 +50,19 @@ test "@ptrCast:" {
 }
 
 test "packed:" {
+    const NormalField = struct {
+        a: u3,
+        b: u3,
+        c: u2,
+    };
+    std.debug.print("size:NormalField:{}\n", .{@sizeOf(NormalField)}); // 3 字节
+
     const BitField = packed struct {
         a: u3,
         b: u3,
         c: u2,
     };
+    std.debug.print("size:BitField:{}\n", .{@sizeOf(BitField)}); // 1 字节
 
     // 位移
     std.debug.print("offset:{}\n", .{@bitOffsetOf(BitField, "a")}); // 0

@@ -18,7 +18,9 @@ pub fn main() !void {
 
     var client = try db.init(allocator);
     defer client.deinit();
-    try db.select(&client, allocator);
+    try db.select(allocator, &client);
+
+    // std.debug.print("gap.detectLeaks:{}\n", .{gap.detectLeaks()});
 
     while (true) {}
 

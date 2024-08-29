@@ -62,7 +62,7 @@ const songlist = struct {
     fn prev() ?[*:0]const u8 {
         if (index == 0 and !isloop) return null;
         index = if (index == 0) lastIndex().? else index - 1;
-        std.debug.print("index:{}, item:{}\n", .{ index, list.items.len });
+        std.debug.print("index:{}, item:{s}\n", .{ index, list.items[index] });
 
         return list.items[index];
     }
@@ -84,6 +84,8 @@ const AudioCxt = struct {
     channels: u64 = 0,
     STATE: u8 = 'R',
 
+    pub const DIRECTION = enum { PREV, NEXT };
+
     fn init(ally: mem.Allocator, engin: *zaudio.Engine, conf: zaudio.Sound.Config) !AudioCxt {
         return .{
             .allocator = ally,
@@ -92,17 +94,15 @@ const AudioCxt = struct {
         };
     }
 
-    fn loadSound(self: *AudioCxt, filepath: ?[*:0]const u8) !void {
+    fn loadSound(self: *AudioCxt, direction: DIRECTION) !void {
         // self.sound_conf.file_path = if (filepath) |v| v else songlist.next();
-        self.sound_conf.file_path = filepath orelse songlist.next();
+        self.sound_conf.file_path = if (direction == DIRECTION.PREV) songlist.prev() else songlist.next();
+        // std.debug.print("path:{s}\n", .{self.sound_conf.file_path.?});
+        // self.sound = try self.engin.createSound(self.sound_conf);
         self.sound = self.engin.createSound(self.sound_conf) catch |err| {
-            std.debug.print("createSound::error:{}", .{err});
-            return self.loadSound(null);
+            std.debug.print("createSound::error:{}\n", .{err});
+            return loadSound(self, direction);
         };
-        // std.debug.print("ok:{}\n", .{self.sound_conf});
-        // std.debug.print("sound:{}\n", .{self.sound});
-        std.debug.print("path:{s}\n", .{self.sound_conf.file_path.?});
-        // return self;
     }
 
     fn start(self: *AudioCxt) !void {
@@ -133,12 +133,13 @@ const AudioCxt = struct {
 
     fn next(self: *AudioCxt) !void {
         self.sound.destroy();
-        try self.loadSound(null);
+        // time.sleep(time.ns_per_s);
+        try self.loadSound(DIRECTION.NEXT);
         try self.start();
     }
     fn prev(self: *AudioCxt) !void {
         self.sound.destroy();
-        try self.loadSound(songlist.prev());
+        try self.loadSound(DIRECTION.PREV);
         try self.start();
     }
 };
@@ -150,18 +151,24 @@ const event = struct {
             'S' => ctx.stop() catch unreachable,
             'R' => ctx.start() catch unreachable,
             'P' => {
-                ctx.stop() catch unreachable;
-
                 while (true) {
+                    ctx.stop() catch unreachable;
                     ctx.next() catch |err| {
                         std.debug.print("err:{}\n", .{err});
+                        continue;
                     };
                     break;
                 }
             },
             'O' => {
-                ctx.stop() catch unreachable;
-                ctx.prev() catch unreachable;
+                while (true) {
+                    ctx.stop() catch unreachable;
+                    ctx.prev() catch |err| {
+                        std.debug.print("err:{}\n", .{err});
+                        continue;
+                    };
+                    break;
+                }
             },
             '"', 'H' => {
                 var frames_cur = ctx.sound.getTime(); // 当前时间的帧数
@@ -226,7 +233,7 @@ pub fn main() !void {
     defer zaudio.deinit();
 
     var ctx = try AudioCxt.init(ally, try zaudio.Engine.create(null), zaudio.Sound.Config.init());
-    try ctx.loadSound(null);
+    try ctx.loadSound(AudioCxt.DIRECTION.NEXT);
     std.debug.print("main run ===============", .{});
     try ctx.start();
     // const engin = try zaudio.Engine.create(null);
@@ -330,8 +337,8 @@ fn controller(
         if (curtime - oldtime < 300) continue;
         oldtime = curtime;
 
-        std.debug.print("path:{s},evt:{s}\n", .{ path, @tagName(nevt.event) });
-        const buf = try readFile(path);
+        // std.debug.print("path:{s},evt:{s}\n", .{ path, @tagName(nevt.event) });
+        const buf = try readCmd(path);
 
         sub(ctx, buf[0]);
     }
@@ -431,13 +438,15 @@ fn readSongList(ally: mem.Allocator, dirpath: []const u8) !void {
     if (songlist.lastIndex() == null) return Error.ErrorEmpty;
 }
 
-fn readFile(filepath: []const u8) ![1]u8 {
+fn readCmd(filepath: []const u8) ![1]u8 {
     var buf: [1]u8 = undefined;
+    try readFile(filepath, &buf);
+    return buf;
+}
+fn readFile(filepath: []const u8, buf: []u8) !void {
     const f = try std.fs.cwd().openFile(filepath, .{});
     defer f.close();
-    const size = try f.readAll(&buf);
-    std.debug.print("size:{}, buf:{s}\n", .{ size, buf });
-    return buf;
+    _ = try f.readAll(buf);
 }
 
 const Random = struct {
