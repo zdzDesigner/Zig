@@ -214,3 +214,10 @@ pub fn writeAll(f: std.fs.File, bytes: []const u8) std.posix.WriteError!void {
         std.debug.print("index:{}\n", .{index});
     }
 }
+
+test "readToEndAllOptions:" {
+    const fs = try std.fs.cwd().openFile("", .{});
+    defer fs.close();
+    // fs.readToEndAllocOptions(allocator: Allocator, max_bytes: usize, size_hint: ?usize, comptime alignment: u29, comptime optional_sentinel: ?u8)
+    // std.fs.
+}

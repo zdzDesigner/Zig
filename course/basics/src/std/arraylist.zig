@@ -23,10 +23,24 @@ const Player = struct {
     name: []const u8,
     isdead: bool,
 };
+
+// FieldEnum 取出filed
 test "MultiArrayList:" {
     // const list = std.MultiArrayList(Player){};
-    const list = std.ArrayList(Player).init(std.testing.allocator);
-    std.debug.print("list:{}\n", .{list});
+    var list = std.MultiArrayList(Player){};
+    defer list.deinit(std.testing.allocator);
+    std.debug.print("MultiArrayList::list:{}\n", .{list});
+    try list.append(std.testing.allocator, Player{
+        .name = "zdz",
+        .isdead = false,
+    });
+    try list.append(std.testing.allocator, Player{
+        .name = "zym",
+        .isdead = true,
+    });
+
+    std.debug.print("list.items:{s}\n", .{list.items(.name)});
+    std.debug.print("list.items:{any}\n", .{list.items(.isdead)});
 }
 
 test "toOwnedSlice:" {
