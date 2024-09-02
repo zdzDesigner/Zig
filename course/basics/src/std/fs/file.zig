@@ -169,6 +169,9 @@ test "read file8:" {
     allocator.free(bufs);
 }
 
+// =====================================================
+// =====================================================
+// =====================================================
 // !!!!! 后插, 手动编辑后会换行(手动编辑后默认添加\r\n)
 test "write file:" {
     const f = try std.fs.openFileAbsolute("/home/zdz/Documents/Try/Zig/zig-pro/course/basics/src/std/fs/system_file.json", .{ .mode = .read_write });
@@ -206,6 +209,7 @@ test "write file:" {
 
     // const writer = f.writer();
 }
+// write 有长度限制
 pub fn writeAll(f: std.fs.File, bytes: []const u8) std.posix.WriteError!void {
     var index: usize = 0;
     while (index < bytes.len) {

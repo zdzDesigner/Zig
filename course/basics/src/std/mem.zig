@@ -182,3 +182,8 @@ test "asBytes:" {
 test "indexOfPos:" {
     std.debug.print("indexOfPos:{d}\n", .{std.mem.indexOfPos(u8, "ab", 0, "").?}); // 0
 }
+
+// 至少包含
+test "containsAtLeast:" {
+    std.debug.print("字符串(元素)是否包含:{}\n", .{std.mem.containsAtLeast(u8, "day xx", 1, "day")}); // true
+}

@@ -244,3 +244,8 @@ test "const u8::arraylist:" {
     defer songlist.deinit();
     try songlist.append(filepath);
 }
+
+test "++" {
+    std.debug.print("++:{s}\n", .{"aa" ++ "bbb"});
+    std.debug.print("++:{s}\n", .{"aa" ++ std.fmt.comptimePrint("{d}", .{8}) ++ "bbb"});
+}

@@ -52,6 +52,11 @@ const songlist = struct {
         Random.shuffle([*:0]const u8, list.items);
     }
 
+    fn seek(i: usize) ?[*:0]const u8 {
+        if (i > lastIndex().?) return null;
+        index = i;
+        return list.items[index];
+    }
     fn next() ?[*:0]const u8 {
         if (index == lastIndex().? and !isloop) return null;
         index = if (index == max) 0 else index + 1;
@@ -94,14 +99,19 @@ const AudioCxt = struct {
         };
     }
 
-    fn loadSound(self: *AudioCxt, direction: DIRECTION) !void {
+    fn loadSound(self: *AudioCxt, direction: DIRECTION, index: ?@TypeOf(songlist.index)) !void {
         // self.sound_conf.file_path = if (filepath) |v| v else songlist.next();
-        self.sound_conf.file_path = if (direction == DIRECTION.PREV) songlist.prev() else songlist.next();
+        self.sound_conf.file_path = blk: {
+            if (index) |i| break :blk songlist.seek(i);
+            if (direction == DIRECTION.PREV) break :blk songlist.prev();
+            if (direction == DIRECTION.NEXT) break :blk songlist.next();
+            unreachable;
+        };
         // std.debug.print("path:{s}\n", .{self.sound_conf.file_path.?});
         // self.sound = try self.engin.createSound(self.sound_conf);
         self.sound = self.engin.createSound(self.sound_conf) catch |err| {
             std.debug.print("createSound::error:{}\n", .{err});
-            return loadSound(self, direction);
+            return loadSound(self, direction, null);
         };
     }
 
@@ -134,12 +144,12 @@ const AudioCxt = struct {
     fn next(self: *AudioCxt) !void {
         self.sound.destroy();
         // time.sleep(time.ns_per_s);
-        try self.loadSound(DIRECTION.NEXT);
+        try self.loadSound(DIRECTION.NEXT, null);
         try self.start();
     }
     fn prev(self: *AudioCxt) !void {
         self.sound.destroy();
-        try self.loadSound(DIRECTION.PREV);
+        try self.loadSound(DIRECTION.PREV, null);
         try self.start();
     }
 };
@@ -227,13 +237,21 @@ pub fn main() !void {
         return;
     };
     songlist.random();
+    // 萱草花
     std.debug.print("songlist.list:{s}\n", .{songlist.list.items});
+    var index: usize = 0;
+    for (songlist.list.items, 0..) |item, i| {
+        if (std.mem.containsAtLeast(u8, std.mem.span(item), 1, "萱草花.mp3")) {
+            std.debug.print("item:{s},i:{}\n", .{ item, i });
+            index = i;
+        }
+    }
 
     zaudio.init(ally);
     defer zaudio.deinit();
 
     var ctx = try AudioCxt.init(ally, try zaudio.Engine.create(null), zaudio.Sound.Config.init());
-    try ctx.loadSound(AudioCxt.DIRECTION.NEXT);
+    try ctx.loadSound(AudioCxt.DIRECTION.NEXT, index);
     std.debug.print("main run ===============", .{});
     try ctx.start();
     // const engin = try zaudio.Engine.create(null);

@@ -14,8 +14,11 @@ test "parseInt" {
     std.debug.print("parseInt:{any}\n", .{std.fmt.parseInt(u32, "35", 16)}); // 53: 3*16 + 5
     std.debug.print("parseInt:{any}\n", .{std.fmt.parseInt(i55, "-15", 16)}); // -21
     std.debug.print("parseInt:{any}\n", .{std.fmt.parseInt(u32, "0xA", 0)}); // 10
+    std.debug.print("parseInt:{any}\n", .{std.fmt.parseInt(u32, "0xb", 0)}); // 11
     std.debug.print("parseInt:{any}\n", .{std.fmt.parseInt(u32, "0xa", 0)}); // 10
     std.debug.print("parseInt:{any}\n", .{std.fmt.parseInt(u32, "11", 2)}); // 3
+
+    std.debug.print("11 to hex:{s}\n", .{std.fmt.comptimePrint("0x{x}", .{11})}); // 0xb
 
     const val = try std.fmt.allocPrint(testing.allocator, "{b}", .{11});
     defer testing.allocator.free(val);
@@ -109,9 +112,19 @@ pub inline fn comptimePrint(comptime fmt: []const u8, args: anytype) *const [std
         return &final;
     }
 }
+pub fn comptimePrint2(comptime fmt: []const u8, args: anytype) [1:0]u8 {
+    var buf: [1:0]u8 = undefined;
+    _ = std.fmt.bufPrint(&buf, fmt, args) catch unreachable;
+    std.debug.print("buf:{s}\n", .{buf});
+    buf[buf.len] = 0;
+    return buf;
+}
 
 // comptimePrint 会调用 bufPrint
 test "comptimePrint:" {
+    var val: u32 = 4;
+    val = 5;
+    std.debug.print("comptimePrint2:{s}\n", .{comptimePrint2("{d}", .{val})});
     std.debug.print("comptimePrint:{s}\n", .{std.fmt.comptimePrint("aa:{}", .{99})}); // aa:99
     std.debug.print("comptimePrint:{s}\n", .{std.fmt.comptimePrint("aa:{s}", .{"bb"})}); // aa:bb
     const v = 33;
