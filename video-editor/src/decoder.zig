@@ -156,7 +156,8 @@ pub const StreamIt = struct {
             c.AVMEDIA_TYPE_AUDIO => {
                 const format = try ffmpegFormatToAudioFormat(codec_params.format);
                 const sample_rate = try cIntToUsize(codec_params.sample_rate, "sample rate");
-                const num_channels = try cIntToUsize(codec_params.ch_layout.nb_channels, "number of channels");
+                // const num_channels = try cIntToUsize(codec_params.ch_layout.nb_channels, "number of channels");
+                const num_channels = try cIntToUsize(codec_params.channels, "number of channels");
                 return .{
                     .audio = .{
                         .stream_id = id,
@@ -394,7 +395,8 @@ pub const VideoDecoder = struct {
         var channel_data = std.ArrayList([]const u8).init(self.alloc);
         errdefer channel_data.deinit();
 
-        const nb_channels = try cIntToUsize(frame.ch_layout.nb_channels, "frame channels");
+        // const nb_channels = try cIntToUsize(frame.ch_layout.nb_channels, "frame channels");
+        const nb_channels = try cIntToUsize(frame.channels, "frame channels");
         const nb_samples = try cIntToUsize(frame.nb_samples, "audio samples");
         const data_len = nb_samples * format.sampleSize();
 
