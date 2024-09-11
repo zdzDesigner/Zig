@@ -24,7 +24,7 @@
     // internet connectivity.
     .dependencies = .{
         .portaudio = .{
-            .path = "../../portaudio",
+            .path = "../../fork/portaudio",
         },
     },
     .paths = .{
