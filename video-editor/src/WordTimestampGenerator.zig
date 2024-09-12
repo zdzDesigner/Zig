@@ -173,7 +173,8 @@ const WhisperRunner = struct {
         c.whisper_log_set(logCallback, null);
 
         const cparams = c.whisper_context_default_params();
-        const model: []const u8 = @embedFile("WordTimestampGenerator/ggml-tiny.en-q5_1.bin");
+        // const model: []const u8 = @embedFile("WordTimestampGenerator/ggml-tiny.en-q5_1.bin");
+        const model: []const u8 = @embedFile("WordTimestampGenerator/ggml-tiny-q5_1.bin");
         const ctx = c.whisper_init_from_buffer_with_params(@constCast(model.ptr), model.len, cparams) orelse {
             std.log.err("Failed to create whisper context", .{});
             return error.Whisper;
@@ -301,7 +302,6 @@ fn pushWhisperSegments(segment_it: *WhisperRunner.SegmentIt, shared: *Shared, bu
                 //std.debug.print("Skipping \"{s}\" at {d} because it is the same as the word before\n", .{whisper_segment.text, whisper_segment.file_start_s});
                 continue;
             }
-
         }
 
         // Project starts at 12.0 (7.0)

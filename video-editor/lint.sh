@@ -30,7 +30,7 @@ set -ex
 # zig build -Doptimize=ReleaseSafe -Dfake_ui --summary all
 zig build 
 # ./zig-out/bin/video-editor --input ./res/BigBuckBunny_320x240_20s.mp4 --output test.json 
-./zig-out/bin/video-editor --input  /home/zdz/temp/obs/4.mkv --output test.json 
+./zig-out/bin/video-editor --input  /home/zdz/temp/obs/5.mkv --output test.json 
 # ./zig-out/bin/video-editor --input ./res/BigBuckBunny_320x240_20s.mp4 --output test.json --skip-subtitles
 
 echo "Success"

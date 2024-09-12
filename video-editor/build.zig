@@ -80,6 +80,7 @@ fn setupRustGui(b: *std.Build, opt: std.builtin.OptimizeMode) !std.Build.LazyPat
 }
 
 pub fn build(b: *std.Build) !void {
+    // const target = b.standardTargetOptions(.{ .default_target = .{ .os_tag = .windows } });
     const target = b.standardTargetOptions(.{});
     const opt = b.standardOptimizeOption(.{});
 
