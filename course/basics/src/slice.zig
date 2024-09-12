@@ -73,7 +73,7 @@ fn arrptr(arr: *const [3]i32) void {
 }
 // 切片
 fn sliceptr(arr: []const u8) void {
-    std.log.info("{s}", .{arr});
+    std.log.info("sliceptr::{s}", .{arr});
 }
 
 fn pointer() void {
@@ -226,4 +226,17 @@ test "list" {
     var buffer: [3]u8 = undefined;
     write(buffer[0..]);
     std.debug.print("buffer:{s}\n", .{buffer});
+}
+
+// 切片
+fn sliceptr2(arr: *[]const u8) void {
+    std.debug.print("sliceptr::{s}\n", .{arr});
+    std.debug.print("sliceptr::{s}\n", .{arr.*});
+}
+
+test "slice and pointer::" {
+    var a: []const u8 = "aaaaaaaa";
+    sliceptr2(&a);
+    var b = @as([]const u8, "bbbb");
+    sliceptr2(&b);
 }

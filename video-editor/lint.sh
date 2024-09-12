@@ -2,13 +2,13 @@
 
 set -ex
 
-# zig build --summary all
-# zig fmt src --check
-# pushd ./src/gui/rust
-# cargo fmt --check
-# cargo clippy -- -Dclippy::all -Aclippy::missing_safety_doc
-# popd
-# #
+zig build --summary all
+zig fmt src --check
+pushd ./src/gui/rust
+cargo fmt --check
+cargo clippy -- -Dclippy::all -Aclippy::missing_safety_doc
+popd
+#
 # pushd src/gui/mock/
 # clang-format -n -Werror mock_gui.c
 # clang-tidy --extra-arg="-I/home/zdz/Documents/Try/Zig/fork/video-editor/src/gui" mock_gui.c
@@ -31,6 +31,7 @@ set -ex
 zig build 
 # ./zig-out/bin/video-editor --input ./res/BigBuckBunny_320x240_20s.mp4 --output test.json 
 ./zig-out/bin/video-editor --input  /home/zdz/temp/obs/5.mkv --output test.json 
+# ./zig-out/bin/video-editor --input  /home/zdz/temp/obs/4.mkv --output test.json 
 # ./zig-out/bin/video-editor --input ./res/BigBuckBunny_320x240_20s.mp4 --output test.json --skip-subtitles
 
 echo "Success"
