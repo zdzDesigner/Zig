@@ -44,7 +44,7 @@ pub fn build(b: *std.Build) void {
     // }
     math_exe.addIncludePath(b.path("lib"));
     math_exe.addCSourceFiles(.{ .files = &.{ "src/main.c", "lib/math.c" } });
-    math_exe.linkLibrary(sub_mod.artifact("sub")); // 加载静态库
+    math_exe.linkLibrary(sub_mod.artifact("sub")); // 加载静态库, 从依赖库中的 `zig-out/lib/` 取
     // math_exe.root_module.addImport("submod", sub_mod.module("submod")); // 加载源码
     b.installArtifact(math_exe);
 
