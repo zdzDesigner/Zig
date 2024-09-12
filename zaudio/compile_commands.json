@@ -1,0 +1,224 @@
+[
+	{
+		"arguments": [
+			"clang",
+			"lib/base.c",
+			"-o",
+			"lib/base.c.o",
+			"-I/home/zdz/Documents/Try/Zig/fork/portaudio/zig-out/include"
+		],
+		"directory": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio",
+		"file": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio/lib/base.c",
+		"output": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio/lib/base.c.o"
+	},
+	{
+		"arguments": [
+			"clang",
+			"src/common/pa_allocation.c",
+			"-o",
+			"src/common/pa_allocation.c.o",
+			"-lalsa",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/include",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/common",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/hostapi/alsa",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/os/unix"
+		],
+		"directory": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio",
+		"file": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio/src/common/pa_allocation.c",
+		"output": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio/src/common/pa_allocation.c.o"
+	},
+	{
+		"arguments": [
+			"clang",
+			"src/common/pa_converters.c",
+			"-o",
+			"src/common/pa_converters.c.o",
+			"-lalsa",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/include",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/common",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/hostapi/alsa",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/os/unix"
+		],
+		"directory": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio",
+		"file": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio/src/common/pa_converters.c",
+		"output": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio/src/common/pa_converters.c.o"
+	},
+	{
+		"arguments": [
+			"clang",
+			"src/common/pa_cpuload.c",
+			"-o",
+			"src/common/pa_cpuload.c.o",
+			"-lalsa",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/include",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/common",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/hostapi/alsa",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/os/unix"
+		],
+		"directory": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio",
+		"file": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio/src/common/pa_cpuload.c",
+		"output": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio/src/common/pa_cpuload.c.o"
+	},
+	{
+		"arguments": [
+			"clang",
+			"src/common/pa_debugprint.c",
+			"-o",
+			"src/common/pa_debugprint.c.o",
+			"-lalsa",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/include",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/common",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/hostapi/alsa",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/os/unix"
+		],
+		"directory": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio",
+		"file": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio/src/common/pa_debugprint.c",
+		"output": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio/src/common/pa_debugprint.c.o"
+	},
+	{
+		"arguments": [
+			"clang",
+			"src/common/pa_dither.c",
+			"-o",
+			"src/common/pa_dither.c.o",
+			"-lalsa",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/include",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/common",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/hostapi/alsa",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/os/unix"
+		],
+		"directory": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio",
+		"file": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio/src/common/pa_dither.c",
+		"output": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio/src/common/pa_dither.c.o"
+	},
+	{
+		"arguments": [
+			"clang",
+			"src/common/pa_front.c",
+			"-o",
+			"src/common/pa_front.c.o",
+			"-lalsa",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/include",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/common",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/hostapi/alsa",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/os/unix"
+		],
+		"directory": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio",
+		"file": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio/src/common/pa_front.c",
+		"output": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio/src/common/pa_front.c.o"
+	},
+	{
+		"arguments": [
+			"clang",
+			"src/common/pa_process.c",
+			"-o",
+			"src/common/pa_process.c.o",
+			"-lalsa",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/include",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/common",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/hostapi/alsa",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/os/unix"
+		],
+		"directory": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio",
+		"file": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio/src/common/pa_process.c",
+		"output": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio/src/common/pa_process.c.o"
+	},
+	{
+		"arguments": [
+			"clang",
+			"src/common/pa_ringbuffer.c",
+			"-o",
+			"src/common/pa_ringbuffer.c.o",
+			"-lalsa",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/include",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/common",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/hostapi/alsa",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/os/unix"
+		],
+		"directory": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio",
+		"file": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio/src/common/pa_ringbuffer.c",
+		"output": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio/src/common/pa_ringbuffer.c.o"
+	},
+	{
+		"arguments": [
+			"clang",
+			"src/common/pa_stream.c",
+			"-o",
+			"src/common/pa_stream.c.o",
+			"-lalsa",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/include",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/common",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/hostapi/alsa",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/os/unix"
+		],
+		"directory": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio",
+		"file": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio/src/common/pa_stream.c",
+		"output": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio/src/common/pa_stream.c.o"
+	},
+	{
+		"arguments": [
+			"clang",
+			"src/common/pa_trace.c",
+			"-o",
+			"src/common/pa_trace.c.o",
+			"-lalsa",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/include",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/common",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/hostapi/alsa",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/os/unix"
+		],
+		"directory": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio",
+		"file": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio/src/common/pa_trace.c",
+		"output": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio/src/common/pa_trace.c.o"
+	},
+	{
+		"arguments": [
+			"clang",
+			"src/hostapi/alsa/pa_linux_alsa.c",
+			"-o",
+			"src/hostapi/alsa/pa_linux_alsa.c.o",
+			"-lalsa",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/include",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/common",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/hostapi/alsa",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/os/unix"
+		],
+		"directory": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio",
+		"file": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio/src/hostapi/alsa/pa_linux_alsa.c",
+		"output": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio/src/hostapi/alsa/pa_linux_alsa.c.o"
+	},
+	{
+		"arguments": [
+			"clang",
+			"src/os/unix/pa_unix_hostapis.c",
+			"-o",
+			"src/os/unix/pa_unix_hostapis.c.o",
+			"-DPA_USE_ALSA=1",
+			"-lalsa",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/include",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/common",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/hostapi/alsa",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/os/unix"
+		],
+		"directory": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio",
+		"file": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio/src/os/unix/pa_unix_hostapis.c",
+		"output": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio/src/os/unix/pa_unix_hostapis.c.o"
+	},
+	{
+		"arguments": [
+			"clang",
+			"src/os/unix/pa_unix_util.c",
+			"-o",
+			"src/os/unix/pa_unix_util.c.o",
+			"-DPA_USE_ALSA=1",
+			"-lalsa",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/include",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/common",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/hostapi/alsa",
+			"-I/home/zdz/.cache/zig/p/1220a96e42d87ae966106483e3351919c95b7c8129942c355fd173b38b2e7a0ae0a0/src/os/unix"
+		],
+		"directory": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio",
+		"file": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio/src/os/unix/pa_unix_util.c",
+		"output": "/home/zdz/Documents/Try/Zig/zig-pro/zaudio/src/os/unix/pa_unix_util.c.o"
+	}
+]

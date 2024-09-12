@@ -1,16 +1,21 @@
 const std = @import("std");
+const zcc = @import("compile_commands");
 
 pub fn build(b: *std.Build) void {
+    var targets = std.ArrayList(*std.Build.Step.Compile).init(b.allocator);
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
-    build_cexamples(b, target, optimize);
+    const exe_cexamples = build_cexamples(b, target, optimize);
+    build_zig(b, target, optimize);
+    targets.append(exe_cexamples) catch @panic("OOM");
+    zcc.createStep(b, "cdb", targets.toOwnedSlice() catch @panic("OOM"));
 }
 
 fn build_zig(
     b: *std.Build,
-    target: ?std.Build.ResolvedTarget,
-    optimize: ?std.builtin.OptimizeMode,
+    target: std.Build.ResolvedTarget,
+    optimize: std.builtin.OptimizeMode,
 ) void {
     const portaudio_dep = b.dependency("portaudio", .{
         .target = target,
@@ -61,7 +66,7 @@ fn build_cexamples(
     b: *std.Build,
     target: std.Build.ResolvedTarget,
     optimize: std.builtin.OptimizeMode,
-) void {
+) *std.Build.Step.Compile {
     const portaudio_dep = b.dependency("portaudio", .{
         .target = target,
         .optimize = optimize,
@@ -72,10 +77,12 @@ fn build_cexamples(
         .target = target,
         .optimize = optimize,
     });
-    exe.addCSourceFiles(.{ .files = &.{"lib/base.c"} });
+    // exe.addCSourceFiles(.{ .files = &.{"lib/base.c"} });
     // exe.addCSourceFiles(.{ .files = &.{"lib/paex_write_sine.c"} });
-    // exe.addIncludePath(b.path("."));
-    // exe.addIncludePath();
+    exe.addCSourceFiles(.{ .files = &.{"lib/paex_record_file.c"} });
+    // exe.addCSourceFiles(.{ .files = &.{"lib/paex_read_write_wire.c"} });
+    // FIX:: compile_commands 头文件问题
+    exe.addIncludePath(portaudio_dep.path("zig-out/include"));
     exe.linkLibrary(pa_lib);
     b.installArtifact(exe);
 
@@ -86,4 +93,5 @@ fn build_cexamples(
     run_step.dependOn(&run_cmd.step);
 
     // const run_example = b.step("c", "run c exmaples");
+    return exe;
 }

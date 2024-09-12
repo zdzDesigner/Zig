@@ -26,6 +26,9 @@
         .portaudio = .{
             .path = "../../fork/portaudio",
         },
+        .compile_commands = .{
+            .path = "../zig-compile-commands",
+        },
     },
     .paths = .{
         "build.zig",

@@ -95,8 +95,8 @@ pub const Stream = struct {
     pub const Options = struct {
         n_channels: usize = 0,
         mono: bool = true,
-        // sample_rate: f64 = 44100,
-        sample_rate: f64 = 22050,
+        sample_rate: f64 = 44100,
+        // sample_rate: f64 = 22050,
         frames_per_buffer: usize = 1028,
     };
 
@@ -152,11 +152,6 @@ pub const Stream = struct {
                     break;
                 }
             }
-            // if (self.handler.data_pipe.writableLength() > data.len) {
-            //     try self.handler.data_pipe.write(data);
-            //     break;
-            // }
-            // std.debug.print("-------\n", .{});
             std.time.sleep(std.time.ns_per_ms);
             // c.Pa_Sleep(1);
         }
