@@ -1,4 +1,4 @@
-#include "sum.h"
+#include "sum/sum.h"
 
 int fib(int n)
 {

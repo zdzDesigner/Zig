@@ -8,7 +8,6 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
-    // _ = b.addModule("libsub.include", .{ .root_source_file = .{ .path = b.pathFromRoot("include") } });
     const sub_mod = b.addModule("submod", .{
         .target = target,
         .optimize = optimize,
@@ -18,8 +17,6 @@ pub fn build(b: *std.Build) void {
     sub_mod.addIncludePath(b.path("include"));
     sub_mod.addCSourceFiles(.{
         .root = b.path("lib"),
-        // .files = ([_][]const u8{"sum.c"})[0..],
-        // .files = &[_][]const u8{"sum.c"},
         .files = &.{"sum.c"},
     });
 
@@ -30,11 +27,10 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
     lib.addIncludePath(b.path("include"));
-    lib.installHeadersDirectory(b.path("./include"), "sum", .{});
+    lib.installHeadersDirectory(b.path("./include"), "sum", .{}); // #include "sum/sum.h"
+    // lib.installHeadersDirectory(b.path("./include"), "", .{}); // #include "sum.h"
     lib.addCSourceFiles(.{
         .root = b.path("lib"),
-        // .files = ([_][]const u8{"sum.c"})[0..],
-        // .files = &[_][]const u8{"sum.c"},
         .files = &.{"sum.c"},
     });
     b.installArtifact(lib);
