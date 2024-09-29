@@ -8,6 +8,20 @@ pub extern fn setWindowTransparency(display: sdl.c.SDL_SysWMInfo_Display, window
 // pub extern fn setWindowTransparency(info: *sdl.c.SDL_SysWMInfo, opacity: c_ulong) void;
 
 pub fn main() !void {
+    // var font_path = ""
+    var ft: [:0]const u8 = "/home/zdz/.local/share/fonts/NerdFonts/monofur Nerd Font Complete Mono.ttf";
+    var args = std.process.args();
+    defer args.deinit();
+    _ = args.skip();
+    while (args.next()) |arg| {
+        std.debug.print("arg:{s}\n", .{arg});
+        var iter = std.mem.split(u8, arg, "=");
+        if (std.mem.eql(u8, iter.first(), "font")) {
+            const v = iter.next().?;
+            ft = v.ptr[0..v.len :0];
+        }
+    }
+
     try sdl.init(.{
         // .video = true,
         .events = true,
@@ -34,7 +48,7 @@ pub fn main() !void {
     defer window.destroy();
     const window_info = try window.getWMInfo();
 
-    printTest("xxxxxx");
+    // printTest("xxxxxx");
     // window.setVisible(false);
     // _ = window.setWindowOpacity(0);
     //     Display *display = info.info.x11.display;
@@ -51,7 +65,9 @@ pub fn main() !void {
     // font ============================
     // const ft = "/home/zdz/Documents/Try/Zig/fork/SDL.zig/examples/assets/fonts/8bitOperatorPlus8-Regular.ttf";
     // const ft = "/home/zdz/.local/share/fonts/NerdFonts/monofur Nerd Font Complete Mono.ttf";
-    const ft = "/usr/share/fonts/truetype/wqy/wqy-microhei.ttc";
+    // const ft = "/usr/share/fonts/truetype/wqy/wqy-microhei.ttc";
+    // const ft = "/usr/share/fonts/adobe-source-han-sans/SourceHanSansCN-Regular.otf";
+
     const font_size = 60;
     const font = try ttf.openFont(ft, font_size);
     defer font.close();
