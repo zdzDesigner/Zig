@@ -68,6 +68,7 @@ test "tagName:" {
 }
 
 test "test enum" {
+    // 从0开始递增
     const Code2 = enum {
         success,
         fail,
@@ -84,7 +85,7 @@ test "test enum value" {
         success,
         fail,
         server_error = 500,
-        server_panic,
+        server_panic, // 501
     };
 
     // try expect(Code.server_panic == 501);
@@ -96,7 +97,7 @@ const Code = enum(u16) {
     success,
     fail,
     server_error = 500,
-    server_panic,
+    server_panic, // 501
     // 方法可以提供给枚举。它们充当可以使用点语法调用的命名空间函数。
     pub fn isSuccess(this: Code) bool {
         return this == Code.success;

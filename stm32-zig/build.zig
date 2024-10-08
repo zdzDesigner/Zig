@@ -6,8 +6,8 @@ const examples = &.{
     // "adc",
     // "adc_group",
     // "adc_temp",
-    // "adc_dma",
-    "uart_dma",
+    "adc_dma",
+    // "uart_dma",
     // "adc_temp_irq",
     // "button",
     // "button_irq",
@@ -90,8 +90,8 @@ fn installExample(
         .abi = .eabi,
     });
     const optimize = b.standardOptimizeOption(.{
-        // .preferred_optimize_mode = .ReleaseSafe,
-        .preferred_optimize_mode = .ReleaseSmall,
+        .preferred_optimize_mode = .ReleaseSafe,
+        // .preferred_optimize_mode = .ReleaseSmall,
     });
     inline for (examples) |example| {
         const source = b.fmt("src/examples/{s}.zig", .{example});

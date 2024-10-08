@@ -1,6 +1,5 @@
 const std = @import("std");
 const zaudio = @import("zaudio");
-
 const logger = std.log.scoped(.exe);
 
 pub fn main() !void {

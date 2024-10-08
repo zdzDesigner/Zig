@@ -1,12 +1,17 @@
 const std = @import("std");
 
-fn closureScope(name: []const u8) void {
-    const cfn = struct {
-        fn handle() void {
-            std.debug.print("name:{}\n", .{name});
+//  error: 'name' not accessible from inner function
+//             std.debug.print("name:{}\n", .{name});
+//
+// fn closureScope(name: []const u8) void {
+
+// convert comptime
+fn closureScope(comptime name: []const u8) void {
+    struct {
+        fn f() void {
+            std.debug.print("name:{s}\n", .{name});
         }
-    };
-    cfn.handle();
+    }.f();
 }
 
 test "closure::args scope:" {

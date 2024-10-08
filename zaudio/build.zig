@@ -79,8 +79,8 @@ fn build_cexamples(
     });
     // exe.addCSourceFiles(.{ .files = &.{"lib/base.c"} });
     // exe.addCSourceFiles(.{ .files = &.{"lib/paex_write_sine.c"} });
-    exe.addCSourceFiles(.{ .files = &.{"lib/paex_record_file.c"} });
-    // exe.addCSourceFiles(.{ .files = &.{"lib/paex_read_write_wire.c"} });
+    // exe.addCSourceFiles(.{ .files = &.{"lib/paex_record_file.c"} });
+    exe.addCSourceFiles(.{ .files = &.{"lib/paex_read_write_wire.c"} });
     // FIX:: compile_commands 头文件问题
     exe.addIncludePath(portaudio_dep.path("zig-out/include"));
     exe.linkLibrary(pa_lib);
