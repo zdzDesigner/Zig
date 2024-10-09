@@ -145,3 +145,5 @@ const KeyValue = struct {
         };
     }
 };
+
+test "parse argv:" {}
