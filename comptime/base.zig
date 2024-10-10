@@ -1,9 +1,13 @@
-export fn foo() void {}
+const std = @import("std");
+// export fn foo() void {}
 
-export fn bar() bool {
-    _ = isExclude(IgnoreDir, "sss");
+fn bar() void {
     _ = add(2, 3);
-    return isExcludeComptime(IgnoreDir, "sss");
+    // @compileLog(comptime isExclude(IgnoreDir, "fooFn")); // true
+    // @compileLog(comptime isExclude(IgnoreDir, "sss")); //false
+    _ = comptime isExcludeComptime(IgnoreDir, "fooFn");
+    // @compileLog(comptime isExcludeComptime(IgnoreDir, "fooFn")); // true
+    // @compileLog(comptime isExcludeComptime(IgnoreDir, "sss")); // false
 }
 
 fn isExcludeComptime(comptime I: type, comptime method: []const u8) bool {
@@ -27,7 +31,17 @@ fn isExclude(I: type, method: []const u8) bool {
     };
 }
 
-export fn add(a: u8, b: u8) u8 {
+fn add(a: u8, b: u8) u8 {
     return a + b;
 }
-const IgnoreDir = struct {};
+const IgnoreDir = struct {
+    const excludes = .{"fooFn"};
+};
+// test "@compileLog::" {
+//     _ = bar();
+// }
+
+pub fn main() !void {
+    _ = bar();
+    std.debug.print("xxxxxxx", .{});
+}

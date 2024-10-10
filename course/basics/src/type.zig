@@ -96,10 +96,13 @@ test "compare u1 and comptime_int:" {
 // ======================================================
 // error: opaque types have unknown size and therefore cannot be directly embedded in structs
 // opaque 不能用于 field
+// 和 pub 无关
 const Auth = struct {
     key: []const u8,
     pub const password = opaque {};
     pub const val = 3;
+    const nopub_val = 3;
+    fn method() !void {}
 };
 
 // 属性
@@ -108,8 +111,13 @@ test "Properties:" {
     std.debug.print("field key:{}\n", .{@hasField(Auth, "key")}); // true
     std.debug.print("decl key:{}\n", .{@hasDecl(Auth, "key")}); // false
     std.debug.print("field val:{}\n", .{@hasField(Auth, "val")}); // false
-
     std.debug.print("decl val:{}\n", .{@hasDecl(Auth, "val")}); // true
+    std.debug.print("@field(decl val):{}\n", .{@field(Auth, "val")}); // 3
+    std.debug.print("nopub field val:{}\n", .{@hasField(Auth, "nopub_val")}); // false
+    std.debug.print("nopub decl val:{}\n", .{@hasDecl(Auth, "nopub_val")}); // true
+    std.debug.print("field method:{}\n", .{@hasField(Auth, "method")}); // false
+    std.debug.print("decl method:{}\n", .{@hasDecl(Auth, "method")}); // true
+
     std.debug.print("decl password:{}\n", .{@hasDecl(Auth, "password")}); // true
 
     std.debug.print("auth:{}\n", .{auth});
@@ -260,4 +268,18 @@ test "writer:" {
     //     (function 'write')
     // )
     std.debug.print("hasDecl writeAll:{}\n", .{@hasDecl(@TypeOf(std.io.getStdErr().writer()), "writeAll")}); // true
+}
+
+test "eq type::" {
+    const v = std.builtin.Type.Optional{ .child = u8 };
+    std.debug.print("@typeInfo(std.builtin.Type.Optional) == .Optional:{}\n", .{@typeInfo(@TypeOf(v)) == .Optional}); // false
+    const v2: ?u8 = 3;
+    std.debug.print("@typeInfo(std.builtin.Type.Optional) == .Optional:{}\n", .{@typeInfo(@TypeOf(v2)) == .Optional}); // true
+}
+
+test "Int::" {
+    const v: u16 = 3;
+
+    std.debug.print("bits:{}\n", .{@typeInfo(@TypeOf(v)).Int.bits});
+    std.debug.print("@divExact(bits,8):{}\n", .{@divExact(@typeInfo(@TypeOf(v)).Int.bits, 8)});
 }
