@@ -1,5 +1,6 @@
 const std = @import("std");
-// export fn foo() void {}
+pub export fn foo() void {}
+pub extern fn HAL_RCC_GPIOB_CLK_ENABLE() callconv(.C) void;
 
 fn bar() void {
     _ = add(2, 3);
