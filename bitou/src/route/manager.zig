@@ -7,7 +7,9 @@ pub const Context = struct {
     allocator: mem.Allocator,
     evt: webui.Event,
 };
-const Handle = fn (Context) void;
+// const ErrorRoute = error{};
+// const Handle = fn (Context) ErrorRoute!void;
+const Handle = fn (Context) anyerror!void;
 
 // 路由
 pub const Router = struct {
@@ -22,11 +24,10 @@ pub const Router = struct {
 };
 
 pub const ManageRouter = struct {
+    const Self = @This();
     allocator: mem.Allocator,
     win: webui,
     routes: std.ArrayList(Router),
-
-    const Self = @This();
 
     pub fn init(allocator: mem.Allocator, win: webui) ManageRouter {
         return .{
@@ -45,7 +46,7 @@ pub const ManageRouter = struct {
         const call = struct {
             var allocator: mem.Allocator = undefined;
             fn f(evt: webui.Event) void {
-                return handle(.{ .evt = evt, .allocator = allocator });
+                return handle(.{ .evt = evt, .allocator = allocator }) catch unreachable;
             }
         };
         call.allocator = self.allocator;

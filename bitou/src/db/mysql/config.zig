@@ -3,8 +3,9 @@ const mem = std.mem;
 const myzql = @import("myzql");
 const Conn = myzql.conn.Conn;
 
+pub var client: Conn = undefined;
 pub fn init(allocator: mem.Allocator) !Conn {
-    var client = try Conn.init(allocator, &.{
+    client = try Conn.init(allocator, &.{
         .username = "zdz",
         .password = "0",
         .database = "badnib_zdz_3",

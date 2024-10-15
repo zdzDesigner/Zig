@@ -1,4 +1,5 @@
-pub const init = @import("config.zig").init;
+const config = @import("config.zig");
+pub const init = config.init;
 
 const std = @import("std");
 const mem = std.mem;
@@ -13,7 +14,7 @@ const ResultRowIter = myzql.result.ResultRowIter;
 const TextElems = myzql.result.TextElems;
 const PreparedStatement = myzql.result.PreparedStatement;
 
-const sqler = @import("./sqler.zig");
+const Sqler = @import("./sqler.zig").Sqler;
 
 const Operation = struct {
     id: u32,
@@ -83,19 +84,20 @@ fn StructTypeMix2(allocator: std.mem.Allocator, comptime T: type, val: anytype) 
     }
     return instance;
 }
-pub fn select(allocator: mem.Allocator, client: *Conn) !void {
-    var mgr = try sqler.Mgr.init(allocator, Operation);
+// pub fn select(allocator: mem.Allocator, client: *Conn) !void {
+pub fn select(allocator: mem.Allocator) !void {
+    var mgr = try Sqler.init(allocator, Operation);
     defer mgr.deinit();
 
     // 预处理 ===================
     // const pre_res = try client.prepare(allocator, "select id,user_id,update_time from operation limit 10");
-    const pre_res = try client.prepare(allocator, "select id,user_id,title from stage limit 10");
+    const pre_res = try config.client.prepare(allocator, "select id,user_id,title from stage limit 10");
     defer pre_res.deinit(allocator);
     const pre_rows: PreparedStatement = try pre_res.expect(.stmt);
     // std.debug.print("result:{}\n", .{pre_rows});
 
     // 执行 ===================
-    const res = try client.executeRows(&pre_rows, .{}); // no parameters because there's no ? in the query
+    const res = try config.client.executeRows(&pre_rows, .{}); // no parameters because there's no ? in the query
     const rows: ResultSet(BinaryResultRow) = try res.expect(.rows);
     const rows_iter: ResultRowIter(BinaryResultRow) = rows.iter();
     // var operations = std.ArrayList(Operation).init(allocator);

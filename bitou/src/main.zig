@@ -18,11 +18,12 @@ pub fn main() !void {
 
     var client = try db.init(allocator);
     defer client.deinit();
-    try db.select(allocator, &client);
+    // try db.select(allocator, &client);
+    try db.select(allocator);
 
     // std.debug.print("gap.detectLeaks:{}\n", .{gap.detectLeaks()});
 
-    while (true) {}
+    // while (true) {}
 
     const win = webui.newWindow();
     std.debug.print("win:{any}\n", .{win});
@@ -31,16 +32,20 @@ pub fn main() !void {
     std.debug.print("router:{}\n", .{router});
 
     // if (!win.setRootFolder("assets")) return;
-    // if (!win.setRootFolder("/home/zdz/Documents/Try/SVG/bitou/dist")) return;
-    if (!win.setRootFolder("/home/zdz/Documents/Try/Svg/badnib/client/dist")) return;
+    if (!win.setRootFolder("/home/zdz/Documents/Try/SVG/bitou/dist")) return;
+    // if (!win.setRootFolder("/home/zdz/Documents/Try/Svg/badnib/client/dist")) return; // P1 测试
 
     win.setFileHandler(fileHook);
 
     std.debug.print("getBestBrowser:{}\n", .{win.getBestBrowser()});
 
     // 内部打开 ========================================
-    const ok = win.showBrowser("index.html", .Chrome);
-    // const ok = win.show("http://localhost:8086/");
+    // const ok = win.showBrowser("index.html", .Chrome);
+    // const ok = win.showBrowser("index.html", .Firefox);
+    // const ok = win.showBrowser("index.html", .WebView);
+
+    const ok = win.showBrowser("index.html", .NoBrowser); // 无窗口
+    // const ok = win.show("index.html"); // 无浏览器更新提示
     // const ok = win.show("http://localhost:10001/");
     std.debug.print("show ok:{}\n", .{ok});
     // -------------------------------------------------

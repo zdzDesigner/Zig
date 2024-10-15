@@ -16,18 +16,18 @@ const StageList = struct {
     data: []Stage,
 };
 
-pub fn list(ctx: zin.Context) void {
+pub fn list(ctx: zin.Context) !void {
     // std.debug.print("stage:router:{}\n", .{ctx.evt});
 
     const key = ctx.evt.element;
     std.debug.print("key:{s}\n", .{key});
 
     const val = ctx.evt.getString();
-    const res_stagelist = json.parseFromSlice(StageList, ctx.allocator, val, .{}) catch unreachable;
+    const res_stagelist = try json.parseFromSlice(StageList, ctx.allocator, val, .{});
     defer res_stagelist.deinit();
     std.debug.print("parse stage:{}\n", .{res_stagelist.value});
 
-    const str = std.fmt.allocPrintZ(ctx.allocator, "response xx:{s}xxx", .{key}) catch unreachable;
+    const str = try std.fmt.allocPrintZ(ctx.allocator, "response xx:{s}xxx", .{key});
     defer ctx.allocator.free(str);
     ctx.evt.returnString(str);
 }

@@ -2,7 +2,7 @@ const std = @import("std");
 const meta = std.meta;
 const mem = std.mem;
 
-pub const Mgr = struct {
+pub const Sqler = struct {
     const Self = @This();
     allocator: mem.Allocator,
     t_keys: std.ArrayList([]const u8),
