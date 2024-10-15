@@ -1,5 +1,6 @@
 const config = @import("config.zig");
 pub const init = config.init;
+// const client = config.client;
 
 const std = @import("std");
 const mem = std.mem;
@@ -84,36 +85,53 @@ fn StructTypeMix2(allocator: std.mem.Allocator, comptime T: type, val: anytype) 
     }
     return instance;
 }
-// pub fn select(allocator: mem.Allocator, client: *Conn) !void {
-pub fn select(allocator: mem.Allocator) !void {
+fn free(allocator: std.mem.Allocator, val: anytype) void {
+    const fields = std.meta.fields(@TypeOf(val));
+    inline for (fields) |field| {
+        if (field.type == []const u8) {
+            allocator.free(@field(val, field.name));
+        }
+    }
+}
+pub fn select(allocator: mem.Allocator, client: *Conn) !void {
+    // pub fn select(allocator: mem.Allocator) !void {
     var mgr = try Sqler.init(allocator, Operation);
     defer mgr.deinit();
 
     // 预处理 ===================
-    // const pre_res = try client.prepare(allocator, "select id,user_id,update_time from operation limit 10");
-    const pre_res = try config.client.prepare(allocator, "select id,user_id,title from stage limit 10");
+    const pre_res = try client.prepare(allocator, "select id,user_id,update_time from operation limit 10");
+    // const pre_res = try client.prepare(allocator, "select id,user_id,title from stage limit 10");
     defer pre_res.deinit(allocator);
     const pre_rows: PreparedStatement = try pre_res.expect(.stmt);
     // std.debug.print("result:{}\n", .{pre_rows});
 
     // 执行 ===================
-    const res = try config.client.executeRows(&pre_rows, .{}); // no parameters because there's no ? in the query
+    const res = try client.executeRows(&pre_rows, .{}); // no parameters because there's no ? in the query
     const rows: ResultSet(BinaryResultRow) = try res.expect(.rows);
     const rows_iter: ResultRowIter(BinaryResultRow) = rows.iter();
-    // var operations = std.ArrayList(Operation).init(allocator);
-    var operations = std.ArrayList(Stage).init(allocator);
-    defer operations.deinit();
+    var operations = std.ArrayList(Operation).init(allocator);
+    // var operations = std.ArrayList(Stage).init(allocator);
+    defer {
+        for (operations.items) |item| {
+            // std.debug.print("item:{}", .{item});
+            free(allocator, item);
+            // allocator.free(item.title);
+            // allocator.free(item.data);
+            // allocator.destroy(item); // error: access of union field 'Pointer' while field 'Struct' is active
+        }
+        operations.deinit();
+    }
     while (try rows_iter.next()) |row| {
         // const op = try row.structCreate(Operation, allocator);
-        // const op = try row.structCreate(StructTypeMin(Operation, &.{ "id", "user_id", "update_time" }), allocator);
-        const op = try row.structCreate(StructTypeMin(Stage, &.{ "id", "user_id", "title" }), allocator);
+        const op = try row.structCreate(StructTypeMin(Operation, &.{ "id", "user_id", "update_time" }), allocator);
+        // const op = try row.structCreate(StructTypeMin(Stage, &.{ "id", "user_id", "title" }), allocator);
         defer BinaryResultRow.structDestroy(op, allocator); // 全部清除
         // defer allocator.destroy(op); // 不清除内部指针string
         // defer allocator.free(op.*.title);
-        std.debug.print("op:{s}\n", .{op.*.title});
+        // std.debug.print("op:{s}\n", .{op.*.title});
 
-        // try operations.append(StructTypeMix(Operation, op.*));
-        try operations.append(try StructTypeMix2(allocator, Stage, op.*)); // 拷贝[]const u8
+        try operations.append(try StructTypeMix2(allocator, Operation, op.*)); // 拷贝[]const u8
+        // try operations.append(try StructTypeMix2(allocator, Stage, op.*)); // 拷贝[]const u8
     }
 
     std.debug.print("operations:{any}\n", .{operations.items});

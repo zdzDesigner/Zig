@@ -18,8 +18,12 @@ pub fn main() !void {
 
     var client = try db.init(allocator);
     defer client.deinit();
-    // try db.select(allocator, &client);
-    try db.select(allocator);
+    // var arena = std.heap.ArenaAllocator.init(allocator);
+    // defer arena.deinit(); // 统一释放, 无需单个释放
+
+    try db.select(allocator, &client);
+    // _ = try db.init(allocator);
+    // try db.select(allocator);
 
     // std.debug.print("gap.detectLeaks:{}\n", .{gap.detectLeaks()});
 
@@ -43,15 +47,15 @@ pub fn main() !void {
     // const ok = win.showBrowser("index.html", .Chrome);
     // const ok = win.showBrowser("index.html", .Firefox);
     // const ok = win.showBrowser("index.html", .WebView);
-
     const ok = win.showBrowser("index.html", .NoBrowser); // 无窗口
+    //
     // const ok = win.show("index.html"); // 无浏览器更新提示
     // const ok = win.show("http://localhost:10001/");
     std.debug.print("show ok:{}\n", .{ok});
     // -------------------------------------------------
 
-    webui.wait();
-    webui.clean();
+    // webui.wait();
+    // webui.clean();
 }
 
 fn receive(evt: webui.Event) void {
