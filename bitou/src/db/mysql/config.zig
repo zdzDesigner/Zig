@@ -12,6 +12,6 @@ pub fn init(allocator: mem.Allocator) !Conn {
     });
     std.debug.print("ping .......", .{});
     try client.ping();
-    std.debug.print("ok!", .{});
+    std.debug.print("ok!\n", .{});
     return client;
 }

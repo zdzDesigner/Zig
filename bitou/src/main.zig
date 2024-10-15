@@ -16,12 +16,14 @@ pub fn main() !void {
     defer _ = gap.deinit();
     const allocator = gap.allocator();
 
-    var client = try db.init(allocator);
-    defer client.deinit();
     // var arena = std.heap.ArenaAllocator.init(allocator);
     // defer arena.deinit(); // 统一释放, 无需单个释放
 
-    try db.select(allocator, &client);
+    var client = try db.init(allocator);
+    defer client.deinit();
+    // try db.select(allocator, &client);
+    try db.selectSql(allocator, &client);
+
     // _ = try db.init(allocator);
     // try db.select(allocator);
 
