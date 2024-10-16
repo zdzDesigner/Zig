@@ -1,11 +1,8 @@
-const config = @import("config.zig");
-pub const init = config.init;
-// const client = config.client;
+const formatter = @import("tree-fmt").defaultFormatter();
 
 const std = @import("std");
 const mem = std.mem;
 
-const formatter = @import("tree-fmt").defaultFormatter();
 const myzql = @import("myzql");
 const Conn = myzql.conn.Conn;
 const ResultSet = myzql.result.ResultSet;
@@ -15,6 +12,9 @@ const ResultRowIter = myzql.result.ResultRowIter;
 const TextElems = myzql.result.TextElems;
 const PreparedStatement = myzql.result.PreparedStatement;
 
+const config = @import("config.zig");
+pub const init = config.init;
+// const client = config.client;
 const Sqler = @import("./sqler.zig").Sqler;
 
 fn StructTypeMin(comptime T: type, keys: []const []const u8) type {
@@ -241,24 +241,28 @@ const Operation = struct {
     const Self = @This();
     var sqler: Sqler = undefined;
 
-    pub fn init(allocator: mem.Allocator, client: *Conn) !Operation {
-        sqler = try Sqler.init(allocator, client);
-        return std.mem.zeroInit(Operation, .{});
+    pub fn init(allocator: mem.Allocator, client: *Conn) !Self {
+        sqler = try Sqler.init(allocator, client, "operation");
+        return std.mem.zeroInit(Self, .{});
     }
     pub fn deinit(self: *Self) void {
         _ = self;
         sqler.deinit();
     }
 
-    fn tabelName() []const u8 {
-        return "";
-    }
     fn get(self: *Self) !void {
         // fn get(self: *Self) []Self {
         _ = self;
         // try sqler.select(Self, null);
         // try sqler.select(Self, &.{ "id", "user_id", "update_time" });
-        try sqler.select(Self, &.{ "id", "user_id", "action_entity_id" });
+        const list = try sqler.select(Self, &.{ "id", "user_id", "action_entity_id" });
+        defer list.deinit();
+        // std.debug.print("res:{any}", .{list.items});
+        try formatter.format(list.items, .{
+            .name = "operation",
+            .slice_elem_limit = 1000,
+            .ignore_u8_in_lists = true,
+        });
     }
 };
 
@@ -270,7 +274,38 @@ const Stage = struct {
     update_time: u32,
     title: []const u8,
     data: []const u8,
+    const Self = @This();
+    var sqler: Sqler = undefined;
+
+    pub fn init(allocator: mem.Allocator, client: *Conn) !Self {
+        sqler = try Sqler.init(allocator, client, "stage");
+        return std.mem.zeroInit(Self, .{});
+    }
+    pub fn deinit(self: *Self) void {
+        _ = self;
+        sqler.deinit();
+    }
+
+    fn get(self: *Self) !void {
+        // fn get(self: *Self) []Self {
+        _ = self;
+        // const list = try sqler.select(Self, null);
+        const list = try sqler.select(Self, &.{ "id", "user_id", "update_time", "title", "data" });
+        defer {
+            for (list.items) |item| sqler.structTypeFree(item);
+            list.deinit();
+        }
+
+        try formatter.format(list.items, .{
+            .slice_elem_limit = 1000,
+            .ignore_u8_in_lists = true,
+        });
+
+        // std.debug.print("res:{any}", .{list.items});
+    }
 };
+
+// article
 pub fn selectSql(allocator: mem.Allocator, client: *Conn) !void {
     // var sqler = try Sqler.init(allocator, client, Operation);
     // defer sqler.deinit();
@@ -279,4 +314,8 @@ pub fn selectSql(allocator: mem.Allocator, client: *Conn) !void {
     var opt = try Operation.init(allocator, client);
     defer opt.deinit();
     try opt.get();
+
+    // var stage = try Stage.init(allocator, client);
+    // defer stage.deinit();
+    // try stage.get();
 }
