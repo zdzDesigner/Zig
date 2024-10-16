@@ -1,7 +1,8 @@
 const std = @import("std");
 const expect = std.testing.expect;
 
-pub fn logic() void {
+// pub fn logic() void {
+test "logic::" {
     std.log.info("============== type ===============", .{});
 
     std.debug.print("{}\n", .{@TypeOf(2)}); // comptime_int
@@ -32,8 +33,8 @@ pub fn logic() void {
 
     // @TypeOf: 它接受任意个表达式作为参数，并返回它们的"公共"可转换类型
     std.debug.print("{}\n", .{@TypeOf(page, max, db)}); // u16
-    std.debug.print("@TypeOf(db):{s}\n", .{@TypeOf(db)}); // u16
-    std.debug.print("{s}\n", .{@typeName(@TypeOf(db))}); // u16
+    std.debug.print("@TypeOf(db):{any}\n", .{@TypeOf(db)}); // i8
+    std.debug.print("{s}\n", .{@typeName(@TypeOf(db))}); // i8
     //
 
     // @typeInfo 类型描述

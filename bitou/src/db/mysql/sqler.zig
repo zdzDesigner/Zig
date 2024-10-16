@@ -17,35 +17,47 @@ pub const Sqler = struct {
     client: *Conn,
     allocator: mem.Allocator,
     t_name: []const u8 = "",
-    t_keys: std.ArrayList([]const u8),
+    // t_keys: std.ArrayList([]const u8),
+    // t_keys: []const []const u8,
 
-    pub fn init(allocator: mem.Allocator, client: *Conn, comptime T: type) !Self {
+    pub fn init(allocator: mem.Allocator, client: *Conn) !Self {
         return .{
             .client = client,
             .allocator = allocator,
-            .t_keys = try getTKeys(allocator, T),
+            // .t_keys = getTKeys(T),
         };
     }
-    pub fn deinit(self: *Self) void {
-        self.t_keys.deinit();
+    pub fn deinit(_: *Self) void {
+        // self.t_keys.deinit();
     }
 
     // table key
-    fn getTKeys(allocator: mem.Allocator, comptime T: type) !std.ArrayList([]const u8) {
-        var list = std.ArrayList([]const u8).init(allocator);
+    // fn getTKeys(allocator: mem.Allocator, comptime T: type) !std.ArrayList([]const u8) {
+    //     var list = std.ArrayList([]const u8).init(allocator);
+    //     const fields = meta.fields(T);
+    //     inline for (fields) |field| {
+    //         // std.debug.print("name:{s},type:{}\n", .{ field.name, field.type });
+    //         try list.append(field.name);
+    //     }
+    //     return list;
+    // }
+    pub fn getTKeys(comptime T: type) []const []const u8 {
         const fields = meta.fields(T);
-        inline for (fields) |field| {
+        var list: [fields.len][]const u8 = undefined;
+        inline for (fields, 0..) |field, i| {
             // std.debug.print("name:{s},type:{}\n", .{ field.name, field.type });
-            try list.append(field.name);
+            list[i] = field.name;
         }
-        return list;
+        return list[0..];
     }
 
-    fn StructTypeMin(comptime T: type, keys: []const []const u8) type {
+    fn StructTypeMin(comptime T: type, comptime keys: ?[]const []const u8) type {
+        if (keys == null) return T;
+
         const fields = std.meta.fields(T);
-        var fields_new: [keys.len]std.builtin.Type.StructField = undefined;
+        var fields_new: [keys.?.len]std.builtin.Type.StructField = undefined;
         inline for (fields) |field| {
-            inline for (keys, 0..) |key, i| {
+            inline for (keys.?, 0..) |key, i| {
                 if (std.mem.eql(u8, key, field.name)) {
                     fields_new[i] = .{
                         .name = field.name,
@@ -88,19 +100,19 @@ pub const Sqler = struct {
         }
     }
 
-    pub fn select(self: *Self, comptime T: type, keys: []const []const u8) !void {
-        _ = keys;
+    pub fn select(self: *Self, comptime T: type, comptime keys: ?[]const []const u8) !void {
+        // _ = keys;
+        // const keys = comptime getTKeys(T);
+        // @compileLog(keys);
         // std.debug.print("t_keys:{}\n", .{self.t_keys});
-        try formatter.format(self.t_keys, .{
+        try formatter.format(keys, .{
             .slice_elem_limit = 1000,
             .ignore_u8_in_lists = true,
         });
 
-        // const SQL = "select id,user_id,update_time from operation limit 10";
-        const sql_key = try std.mem.join(self.allocator, ",", self.t_keys.items);
+        const sql_key = try std.mem.join(self.allocator, ",", keys orelse &.{"*"});
         defer self.allocator.free(sql_key);
         std.debug.print("sqlkey:{s}\n", .{sql_key});
-        // const SQL = try std.fmt.comptimePrint("select {} from operation limit 10", .{sql_key});
         const SQL = try std.fmt.allocPrint(self.allocator, "select {s} from operation limit 10", .{sql_key});
         defer self.allocator.free(SQL);
 
@@ -126,9 +138,22 @@ pub const Sqler = struct {
             }
             rets.deinit();
         }
+        // const fields = meta.fields(T);
+        // var list: [fields.len][]const u8 = undefined;
+        // inline for (fields, 0..) |field, i| {
+        //     // std.debug.print("name:{s},type:{}\n", .{ field.name, field.type });
+        //     list[i] = field.name;
+        // }
+        // return list[0..];
+        // @compileLog(keys);
+        const NewT = comptime StructTypeMin(T, keys);
+        // const NewT = StructTypeMin(T, self.t_keys);
+        // const NewT = comptime StructTypeMin(T, &.{ "id", "user_id", "update_time" });
+
         while (try rows_iter.next()) |row| {
             // @compileLog(self.t_keys.items);
-            const op = try row.structCreate(StructTypeMin(T, self.t_keys.items), self.allocator);
+            const op = try row.structCreate(NewT, self.allocator);
+            // const op = try row.structCreate(T, self.allocator);
             // const op = try row.structCreate(StructTypeMin(T, &.{ "id", "user_id", "update_time" }), self.allocator);
             defer BinaryResultRow.structDestroy(op, self.allocator); // 全部清除
             // defer allocator.destroy(op); // 不清除内部指针string

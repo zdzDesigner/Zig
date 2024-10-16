@@ -61,7 +61,7 @@ pub fn main() !void {
     errorLogic.logic();
     heapLogic.logic();
     buildinFn.logic();
-    typeLogic.logic();
+    // typeLogic.logic();
     // try ioLogic.logic();
     // try httpLogic.httpServer();
 }

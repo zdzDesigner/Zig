@@ -219,6 +219,16 @@ pub fn select(allocator: mem.Allocator, client: *Conn) !void {
 //     }
 // }
 
+// pub fn getTKeys(comptime T: type) []const []const u8 {
+//     const fields = std.meta.fields(T);
+//     var list: [fields.len][]const u8 = undefined;
+//     inline for (fields, 0..) |field, i| {
+//         // std.debug.print("name:{s},type:{}\n", .{ field.name, field.type });
+//         list[i] = field.name;
+//     }
+//     return list[0..];
+// }
+
 const Operation = struct {
     id: u32,
     user_id: u32,
@@ -232,8 +242,7 @@ const Operation = struct {
     var sqler: Sqler = undefined;
 
     pub fn init(allocator: mem.Allocator, client: *Conn) !Operation {
-        sqler = try Sqler.init(allocator, client, Self);
-        // return .{};
+        sqler = try Sqler.init(allocator, client);
         return std.mem.zeroInit(Operation, .{});
     }
     pub fn deinit(self: *Self) void {
@@ -247,7 +256,9 @@ const Operation = struct {
     fn get(self: *Self) !void {
         // fn get(self: *Self) []Self {
         _ = self;
-        try sqler.select(Self, &.{});
+        // try sqler.select(Self, null);
+        // try sqler.select(Self, &.{ "id", "user_id", "update_time" });
+        try sqler.select(Self, &.{ "id", "user_id", "action_entity_id" });
     }
 };
 

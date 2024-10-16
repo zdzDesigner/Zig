@@ -298,3 +298,18 @@ fn reflectEnum(comptime T: type) void {
     // std.log.debug("reflect typeinfo: {any}", .{@typeInfo(T).Enum.fields}); // `xxx` must be comptime-known, but index value is runtime-known
     std.log.debug("reflect typeinfo: {any}", .{@typeInfo(T).Enum.fields.len}); //  3
 }
+
+// 每个元素都设置为value
+// @memset([]T, T{value});
+test "@memset::" {
+    var list: [10]u8 = undefined;
+    const slice = list[0..];
+    @memset(slice, 'a');
+    std.debug.print("list.len:{any}\n", .{list});
+}
+test "@memset2::" {
+    const list: [][]const u8 = &[_][]const u8{};
+    const slice = list[0..];
+    @memset(slice, "xxx");
+    std.debug.print("list.len:{any}\n", .{list});
+}
