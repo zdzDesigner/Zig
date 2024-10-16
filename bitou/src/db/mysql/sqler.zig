@@ -103,6 +103,10 @@ pub const Sqler = struct {
         }
     }
 
+    pub fn selectSlice(self: *Self, comptime T: type, comptime keys: ?[]const []const u8) ![]T {
+        var list = try self.select(T, keys);
+        return list.toOwnedSlice();
+    }
     pub fn select(self: *Self, comptime T: type, comptime keys: ?[]const []const u8) !std.ArrayList(T) {
         // try formatter.format(keys, .{
         //     .slice_elem_limit = 1000,

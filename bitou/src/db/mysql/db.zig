@@ -281,25 +281,28 @@ const Stage = struct {
         sqler = try Sqler.init(allocator, client, "stage");
         return std.mem.zeroInit(Self, .{});
     }
-    pub fn deinit(self: *Self) void {
+    pub fn deinit(self: *Self, list: ?[]Self) void {
         _ = self;
+        if (list) |_list| {
+            defer {
+                for (_list) |item| sqler.structTypeFree(item);
+                sqler.allocator.free(_list);
+            }
+        }
         sqler.deinit();
     }
 
-    fn get(self: *Self) !void {
+    fn get(self: *Self) ![]Self {
         // fn get(self: *Self) []Self {
         _ = self;
         // const list = try sqler.select(Self, null);
-        const list = try sqler.select(Self, &.{ "id", "user_id", "update_time", "title", "data" });
-        defer {
-            for (list.items) |item| sqler.structTypeFree(item);
-            list.deinit();
-        }
+        const list = try sqler.selectSlice(Self, &.{ "id", "user_id", "update_time", "title", "data" });
 
-        try formatter.format(list.items, .{
+        try formatter.format(list, .{
             .slice_elem_limit = 1000,
             .ignore_u8_in_lists = true,
         });
+        return list;
 
         // std.debug.print("res:{any}", .{list.items});
     }
@@ -311,11 +314,11 @@ pub fn selectSql(allocator: mem.Allocator, client: *Conn) !void {
     // defer sqler.deinit();
     // try sqler.select(Operation, null);
 
-    var opt = try Operation.init(allocator, client);
-    defer opt.deinit();
-    try opt.get();
+    // var opt = try Operation.init(allocator, client);
+    // defer opt.deinit();
+    // try opt.get();
 
-    // var stage = try Stage.init(allocator, client);
-    // defer stage.deinit();
-    // try stage.get();
+    var stage = try Stage.init(allocator, client);
+    const list = try stage.get();
+    defer stage.deinit(list);
 }
