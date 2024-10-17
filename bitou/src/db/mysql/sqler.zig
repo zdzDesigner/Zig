@@ -33,23 +33,13 @@ pub const Sqler = struct {
     }
 
     // table key
-    // fn getTKeys(allocator: mem.Allocator, comptime T: type) !std.ArrayList([]const u8) {
-    //     var list = std.ArrayList([]const u8).init(allocator);
-    //     const fields = meta.fields(T);
-    //     inline for (fields) |field| {
-    //         // std.debug.print("name:{s},type:{}\n", .{ field.name, field.type });
-    //         try list.append(field.name);
-    //     }
-    //     return list;
-    // }
-    pub fn getTKeys(comptime T: type) []const []const u8 {
+    fn getTKeys(allocator: mem.Allocator, comptime T: type) !std.ArrayList([]const u8) {
+        var list = std.ArrayList([]const u8).init(allocator);
         const fields = meta.fields(T);
-        var list: [fields.len][]const u8 = undefined;
-        inline for (fields, 0..) |field, i| {
-            // std.debug.print("name:{s},type:{}\n", .{ field.name, field.type });
-            list[i] = field.name;
+        inline for (fields) |field| {
+            try list.append(field.name);
         }
-        return list[0..];
+        return list;
     }
 
     fn StructTypeMin(comptime T: type, comptime keys: ?[]const []const u8) type {
@@ -80,7 +70,7 @@ pub const Sqler = struct {
         });
     }
     // 混合(字符串申请拷贝)
-    fn structTypeMix(self: *Self, comptime T: type, val: anytype) !T {
+    fn structTypeAlloc(self: *Self, comptime T: type, val: anytype) !T {
         const fields = std.meta.fields(@TypeOf(val));
         var instance = std.mem.zeroes(T);
         inline for (fields) |field| {
@@ -113,11 +103,17 @@ pub const Sqler = struct {
         //     .ignore_u8_in_lists = true,
         // });
 
-        const sql_key = try std.mem.join(self.allocator, ",", keys orelse &.{"*"});
+        const list_keys = try getTKeys(self.allocator, T);
+        defer list_keys.deinit();
+        // select * from xxx; 使用`*`T fields要和数据库字段顺序保持一致
+        const sql_key = try std.mem.join(self.allocator, ",", keys orelse list_keys.items);
+        // const sql_key = try std.mem.join(self.allocator, ",", keys orelse &.{"*"});
         defer self.allocator.free(sql_key);
         // std.debug.print("sqlkey:{s}\n", .{sql_key});
-        const SQL = try std.fmt.allocPrint(self.allocator, "select {s} from {s} limit 10", .{ sql_key, self.t_name });
+        const SQL = try std.fmt.allocPrint(self.allocator, "select {s} from {s} limit 2", .{ sql_key, self.t_name });
         defer self.allocator.free(SQL);
+        std.debug.print("SQL:{s}\n", .{SQL});
+        // const SQL = "select id,stage_id,user_id,parent_id,update_time,title,data from stage limit 10";
 
         // 预处理 ===================
         const pre_res = try self.client.prepare(self.allocator, SQL);
@@ -127,8 +123,9 @@ pub const Sqler = struct {
         // const pre_rows: PreparedStatement = try pre_res.expect(.stmt);
         // std.debug.print("result:{}\n", .{pre_rows});
         const res = try self.client.executeRows(&try pre_res.expect(.stmt), .{}); // no parameters because there's no ? in the query
-        // const rows: ResultSet(BinaryResultRow) = try res.expect(.rows);
-        const rows_iter: ResultRowIter(BinaryResultRow) = (try res.expect(.rows)).iter();
+        const rows: ResultSet(BinaryResultRow) = try res.expect(.rows);
+        const rows_iter: ResultRowIter(BinaryResultRow) = rows.iter();
+        // const rows_iter: ResultRowIter(BinaryResultRow) = (try res.expect(.rows)).iter();
         var rets = std.ArrayList(T).init(self.allocator);
         // defer {
         //     for (rets.items) |item| {
@@ -151,7 +148,12 @@ pub const Sqler = struct {
             // defer allocator.free(op.*.title);
             // std.debug.print("op:{s}\n", .{op.*.title});
 
-            try rets.append(try self.structTypeMix(T, op.*)); // 拷贝[]const u8
+            // const new_t = blk: {
+            //     if (keys == null) break :blk op.*;
+            //     break :blk try self.structTypeMix(T, op.*);
+            // };
+            // try rets.append(new_t); // 拷贝[]const u8
+            try rets.append(try self.structTypeAlloc(T, op.*)); // 拷贝[]const u8
         }
 
         // std.debug.print("rets:{any}\n", .{rets.items});

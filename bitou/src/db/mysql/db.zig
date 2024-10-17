@@ -16,97 +16,8 @@ const config = @import("config.zig");
 pub const init = config.init;
 // const client = config.client;
 const Sqler = @import("./sqler.zig").Sqler;
+const SqlerFn = @import("./sqler2.zig").SqlerFn;
 
-fn StructTypeMin(comptime T: type, keys: []const []const u8) type {
-    const fields = std.meta.fields(T);
-    var fields_new: [keys.len]std.builtin.Type.StructField = undefined;
-    inline for (fields) |field| {
-        inline for (keys, 0..) |key, i| {
-            if (std.mem.eql(u8, key, field.name)) {
-                fields_new[i] = .{
-                    .name = field.name,
-                    .type = field.type,
-                    .alignment = @alignOf(field.type),
-                    .is_comptime = false,
-                    .default_value = null,
-                };
-            }
-        }
-    }
-    return @Type(.{
-        .Struct = .{
-            .fields = fields_new[0..],
-            .decls = &.{},
-            .layout = std.builtin.Type.ContainerLayout.auto,
-            .is_tuple = false,
-        },
-    });
-}
-
-fn structTypeMix(allocator: std.mem.Allocator, comptime T: type, val: anytype) !T {
-    const fields = std.meta.fields(@TypeOf(val));
-    var instance = std.mem.zeroes(T);
-    inline for (fields) |field| {
-        std.debug.print("field.type:{}\n", .{field.type});
-        if (field.type == []const u8) {
-            @field(instance, field.name) = try allocator.dupe(u8, @field(val, field.name));
-        } else {
-            @field(instance, field.name) = @field(val, field.name);
-        }
-    }
-    return instance;
-}
-fn free(allocator: std.mem.Allocator, val: anytype) void {
-    const fields = std.meta.fields(@TypeOf(val));
-    inline for (fields) |field| {
-        if (field.type == []const u8) {
-            allocator.free(@field(val, field.name));
-        }
-    }
-}
-pub fn select(allocator: mem.Allocator, client: *Conn) !void {
-    // pub fn select(allocator: mem.Allocator) !void {
-    var mgr = try Sqler.init(allocator, client, Operation);
-    defer mgr.deinit();
-
-    // 预处理 ===================
-    const pre_res = try client.prepare(allocator, "select id,user_id,update_time from operation limit 10");
-    // const pre_res = try client.prepare(allocator, "select id,user_id,title from stage limit 10");
-    defer pre_res.deinit(allocator);
-    const pre_rows: PreparedStatement = try pre_res.expect(.stmt);
-    // std.debug.print("result:{}\n", .{pre_rows});
-
-    // 执行 ===================
-    const res = try client.executeRows(&pre_rows, .{}); // no parameters because there's no ? in the query
-    const rows: ResultSet(BinaryResultRow) = try res.expect(.rows);
-    const rows_iter: ResultRowIter(BinaryResultRow) = rows.iter();
-    var operations = std.ArrayList(Operation).init(allocator);
-    // var operations = std.ArrayList(Stage).init(allocator);
-    defer {
-        for (operations.items) |item| {
-            // std.debug.print("item:{}", .{item});
-            free(allocator, item);
-            // allocator.free(item.title);
-            // allocator.free(item.data);
-            // allocator.destroy(item); // error: access of union field 'Pointer' while field 'Struct' is active
-        }
-        operations.deinit();
-    }
-    while (try rows_iter.next()) |row| {
-        // const op = try row.structCreate(Operation, allocator);
-        const op = try row.structCreate(StructTypeMin(Operation, &.{ "id", "user_id", "update_time" }), allocator);
-        // const op = try row.structCreate(StructTypeMin(Stage, &.{ "id", "user_id", "title" }), allocator);
-        defer BinaryResultRow.structDestroy(op, allocator); // 全部清除
-        // defer allocator.destroy(op); // 不清除内部指针string
-        // defer allocator.free(op.*.title);
-        // std.debug.print("op:{s}\n", .{op.*.title});
-
-        try operations.append(try structTypeMix(allocator, Operation, op.*)); // 拷贝[]const u8
-        // try operations.append(try structTypeMix(allocator, Stage, op.*)); // 拷贝[]const u8
-    }
-
-    std.debug.print("operations:{any}\n", .{operations.items});
-}
 // pub fn select3(client: *Conn, allocator: mem.Allocator) !void {
 //     const res = try client.queryRows("select id,user_id,update_time from operation limit 10");
 //     const rows: ResultSet(TextResultRow) = try res.expect(.rows);
@@ -229,42 +140,42 @@ pub fn select(allocator: mem.Allocator, client: *Conn) !void {
 //     return list[0..];
 // }
 
-const Operation = struct {
-    id: u32,
-    user_id: u32,
-    device_id: u32,
-    action_type: u8,
-    action_entity: u8,
-    action_entity_id: u32,
-    update_time: u32,
-
-    const Self = @This();
-    var sqler: Sqler = undefined;
-
-    pub fn init(allocator: mem.Allocator, client: *Conn) !Self {
-        sqler = try Sqler.init(allocator, client, "operation");
-        return std.mem.zeroInit(Self, .{});
-    }
-    pub fn deinit(self: *Self) void {
-        _ = self;
-        sqler.deinit();
-    }
-
-    fn get(self: *Self) !void {
-        // fn get(self: *Self) []Self {
-        _ = self;
-        // try sqler.select(Self, null);
-        // try sqler.select(Self, &.{ "id", "user_id", "update_time" });
-        const list = try sqler.select(Self, &.{ "id", "user_id", "action_entity_id" });
-        defer list.deinit();
-        // std.debug.print("res:{any}", .{list.items});
-        try formatter.format(list.items, .{
-            .name = "operation",
-            .slice_elem_limit = 1000,
-            .ignore_u8_in_lists = true,
-        });
-    }
-};
+// const Operation = struct {
+//     id: u32,
+//     user_id: u32,
+//     device_id: u32,
+//     action_type: u8,
+//     action_entity: u8,
+//     action_entity_id: u32,
+//     update_time: u32,
+//
+//     const Self = @This();
+//     var sqler: Sqler = undefined;
+//
+//     pub fn init(allocator: mem.Allocator, client: *Conn) !Self {
+//         sqler = try Sqler.init(allocator, client, "operation");
+//         return std.mem.zeroInit(Self, .{});
+//     }
+//     pub fn deinit(self: *Self) void {
+//         _ = self;
+//         sqler.deinit();
+//     }
+//
+//     fn get(self: *Self) !void {
+//         // fn get(self: *Self) []Self {
+//         _ = self;
+//         const list = try sqler.select(Self, null);
+//         // try sqler.select(Self, &.{ "id", "user_id", "update_time" });
+//         // const list = try sqler.select(Self, &.{ "id", "user_id", "action_entity_id" });
+//         defer list.deinit();
+//         // std.debug.print("res:{any}", .{list.items});
+//         try formatter.format(list.items, .{
+//             .name = "operation",
+//             .slice_elem_limit = 1000,
+//             .ignore_u8_in_lists = true,
+//         });
+//     }
+// };
 
 const Stage = struct {
     id: u32,
@@ -293,18 +204,27 @@ const Stage = struct {
     }
 
     fn get(self: *Self) ![]Self {
-        // fn get(self: *Self) []Self {
         _ = self;
-        // const list = try sqler.select(Self, null);
-        const list = try sqler.selectSlice(Self, &.{ "id", "user_id", "update_time", "title", "data" });
+        // const list = try sqler.selectSlice(Self, null);
+        const list = try sqler.selectSlice(Self, &.{ "id", "stage_id", "user_id", "parent_id", "update_time", "title", "data" });
 
         try formatter.format(list, .{
             .slice_elem_limit = 1000,
             .ignore_u8_in_lists = true,
         });
         return list;
+    }
+};
 
-        // std.debug.print("res:{any}", .{list.items});
+const Article = struct {
+    id: u32,
+    user_id: u32,
+    article_id: u32,
+    update_time: u32,
+    data: []const u8,
+
+    pub fn tableName() []const u8 {
+        return "article";
     }
 };
 
@@ -318,7 +238,16 @@ pub fn selectSql(allocator: mem.Allocator, client: *Conn) !void {
     // defer opt.deinit();
     // try opt.get();
 
-    var stage = try Stage.init(allocator, client);
-    const list = try stage.get();
-    defer stage.deinit(list);
+    // var stage = try Stage.init(allocator, client);
+    // const list = try stage.get();
+    // defer stage.deinit(list);
+
+    var sqler = SqlerFn(Article).init(allocator, client);
+    const list = try sqler.limit("3").selectSlice(null);
+    // const list = try sqler.selectSlice(&.{ "article_id", "data" });
+    try formatter.format(list, .{
+        .slice_elem_limit = 1000,
+        .ignore_u8_in_lists = true,
+    });
+    defer sqler.deinit(list);
 }

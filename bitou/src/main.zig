@@ -22,7 +22,7 @@ pub fn main() !void {
     var client = try db.init(allocator);
     defer client.deinit();
     // try db.select(allocator, &client);
-    try db.selectSql(allocator, &client);
+    // try db.selectSql(allocator, &client);
 
     // _ = try db.init(allocator);
     // try db.select(allocator);
@@ -56,8 +56,11 @@ pub fn main() !void {
     std.debug.print("show ok:{}\n", .{ok});
     // -------------------------------------------------
 
-    // webui.wait();
-    // webui.clean();
+    // if (router.match("/stage")) |handle| {
+    //     handle(.{ .allocator = allocator, .evt = std.mem.zeroes(webui.Event) });
+    // }
+    webui.wait();
+    webui.clean();
 }
 
 fn receive(evt: webui.Event) void {

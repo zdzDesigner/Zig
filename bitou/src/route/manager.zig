@@ -8,8 +8,8 @@ pub const Context = struct {
     evt: webui.Event,
 };
 // const ErrorRoute = error{};
-// const Handle = fn (Context) ErrorRoute!void;
 const Handle = fn (Context) anyerror!void;
+// const Handle = *const fn (Context) anyerror!void;
 
 // 路由
 pub const Router = struct {
@@ -54,15 +54,15 @@ pub const ManageRouter = struct {
         try self.routes.append(Router.init(path, handle));
     }
 
-    pub fn match(self: Self, path: []const u8) ?void {
-        // self.routes.items
+    pub fn match(self: Self, path: []const u8) ?Handle {
         var last = self.routes.items.len;
         while (last > 0) : (last -= 1) {
             const router = self.routes.items[last - 1];
-            if (mem.eql(u8, path, router.path)) |reqpath| {
-                std.debug.print("reqpath:{s}\n", .{reqpath});
+            if (mem.eql(u8, path, router.path)) {
+                return router.handle;
             }
         }
+        return null;
     }
 };
 // pub fn createRoute() Router {}
