@@ -6,10 +6,10 @@ const mem = std.mem;
 const json = std.json;
 
 pub fn operation(ctx: zin.Context) !void {
-    const key = ctx.evt.element;
+    const key = ctx.evt.?.element;
     std.debug.print("key:{s}\n", .{key});
     // try db.select(ctx.allocator);
     const str = try std.fmt.allocPrintZ(ctx.allocator, "response xx:{s}xxx", .{key});
     defer ctx.allocator.free(str);
-    ctx.evt.returnString(str);
+    ctx.evt.?.returnString(str);
 }
