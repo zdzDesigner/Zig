@@ -17,27 +17,27 @@ pub fn Sqler(comptime T: type) type {
         const Self = @This();
         client: *Conn,
         allocator: mem.Allocator,
+        allocated: std.ArrayList(*anyopaque),
         s_limit: []const u8 = "",
 
-        var arena: std.heap.ArenaAllocator = undefined;
         pub fn init(allocator: mem.Allocator, client: *Conn) Self {
-            arena = std.heap.ArenaAllocator.init(allocator);
             return .{
                 .client = client,
-                .allocator = arena.allocator(),
+                .allocator = allocator,
+                .allocated = std.ArrayList(*anyopaque).init(allocator),
                 // .t_keys = getTKeys(T),
             };
         }
         pub fn deinit(self: *const Self, list: ?[]T) void {
-            _ = self;
-            _ = list;
-            // if (list) |l| {
-            //     defer {
-            //         for (l) |item| self.structTypeFree(item);
-            //         self.allocator.free(l);
-            //     }
+            if (list) |l| {
+                defer {
+                    for (l) |item| self.structTypeFree(item);
+                    self.allocator.free(l);
+                }
+            }
+            // for (self.allocated.items) |item| {
+            //     self.allocator.free(@as([*]u8, @ptrCast(item)));
             // }
-            arena.deinit();
         }
 
         // 构造DB扫描type
@@ -106,6 +106,7 @@ pub fn Sqler(comptime T: type) type {
             const u_page: usize = try std.fmt.parseInt(u8, page, 10);
             const u_size: usize = try std.fmt.parseInt(u8, size, 10);
             const ret = try std.fmt.allocPrint(self.allocator, "{d},{d}", .{ (u_page - 1) * u_size, u_size });
+            try self.allocated.append(ret.ptr);
             return ret;
         }
         // limit sub sql
