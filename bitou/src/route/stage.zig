@@ -24,7 +24,8 @@ pub fn list(ctx: zin.Context) !void {
 
     // std.debug.print("ctx.dbcli:{any}\n", .{ctx.dbcli});
     var sqler = db.Sqler(db.Stage).init(ctx.allocator, ctx.dbcli);
-    const stages = try sqler.limit("3").selectSlice(null);
+    // const stages = try sqler.limit("3").selectSlice(null);
+    const stages = try sqler.limit(try sqler.toLimit("2", "10")).selectSlice(null);
     // const stages = try sqler.selectSlice(&.{ "article_id", "data" });
     try formatter.format(stages, .{
         .slice_elem_limit = 1000,

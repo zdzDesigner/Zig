@@ -12,9 +12,9 @@ pub fn main() !void {
     // webui.setTimeout(0); // 防止超时 Wait forever (never timeout)
     // webui.setConfig(.multi_client, true);
 
-    var gap = heap.GeneralPurposeAllocator(.{}){};
-    defer _ = gap.deinit();
-    const allocator = gap.allocator();
+    var gpa = heap.GeneralPurposeAllocator(.{}){};
+    defer _ = gpa.deinit();
+    const allocator = gpa.allocator();
 
     // var arena = std.heap.ArenaAllocator.init(allocator);
     // defer arena.deinit(); // 统一释放, 无需单个释放
@@ -26,7 +26,7 @@ pub fn main() !void {
     // _ = try db.init(allocator);
     // try db.select(allocator);
 
-    // std.debug.print("gap.detectLeaks:{}\n", .{gap.detectLeaks()});
+    // std.debug.print("gpa.detectLeaks:{}\n", .{gpa.detectLeaks()});
 
     // while (true) {}
 
@@ -55,11 +55,14 @@ pub fn main() !void {
     std.debug.print("show ok:{}\n", .{ok});
     // -------------------------------------------------
 
+    // test ======================================================================
     if (router.match("/stage")) |handle| {
         try handle(.{ .allocator = allocator, .dbcli = &client, .evt = null });
     }
-    webui.wait();
-    webui.clean();
+    // end ======================================================================
+
+    // webui.wait();
+    // webui.clean();
 }
 
 fn receive(evt: webui.Event) void {
@@ -69,9 +72,9 @@ fn receive(evt: webui.Event) void {
     evt.returnString("xxxxx");
 
     // =====================
-    // var gap = std.heap.GeneralPurposeAllocator(.{}){};
-    // defer _ = gap.deinit();
-    // const allocator = gap.allocator();
+    // var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    // defer _ = gpa.deinit();
+    // const allocator = gpa.allocator();
     // const value = json.parse(val, allocator) catch unreachable;
     // const url = value.get("url");
     // std.debug.print("url:{}\n", .{url});

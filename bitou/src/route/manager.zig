@@ -17,7 +17,7 @@ const Handle = fn (Context) anyerror!void;
 pub const Router = struct {
     path: []const u8,
     handle: *const Handle,
-    pub fn init(path: []const u8, handle: Handle) Router {
+    pub fn init(path: []const u8, handle: *const Handle) Router {
         return .{
             .path = path,
             .handle = handle,

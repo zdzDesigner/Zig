@@ -16,6 +16,7 @@ const config = @import("config.zig");
 pub const init = config.init;
 const SqlerOld = @import("./sqler_old.zig").Sqler;
 pub const Sqler = @import("./sqler.zig").Sqler;
+pub const toLimit = @import("./sqler.zig").toLimit;
 // pub const getcli = config.getcli;
 
 // pub fn select3(client: *Conn, allocator: mem.Allocator) !void {
