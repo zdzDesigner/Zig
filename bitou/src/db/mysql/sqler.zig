@@ -104,13 +104,15 @@ pub fn Sqler(comptime T: type) type {
             return list;
         }
 
+        // limit sub sql ====================
+        pub fn toLimitInt(self: *Self, u_page: usize, u_size: usize) ![]const u8 {
+            return try std.fmt.allocPrint(self.allocator, "{d},{d}", .{ (u_page - 1) * u_size, u_size });
+        }
         pub fn toLimit(self: *Self, page: []const u8, size: []const u8) ![]const u8 {
             const u_page: usize = try std.fmt.parseInt(u8, page, 10);
             const u_size: usize = try std.fmt.parseInt(u8, size, 10);
-            const ret = try std.fmt.allocPrint(self.allocator, "{d},{d}", .{ (u_page - 1) * u_size, u_size });
-            return ret;
+            return try std.fmt.allocPrint(self.allocator, "{d},{d}", .{ (u_page - 1) * u_size, u_size });
         }
-        // limit sub sql
         pub fn limit(self: *Self, length: []const u8) Self {
             self.s_limit = length;
             return self.*;

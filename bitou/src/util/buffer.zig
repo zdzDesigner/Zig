@@ -7,10 +7,19 @@ const Buffer = struct {
 };
 pub const Response = struct {
     const Self = @This();
-    arena: Allocator,
+    arena: std.heap.ArenaAllocator,
     buffer: Buffer = Buffer{ .pos = 0, .data = "" },
+    pub fn init(allocator: Allocator) Response {
+        const arena = std.heap.ArenaAllocator.init(allocator);
+        return .{
+            .arena = arena,
+        };
+    }
+    pub fn deinit(self: *Self) void {
+        self.arena.deinit();
+    }
     pub fn toJSON(self: *Response, value: anytype) !void {
-        try std.json.stringify(value, .{}, Writer.init(self));
+        try std.json.stringify(value, .{}, Writer.init(self.arena.allocator(), self));
         self.buffer.data[self.buffer.pos] = 0;
     }
 };
@@ -18,12 +27,13 @@ pub const Response = struct {
 // std.io.Writer.
 pub const Writer = struct {
     res: *Response,
+    arena: Allocator,
 
     pub const Error = Allocator.Error;
     pub const IOWriter = std.io.Writer(Writer, error{OutOfMemory}, Writer.write);
 
-    pub fn init(res: *Response) Writer {
-        return .{ .res = res };
+    pub fn init(arena: Allocator, res: *Response) Writer {
+        return .{ .res = res, .arena = arena };
     }
 
     // pub fn truncate(self: Writer, n: usize) void {
@@ -99,13 +109,13 @@ pub const Writer = struct {
             if (new_capacity >= required_capacity) break;
         }
 
-        const new = try res.arena.alloc(u8, new_capacity);
+        const new = try self.arena.alloc(u8, new_capacity);
         if (pos > 0) {
             @memcpy(new[0..pos], data[0..pos]);
             // reasonable chance that our last allocation was buf, so we
             // might as well try freeing it (ArenaAllocator's free is a noop
             // unless you're frenig the last allocation)
-            res.arena.free(data);
+            self.arena.free(data);
         }
         buf.data = new;
         return buf;

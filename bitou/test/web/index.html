@@ -41,10 +41,16 @@
         console.log(window.webui)
         console.log({ bridge })
         await bridge.connect()
-        bridge.request("/stage").then((res) => {
-          console.log(res)
-        })
-        bridge.request("/operation/list").then((res) => {
+        bridge
+          .request("/stage", {
+            page: 3,
+            size: 10,
+            data: [{ name: "zdz" }, { name: "zym" }],
+          })
+          .then((res) => {
+            console.log(res)
+          })
+        bridge.request("/operation/list", { page: 1, size: 10 }).then((res) => {
           console.log(res)
         })
       }

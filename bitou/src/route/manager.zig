@@ -2,11 +2,23 @@ const std = @import("std");
 const webui = @import("webui");
 const myzql = @import("myzql");
 const mem = std.mem;
+const json = std.json;
 
 // 上下文
 pub const Context = struct {
+    const Self = @This();
     allocator: mem.Allocator,
     evt: ?webui.Event,
+
+    pub fn getPath(self: *const Self) ?[]u8 {
+        return self.evt.?.element;
+    }
+    pub fn getData(self: *const Self, comptime T: type) !?json.Parsed(T) {
+        if (self.evt) |evt| {
+            return try json.parseFromSlice(T, self.allocator, evt.getString(), .{});
+        }
+        return null;
+    }
 };
 // const ErrorRoute = error{};
 const Handle = fn (Context) anyerror!void;

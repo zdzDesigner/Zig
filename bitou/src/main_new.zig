@@ -60,7 +60,7 @@ pub fn main() !void {
 
     // test ======================================================================
     // if (router.match("/stage")) |handle| {
-    //     try handle(.{ .allocator = allocator, .dbcli = &client, .evt = null });
+    //     try handle(.{ .allocator = allocator, .evt = null });
     // }
     // end ======================================================================
 
