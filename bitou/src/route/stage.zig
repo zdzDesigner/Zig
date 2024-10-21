@@ -9,12 +9,17 @@ const buffer = @import("../util/buffer.zig");
 const mem = std.mem;
 const json = std.json;
 
-const StageList = struct {
-    page: usize = 1,
-    size: usize = 10,
-    data: []struct {
-        name: []const u8,
-    },
+// const StageList = struct {
+//     page: usize = 1,
+//     size: usize = 10,
+//     data: []struct {
+//         name: []const u8,
+//     },
+// };
+
+const Args = struct {
+    stage_ids: []const u8,
+    manifest: bool,
 };
 
 pub fn list(ctx: zin.Context) !void {
@@ -43,8 +48,9 @@ pub fn list(ctx: zin.Context) !void {
     const key = ctx.getPath();
     std.debug.print("key:{s}\n", .{key.?});
 
-    const data = try ctx.getData(StageList);
+    const data = try ctx.getData(Args);
     defer data.?.deinit();
+    // defer ctx.deinit();
     std.debug.print("parse stage:{}\n", .{data.?.value});
 
     // const str = try std.fmt.allocPrintZ(ctx.allocator, "response xx:{s}xxx", .{key});

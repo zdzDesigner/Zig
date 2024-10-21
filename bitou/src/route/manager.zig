@@ -2,6 +2,7 @@ const std = @import("std");
 const webui = @import("webui");
 const myzql = @import("myzql");
 const mem = std.mem;
+const heap = std.heap;
 const json = std.json;
 
 // 上下文
@@ -9,13 +10,31 @@ pub const Context = struct {
     const Self = @This();
     allocator: mem.Allocator,
     evt: ?webui.Event,
+    // arena: ?heap.ArenaAllocator = null,
 
+    var arena: heap.ArenaAllocator = undefined;
+    pub fn init(allocator: mem.Allocator, evt: webui.Event) Context {
+        arena = heap.ArenaAllocator.init(allocator);
+        return .{
+            .allocator = allocator,
+            .evt = evt,
+            // .arena = arena,
+            // .arena = heap.ArenaAllocator.init(allocator),
+        };
+    }
+    pub fn deinit(_: *const Self) void {
+        arena.deinit();
+    }
     pub fn getPath(self: *const Self) ?[]u8 {
         return self.evt.?.element;
     }
     pub fn getData(self: *const Self, comptime T: type) !?json.Parsed(T) {
         if (self.evt) |evt| {
+            std.debug.print("data:{s}\n", .{evt.getString()});
             return try json.parseFromSlice(T, self.allocator, evt.getString(), .{});
+            // return try json.parseFromSlice(T, arena.allocator(), evt.getString(), .{});
+            // self.data = try json.parseFromSlice(T, self.allocator, evt.getString(), .{});
+            // return self.data;
         }
         return null;
     }
@@ -60,7 +79,8 @@ pub const ManageRouter = struct {
             var allocator: mem.Allocator = undefined;
             var dbcli: *myzql.conn.Conn = undefined;
             fn f(evt: webui.Event) void {
-                return handle(.{ .evt = evt, .allocator = allocator }) catch unreachable;
+                // return handle(.{ .evt = evt, .allocator = allocator }) catch unreachable;
+                return handle(Context.init(allocator, evt)) catch unreachable;
             }
         };
         call.allocator = self.allocator;

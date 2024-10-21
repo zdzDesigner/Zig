@@ -36,10 +36,10 @@ pub fn main() !void {
     defer router.deinit();
     std.debug.print("router:{}\n", .{router});
 
-    if (!win.setRootFolder("assets")) return;
-    if (!win.setRootFolder("test/web")) return;
+    // if (!win.setRootFolder("assets")) return;
+    // if (!win.setRootFolder("test/web")) return;
     // if (!win.setRootFolder("/home/zdz/Documents/Try/SVG/bitou/dist")) return;
-    // if (!win.setRootFolder("/home/zdz/Documents/Try/Svg/badnib/client/dist")) return; // P1 测试
+    if (!win.setRootFolder("/home/zdz/Documents/Try/Svg/badnib/client/dist")) return; // P1 测试
 
     win.setFileHandler(fileHook);
 
@@ -50,9 +50,10 @@ pub fn main() !void {
     // const ok = win.showBrowser("index.html", .Firefox);
     // const ok = win.showBrowser("index.html", .WebView);
     // const ok = win.showBrowser("index.html", .NoBrowser); // 无窗口
-    const ok = win.startServer("index.html"); // 无窗口
-    webui.openUrl(ok.ptr[0..ok.len :0]);
-    //
+    // const ok = win.startServer("index.html"); // 无窗口
+    // webui.openUrl(ok.ptr[0..ok.len :0]);
+    const ok = win.startServer("http://localhost:10001/"); // 启动服务
+    webui.openUrl(try std.fmt.allocPrintZ(allocator, "{s}/index.html", .{ok}));
     // const ok = win.show("index.html"); // 无浏览器更新提示
     // const ok = win.show("http://localhost:10001/");
     std.debug.print("show ok:{any}\n", .{ok});
