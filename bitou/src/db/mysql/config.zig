@@ -20,6 +20,9 @@ const Conn = myzql.conn.Conn;
 //     return client;
 // }
 pub fn init(allocator: mem.Allocator) !Conn {
+    // const bef_time = std.time.microTimestamp();
+
+    std.debug.print("time", .{});
     var client = try Conn.init(allocator, &.{
         .username = "zdz",
         .password = "0",
@@ -28,5 +31,7 @@ pub fn init(allocator: mem.Allocator) !Conn {
     std.debug.print("ping .......", .{});
     try client.ping();
     std.debug.print("ok!\n", .{});
+    // const aft_time = std.time.microTimestamp();
+    // std.debug.print("time:{d},{d}\n", .{ std.time.microTimestamp(), aft_time - bef_time });
     return client;
 }

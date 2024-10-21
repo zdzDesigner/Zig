@@ -249,3 +249,12 @@ test "++" {
     std.debug.print("++:{s}\n", .{"aa" ++ "bbb"});
     std.debug.print("++:{s}\n", .{"aa" ++ std.fmt.comptimePrint("{d}", .{8}) ++ "bbb"});
 }
+
+fn zero(val: []const u8) [:0]const u8 {
+    return val.ptr[0..val.len :0];
+}
+test "zero:" {
+    const v: []const u8 = "zzz";
+    const p: [*:0]const u8 = v.ptr[0..v.len :0].ptr;
+    std.debug.print("zero:{any}\n", .{zero(std.mem.span(p))});
+}
