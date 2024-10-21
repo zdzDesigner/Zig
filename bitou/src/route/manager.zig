@@ -2,12 +2,23 @@ const std = @import("std");
 const webui = @import("webui");
 const myzql = @import("myzql");
 const mem = std.mem;
+const json = std.json;
 
 // 上下文
 pub const Context = struct {
+    const Self = @This();
     allocator: mem.Allocator,
-    dbcli: *myzql.conn.Conn,
     evt: ?webui.Event,
+
+    pub fn getPath(self: *const Self) ?[]u8 {
+        return self.evt.?.element;
+    }
+    pub fn getData(self: *const Self, comptime T: type) !?json.Parsed(T) {
+        if (self.evt) |evt| {
+            return try json.parseFromSlice(T, self.allocator, evt.getString(), .{});
+        }
+        return null;
+    }
 };
 // const ErrorRoute = error{};
 const Handle = fn (Context) anyerror!void;
@@ -29,14 +40,12 @@ pub const ManageRouter = struct {
     const Self = @This();
     allocator: mem.Allocator,
     win: webui,
-    dbcli: *myzql.conn.Conn,
     routes: std.ArrayList(Router),
 
-    pub fn init(allocator: mem.Allocator, win: webui, dbcli: *myzql.conn.Conn) ManageRouter {
+    pub fn init(allocator: mem.Allocator, win: webui) ManageRouter {
         return .{
             .allocator = allocator,
             .win = win,
-            .dbcli = dbcli,
             .routes = std.ArrayList(Router).init(allocator),
         };
     }
@@ -51,11 +60,10 @@ pub const ManageRouter = struct {
             var allocator: mem.Allocator = undefined;
             var dbcli: *myzql.conn.Conn = undefined;
             fn f(evt: webui.Event) void {
-                return handle(.{ .evt = evt, .allocator = allocator, .dbcli = dbcli }) catch unreachable;
+                return handle(.{ .evt = evt, .allocator = allocator }) catch unreachable;
             }
         };
         call.allocator = self.allocator;
-        call.dbcli = self.dbcli;
         _ = self.win.bind(path, call.f);
         try self.routes.append(Router.init(path, handle));
     }

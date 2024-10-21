@@ -11,19 +11,20 @@ const BinaryResultRow = myzql.result.BinaryResultRow;
 const ResultRowIter = myzql.result.ResultRowIter;
 const TextElems = myzql.result.TextElems;
 const PreparedStatement = myzql.result.PreparedStatement;
+const config = @import("config.zig");
 
 pub fn Sqler(comptime T: type) type {
     return struct {
         const Self = @This();
-        client: *Conn,
         allocator: mem.Allocator,
         s_limit: []const u8 = "",
 
         var arena: std.heap.ArenaAllocator = undefined;
-        pub fn init(allocator: mem.Allocator, client: *Conn) Self {
+        var client: Conn = undefined;
+        pub fn init(allocator: mem.Allocator) !Self {
+            client = try config.init(allocator);
             arena = std.heap.ArenaAllocator.init(allocator);
             return .{
-                .client = client,
                 .allocator = arena.allocator(),
                 // .t_keys = getTKeys(T),
             };
@@ -37,6 +38,7 @@ pub fn Sqler(comptime T: type) type {
             //         self.allocator.free(l);
             //     }
             // }
+            client.deinit();
             arena.deinit();
         }
 
@@ -102,13 +104,15 @@ pub fn Sqler(comptime T: type) type {
             return list;
         }
 
+        // limit sub sql ====================
+        pub fn toLimitInt(self: *Self, u_page: usize, u_size: usize) ![]const u8 {
+            return try std.fmt.allocPrint(self.allocator, "{d},{d}", .{ (u_page - 1) * u_size, u_size });
+        }
         pub fn toLimit(self: *Self, page: []const u8, size: []const u8) ![]const u8 {
             const u_page: usize = try std.fmt.parseInt(u8, page, 10);
             const u_size: usize = try std.fmt.parseInt(u8, size, 10);
-            const ret = try std.fmt.allocPrint(self.allocator, "{d},{d}", .{ (u_page - 1) * u_size, u_size });
-            return ret;
+            return try std.fmt.allocPrint(self.allocator, "{d},{d}", .{ (u_page - 1) * u_size, u_size });
         }
-        // limit sub sql
         pub fn limit(self: *Self, length: []const u8) Self {
             self.s_limit = length;
             return self.*;
@@ -146,13 +150,13 @@ pub fn Sqler(comptime T: type) type {
             // const SQL = "select id,stage_id,user_id,parent_id,update_time,title,data from stage limit 10";
 
             // 预处理 ===================
-            const pre_res = try self.client.prepare(self.allocator, SQL);
+            const pre_res = try client.prepare(self.allocator, SQL);
             defer pre_res.deinit(self.allocator);
 
             // 执行 ===================
             // const pre_rows: PreparedStatement = try pre_res.expect(.stmt);
             // std.debug.print("result:{}\n", .{pre_rows});
-            const res = try self.client.executeRows(&try pre_res.expect(.stmt), .{}); // no parameters because there's no ? in the query
+            const res = try client.executeRows(&try pre_res.expect(.stmt), .{}); // no parameters because there's no ? in the query
             const rows: ResultSet(BinaryResultRow) = try res.expect(.rows);
             const rows_iter: ResultRowIter(BinaryResultRow) = rows.iter();
             // const rows_iter: ResultRowIter(BinaryResultRow) = (try res.expect(.rows)).iter();

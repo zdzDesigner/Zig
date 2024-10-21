@@ -219,6 +219,18 @@ pub const toLimit = @import("./sqler.zig").toLimit;
 //     }
 // };
 
+pub const Operation = struct {
+    id: u32,
+    user_id: u32,
+    device_id: u32,
+    action_type: u8,
+    action_entity: u8,
+    action_entity_id: u32,
+    update_time: u32,
+    pub fn tableName() []const u8 {
+        return "operation";
+    }
+};
 pub const Stage = struct {
     id: u32,
     user_id: u32,
