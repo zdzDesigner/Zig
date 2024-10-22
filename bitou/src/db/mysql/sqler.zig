@@ -18,6 +18,7 @@ pub fn Sqler(comptime T: type) type {
         const Self = @This();
         allocator: mem.Allocator,
         s_limit: []const u8 = "",
+        s_in: []const u8 = "",
 
         var arena: std.heap.ArenaAllocator = undefined;
         var client: Conn = undefined;
@@ -113,8 +114,17 @@ pub fn Sqler(comptime T: type) type {
             const u_size: usize = try std.fmt.parseInt(u8, size, 10);
             return try std.fmt.allocPrint(self.allocator, "{d},{d}", .{ (u_page - 1) * u_size, u_size });
         }
-        pub fn limit(self: *Self, length: []const u8) Self {
-            self.s_limit = length;
+        pub fn limit(self: *Self, sql_limit: []const u8) Self {
+            self.s_limit = sql_limit;
+            return self.*;
+        }
+
+        pub fn toIn(self: *Self, key: []const u8, list: std.ArrayList([]const u8)) ![]const u8 {
+            const sql_in = try std.mem.join(self.allocator, ",", list.items);
+            return try std.fmt.allocPrint(self.allocator, "{s} {s}", .{ key, sql_in });
+        }
+        pub fn in(self: *Self, sql_in: []const u8) Self {
+            self.s_in = sql_in;
             return self.*;
         }
 

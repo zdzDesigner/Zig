@@ -220,9 +220,9 @@ pub const toLimit = @import("./sqler.zig").toLimit;
 // };
 
 pub const Operation = struct {
-    id: u32,
-    user_id: u32,
-    device_id: u32,
+    id: u32 = 0,
+    user_id: u32 = 0,
+    device_id: u32 = 0,
     action_type: u8,
     action_entity: u8,
     action_entity_id: u32,
@@ -232,9 +232,9 @@ pub const Operation = struct {
     }
 };
 pub const Stage = struct {
-    id: u32,
-    user_id: u32,
-    stage_id: u32,
+    id: u32 = 0,
+    user_id: u32 = 0,
+    stage_id: u32 = 0,
     parent_id: u32,
     update_time: u32,
     title: []const u8,
@@ -244,8 +244,8 @@ pub const Stage = struct {
     }
 };
 pub const Article = struct {
-    id: u32,
-    user_id: u32,
+    id: u32 = 0,
+    user_id: u32 = 0,
     article_id: u32,
     update_time: u32,
     data: []const u8,

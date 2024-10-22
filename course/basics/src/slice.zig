@@ -8,12 +8,10 @@ const expect = std.testing.expect;
 pub fn logic() void {
     std.log.info("--------- slice ---------\n", .{});
     basevar();
-    slice();
-    array();
     pointer();
 }
 
-fn array() void {
+test "array:" {
     var arr = [_]u8{ 1, 3, 4, 5 };
     arr[0] = 33;
 
@@ -33,7 +31,7 @@ fn basevar() void {
     std.log.info("字符串常量:{any}", .{@TypeOf(c)}); // *const [7:0]u8
 }
 
-fn slice() void {
+test "slice" {
     arrval([_]i32{ 1, 2, 3 });
 
     const a = [_]i32{ 1, 2, 3, 4, 5 };
@@ -171,6 +169,7 @@ test "slice pointer" {
 test "update arr" {}
 
 test "append:" {
+    std.debug.print("=============== append:\n", .{});
     comptime var list: []const []const u8 = &.{};
     // comptime var list: []const []const u8 = undefined; // error: use of undefined value here causes undefined behavior
     list = list ++ .{"aa"};
@@ -179,6 +178,12 @@ test "append:" {
     std.debug.print("list:{any}, length:{}\n", .{ list, list.len });
 }
 
+test "slice []const u8:" {
+    std.debug.print("=============== slice []const u8:\n", .{});
+    const list: [][]const u8 = &.{};
+
+    std.debug.print("list:{any}, length:{}\n", .{ list, list.len });
+}
 test "struct field append:" {
     // comptime var list: []const []const u8 = &.{};
     // const songlist = struct { // error: type capture contains reference to comptime var
@@ -239,4 +244,20 @@ test "slice and pointer::" {
     sliceptr2(&a);
     var b = @as([]const u8, "bbbb");
     sliceptr2(&b);
+}
+
+fn myFunc(array: anytype) void {
+    const real_array: [array.len]u32 = array;
+    return myFuncSlice(&real_array);
+}
+fn myFuncSlice(slice: []const u32) void {
+    std.debug.print("slice:{any}\n", .{slice});
+}
+
+test "from array" {
+    const arr: [3]u32 = .{ 1, 2, 3 };
+    myFunc(arr);
+    myFunc(.{ 1, 2, 3, 4 });
+    // error: type '[]const u32' does not support array initialization syntax
+    myFuncSlice(.{ 1, 2, 3, 4 });
 }

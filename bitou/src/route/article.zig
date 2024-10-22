@@ -8,39 +8,44 @@ const mem = std.mem;
 const json = std.json;
 
 pub fn list(ctx: zin.Context) !void {
-    const Args = struct {};
-
-    const data = try ctx.getData(Args);
+    const data = try ctx.getData(struct {
+        article_ids: ?[]const u8,
+        manifest: ?bool,
+    });
     defer data.?.deinit();
 
-    var sqler = try db.Sqler(db.Operation).init(ctx.allocator);
-    const ops = try sqler.selectSlice(null);
+    std.debug.print("data:{any}\n", .{data.?});
+    // data.?.value.manifest
+
+    var sqler = try db.Sqler(db.Article).init(ctx.allocator);
+    const ops = try sqler.in(try sqler.toIn("id", std.ArrayList([]const u8).init(ctx.allocator))).selectSlice(null);
     defer sqler.deinit(ops);
-
-    var res = buffer.Response.init(ctx.allocator);
-    defer res.deinit();
-    try res.toJSON(struct {
-        code: usize,
-        data: []db.Operation,
-    }{
-        .code = 0,
-        .data = ops,
-    });
-
-    ctx.evt.?.returnString(res.buffer.data[0..res.buffer.pos :0]);
+    //
+    // var res = buffer.Response.init(ctx.allocator);
+    // defer res.deinit();
+    // try res.toJSON(struct {
+    //     code: usize,
+    //     data: []db.Article,
+    // }{
+    //     .code = 0,
+    //     .data = ops,
+    // });
+    //
+    // ctx.evt.?.returnString(res.buffer.data[0..res.buffer.pos :0]);
+    ctx.evt.?.returnString("[]");
 }
 
 pub fn save(ctx: zin.Context) !void {
     // {"data":[{"action_type":1,"action_entity":0,"action_entity_id":1,"update_time":1729569565}]}
     const Args = struct {
-        data: []db.Operation,
+        data: []db.Article,
     };
 
     const data = try ctx.getData(Args);
     defer data.?.deinit();
     std.debug.print("data:{any}\n", .{data});
 
-    // var sqler = try db.Sqler(db.Operation).init(ctx.allocator);
+    // var sqler = try db.Sqler(db.Article).init(ctx.allocator);
     // const ops = try sqler.limit(try sqler.toLimit("200", "10")).selectSlice(null);
     // defer sqler.deinit(ops);
     //

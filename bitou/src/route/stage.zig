@@ -17,12 +17,11 @@ const json = std.json;
 //     },
 // };
 
-const Args = struct {
-    stage_ids: []const u8,
-    manifest: bool,
-};
-
 pub fn list(ctx: zin.Context) !void {
+    const Args = struct {
+        stage_ids: []const u8,
+        manifest: bool,
+    };
     var sqler = try db.Sqler(db.Stage).init(ctx.allocator);
     // const stages = try sqler.limit("3").selectSlice(null);
     const stages = try sqler.limit(try sqler.toLimit("2", "10")).selectSlice(null);
@@ -57,4 +56,31 @@ pub fn list(ctx: zin.Context) !void {
     // defer ctx.allocator.free(str);
     ctx.evt.?.returnString(res.buffer.data[0..res.buffer.pos :0]);
     // ctx.evt.?.returnValue(res.buffer.data[0..res.buffer.pos]);
+}
+
+pub fn save(ctx: zin.Context) !void {
+    // {"data":[
+    //   {
+    //     "stage_id":1,
+    //     "parent_id":0,
+    //     "update_time":1729575485,
+    //     "title":"default",
+    //     "data":"{\"view\":{\"x\":0,\"y\":1,\"width\":309,\"height\":846,\"scale\":1,\"isshowside\":false},\"points\":[]}"
+    //   }]}
+    const Args = struct {
+        data: []db.Stage,
+    };
+    const key = ctx.getPath();
+    std.debug.print("key:{s}\n", .{key.?});
+
+    const data = try ctx.getData(Args);
+    defer data.?.deinit();
+    // defer ctx.deinit();
+    std.debug.print("parse stage:{}\n", .{data.?.value});
+
+    // const str = try std.fmt.allocPrintZ(ctx.allocator, "response xx:{s}xxx", .{key});
+    // defer ctx.allocator.free(str);
+    // ctx.evt.?.returnString(res.buffer.data[0..res.buffer.pos :0]);
+    // ctx.evt.?.returnValue(res.buffer.data[0..res.buffer.pos]);
+    ctx.evt.?.returnString("[]");
 }

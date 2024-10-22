@@ -42,17 +42,25 @@
         console.log({ bridge })
         await bridge.connect()
         bridge
-          .request("/stage", {
-            page: 3,
-            size: 10,
-            data: [{ name: "zdz" }, { name: "zym" }],
+          .request("/get/stage", {
+            stage_ids: "",
+            manifest: false,
           })
           .then((res) => {
             console.log(res)
           })
-        bridge.request("/operation/list", { page: 1, size: 10 }).then((res) => {
+        bridge.request("/get/operation/list", {}).then((res) => {
           console.log(res)
         })
+        bridge
+          .request("/get/article", {
+            article_ids:
+              "1-2-3-5-6-9-10-11-12-13-14-15-16-17-19-20-21-22-23-24-25-26-27-28-29-30-31-32-33-34-35-38-40-41-42-43-44-45-46-49-50-51-52-53-54-55-56-57-58-61-63-64-65-67-69-70-71-72-18-36-37-39-47-48-59-60-62-66-68-73",
+            manifest: false,
+          })
+          .then((res) => {
+            console.log(res)
+          })
       }
     </script>
   </body>

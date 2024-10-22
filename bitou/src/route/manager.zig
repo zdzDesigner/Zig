@@ -30,7 +30,8 @@ pub const Context = struct {
     }
     pub fn getData(self: *const Self, comptime T: type) !?json.Parsed(T) {
         if (self.evt) |evt| {
-            std.debug.print("data:{s}\n", .{evt.getString()});
+            std.debug.print("==path==:{s}\n", .{evt.element});
+            std.debug.print("==data==:{s}\n", .{evt.getString()});
             return try json.parseFromSlice(T, self.allocator, evt.getString(), .{});
             // return try json.parseFromSlice(T, arena.allocator(), evt.getString(), .{});
             // self.data = try json.parseFromSlice(T, self.allocator, evt.getString(), .{});
@@ -74,6 +75,23 @@ pub const ManageRouter = struct {
     }
 
     // 添加路由
+    pub fn get(self: *Self, path: [:0]const u8, handle: Handle) !void {
+        try self.method("get", path, handle);
+    }
+    pub fn post(self: *Self, path: [:0]const u8, handle: Handle) !void {
+        try self.method("post", path, handle);
+    }
+    pub fn put(self: *Self, path: [:0]const u8, handle: Handle) !void {
+        try self.method("put", path, handle);
+    }
+    pub fn delete(self: *Self, path: [:0]const u8, handle: Handle) !void {
+        try self.method("delete", path, handle);
+    }
+    pub fn method(self: *Self, comptime method_name: []const u8, path: [:0]const u8, handle: Handle) !void {
+        const all_path = try std.fmt.allocPrintZ(self.allocator, "/{s}{s}", .{ method_name, path });
+        defer self.allocator.free(all_path);
+        try self.use(all_path, handle);
+    }
     pub fn use(self: *Self, path: [:0]const u8, handle: Handle) !void {
         const call = struct {
             var allocator: mem.Allocator = undefined;
