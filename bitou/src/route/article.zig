@@ -18,6 +18,7 @@ pub fn list(ctx: zin.Context) !void {
     // data.?.value.manifest
 
     var sqler = try db.Sqler(db.Article).init(ctx.allocator);
+    // std.mem.split(comptime T: type, buffer: []const T, delimiter: []const T)
     const ops = try sqler.in(try sqler.toIn("id", std.ArrayList([]const u8).init(ctx.allocator))).selectSlice(null);
     defer sqler.deinit(ops);
     //

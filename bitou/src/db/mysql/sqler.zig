@@ -120,11 +120,13 @@ pub fn Sqler(comptime T: type) type {
         }
 
         pub fn toIn(self: *Self, key: []const u8, list: std.ArrayList([]const u8)) ![]const u8 {
+            if (list.items.len == 0) return "";
             const sql_in = try std.mem.join(self.allocator, ",", list.items);
             return try std.fmt.allocPrint(self.allocator, "{s} {s}", .{ key, sql_in });
         }
         pub fn in(self: *Self, sql_in: []const u8) Self {
             self.s_in = sql_in;
+            std.debug.print("sql_in:{s}\n", .{sql_in});
             return self.*;
         }
 
@@ -150,10 +152,14 @@ pub fn Sqler(comptime T: type) type {
             defer self.allocator.free(sql_key);
             // std.debug.print("sqlkey:{s}\n", .{sql_key});
             const SQL = blk: {
-                if (self.s_limit.len == 0) {
-                    break :blk try std.fmt.allocPrint(self.allocator, "select {s} from {s}", .{ sql_key, T.tableName() });
+                var sql = try std.fmt.allocPrint(self.allocator, "select {s} from {s}", .{ sql_key, T.tableName() });
+                if (self.s_in.len != 0) {
+                    sql = try std.fmt.allocPrint(self.allocator, "{s} {s}", .{ sql, self.s_in });
                 }
-                break :blk try std.fmt.allocPrint(self.allocator, "select {s} from {s} limit {s}", .{ sql_key, T.tableName(), self.s_limit });
+                if (self.s_limit.len != 0) {
+                    sql = try std.fmt.allocPrint(self.allocator, "{s} limit {s}", .{ sql, self.s_limit });
+                }
+                break :blk sql;
             };
             defer self.allocator.free(SQL);
             std.debug.print("SQL:{s}\n", .{SQL});
