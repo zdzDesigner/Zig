@@ -249,6 +249,14 @@ test "++" {
     std.debug.print("++:{s}\n", .{"aa" ++ "bbb"});
     std.debug.print("++:{s}\n", .{"aa" ++ std.fmt.comptimePrint("{d}", .{8}) ++ "bbb"});
 }
+test "++2" {
+    // var a: []const u8 = "aaa";
+    // var b: []const u8 = "bbb";
+    // //  error: unable to resolve comptime value
+    // std.debug.print("++:{s}\n", .{a ++ b});
+    // a = "cc";
+    // b = "cc";
+}
 
 fn zero(val: []const u8) [:0]const u8 {
     return val.ptr[0..val.len :0];

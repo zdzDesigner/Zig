@@ -1,8 +1,10 @@
 const std = @import("std");
+const String = @import("string").String;
 const webui = @import("webui");
 const zin = @import("./manager.zig");
 const db = @import("../db/mysql/db.zig");
 const lang = @import("../util/lang.zig");
+const conv = @import("../util/conv.zig");
 const buffer = @import("../util/buffer.zig");
 const mem = std.mem;
 const json = std.json;
@@ -18,22 +20,23 @@ pub fn list(ctx: zin.Context) !void {
     // data.?.value.manifest
 
     var sqler = try db.Sqler(db.Article).init(ctx.allocator);
-    // std.mem.split(comptime T: type, buffer: []const T, delimiter: []const T)
-    const ops = try sqler.in(try sqler.toIn("id", std.ArrayList([]const u8).init(ctx.allocator))).selectSlice(null);
+
+    var str = String.init(ctx.allocator);
+    try str.concat(data.?.value.article_ids.?);
+    const v = try str.splitAll("-");
+    std.debug.print("v:{any}\n", .{v});
+    const ops = try sqler.in("id", try sqler.toIn(v)).selectSlice(null);
     defer sqler.deinit(ops);
-    //
-    // var res = buffer.Response.init(ctx.allocator);
-    // defer res.deinit();
-    // try res.toJSON(struct {
-    //     code: usize,
-    //     data: []db.Article,
-    // }{
-    //     .code = 0,
-    //     .data = ops,
-    // });
-    //
-    // ctx.evt.?.returnString(res.buffer.data[0..res.buffer.pos :0]);
-    ctx.evt.?.returnString("[]");
+
+    var res = buffer.Response.init(ctx.allocator);
+    defer res.deinit();
+    try res.toJSON(struct { code: usize, data: []db.Article }{
+        .code = 0,
+        .data = ops,
+    });
+
+    ctx.evt.?.returnString(res.buffer.data[0..res.buffer.pos :0]);
+    // ctx.evt.?.returnString("[]");
 }
 
 pub fn save(ctx: zin.Context) !void {

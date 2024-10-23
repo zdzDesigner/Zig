@@ -3,6 +3,7 @@
     .version = "0.1.0",
 
     .dependencies = .{
+        .@"zig-string" = .{ .path = "../../fork/zig-string" },
         .@"zig-webui" = .{ .path = "../../fork/zig-webui" },
         .@"zig-json" = .{ .path = "../../fork/zig-json" },
         .@"tree-fmt" = .{ .path = "../../fork/tree-fmt" },

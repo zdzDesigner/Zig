@@ -10,6 +10,11 @@ pub fn build(b: *std.Build) void {
         // .optimize = optimize,
     });
 
+    const string = b.dependency("zig-string", .{
+        .target = target,
+        .optimize = optimize,
+    });
+
     const webui = b.dependency("zig-webui", .{
         .target = target,
         .optimize = optimize,
@@ -35,6 +40,7 @@ pub fn build(b: *std.Build) void {
     });
 
     exe.root_module.addImport("tree-fmt", tree.module("tree-fmt"));
+    exe.root_module.addImport("string", string.module("string"));
     exe.root_module.addImport("webui", webui.module("webui"));
     exe.root_module.addImport("json", json.module("zig-json"));
     exe.root_module.addImport("myzql", myzql.module("myzql"));

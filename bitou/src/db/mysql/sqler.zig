@@ -3,6 +3,7 @@ const formatter = @import("tree-fmt").defaultFormatter();
 const std = @import("std");
 const meta = std.meta;
 const mem = std.mem;
+const String = @import("string").String;
 const myzql = @import("myzql");
 const Conn = myzql.conn.Conn;
 const ResultSet = myzql.result.ResultSet;
@@ -115,18 +116,21 @@ pub fn Sqler(comptime T: type) type {
             return try std.fmt.allocPrint(self.allocator, "{d},{d}", .{ (u_page - 1) * u_size, u_size });
         }
         pub fn limit(self: *Self, sql_limit: []const u8) Self {
+            // self.s_limit = std.fmt.allocPrint(self.allocator, "limit {s}", .{sql_limit}) catch unreachable;
             self.s_limit = sql_limit;
             return self.*;
         }
 
-        pub fn toIn(self: *Self, key: []const u8, list: std.ArrayList([]const u8)) ![]const u8 {
-            if (list.items.len == 0) return "";
-            const sql_in = try std.mem.join(self.allocator, ",", list.items);
-            return try std.fmt.allocPrint(self.allocator, "{s} {s}", .{ key, sql_in });
+        pub fn toIn(self: *Self, list: [][]const u8) ![]const u8 {
+            if (list.len == 0) return "";
+            std.debug.print("v:{any}", .{try std.mem.join(self.allocator, ",", list)});
+            return try std.mem.join(self.allocator, ",", list);
         }
-        pub fn in(self: *Self, sql_in: []const u8) Self {
-            self.s_in = sql_in;
-            std.debug.print("sql_in:{s}\n", .{sql_in});
+        pub fn in(self: *Self, key: []const u8, val: []const u8) Self {
+            std.debug.print("key:{s}\n", .{key});
+            std.debug.print("val:{s}\n", .{val});
+            // self.s_in = std.fmt.allocPrint(self.allocator, "{s} in ({s})", .{ key, "2,3,4" }) catch unreachable;
+            self.s_in = std.fmt.allocPrint(self.allocator, "{s} in ({s})", .{ key, val }) catch unreachable;
             return self.*;
         }
 
@@ -152,9 +156,11 @@ pub fn Sqler(comptime T: type) type {
             defer self.allocator.free(sql_key);
             // std.debug.print("sqlkey:{s}\n", .{sql_key});
             const SQL = blk: {
+                var str = String.init(self.allocator);
                 var sql = try std.fmt.allocPrint(self.allocator, "select {s} from {s}", .{ sql_key, T.tableName() });
-                if (self.s_in.len != 0) {
-                    sql = try std.fmt.allocPrint(self.allocator, "{s} {s}", .{ sql, self.s_in });
+                if (self.s_in.len != 0) try str.concat(self.s_in);
+                if (str.len() > 0) {
+                    sql = try std.fmt.allocPrint(self.allocator, "{s} where {s}", .{ sql, str.str() });
                 }
                 if (self.s_limit.len != 0) {
                     sql = try std.fmt.allocPrint(self.allocator, "{s} limit {s}", .{ sql, self.s_limit });
