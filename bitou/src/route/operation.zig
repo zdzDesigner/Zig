@@ -38,7 +38,7 @@ pub fn save(ctx: zin.Context) !void {
 
     const data = try ctx.getData(Args);
     defer data.?.deinit();
-    std.debug.print("data:{any}\n", .{data});
+    // std.debug.print("data:{any}\n", .{data});
 
     // var sqler = try db.Sqler(db.Operation).init(ctx.allocator);
     // const ops = try sqler.limit(try sqler.toLimit("200", "10")).selectSlice(null);

@@ -16,16 +16,15 @@ pub fn list(ctx: zin.Context) !void {
     });
     defer data.?.deinit();
 
-    std.debug.print("data:{any}\n", .{data.?});
+    // std.debug.print("data:{any}\n", .{data.?});
     // data.?.value.manifest
 
     var sqler = try db.Sqler(db.Article).init(ctx.allocator);
 
     var str = String.init(ctx.allocator);
     try str.concat(data.?.value.article_ids.?);
-    const v = try str.splitAll("-");
-    std.debug.print("v:{any}\n", .{v});
-    const ops = try sqler.in("id", try sqler.toIn(v)).selectSlice(null);
+    // std.debug.print("v:{any}\n", .{v});
+    const ops = try sqler.in("id", try sqler.toIn(try str.splitAll("-"))).selectSlice(null);
     defer sqler.deinit(ops);
 
     var res = buffer.Response.init(ctx.allocator);

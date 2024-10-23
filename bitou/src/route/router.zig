@@ -16,6 +16,7 @@ pub fn bind(allocator: mem.Allocator, win: webui) !zin.ManageRouter {
     try router.get("/stage", stage.list);
     try router.post("/stage", stage.save);
     try router.get("/article", article.list);
+    try router.post("/article", article.save);
     try router.post("/stage", stage.save);
 
     return router;
