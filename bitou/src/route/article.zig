@@ -24,18 +24,13 @@ pub fn list(ctx: zin.Context) !void {
     var str = String.init(ctx.allocator);
     try str.concat(data.?.value.article_ids.?);
     // std.debug.print("v:{any}\n", .{v});
-    const ops = try sqler.in("id", try sqler.toIn(try str.splitAll("-"))).selectSlice(null);
-    defer sqler.deinit(ops);
+    const articles = try sqler.in("id", try sqler.toIn(try str.splitAll("-"))).selectSlice(null);
+    defer sqler.deinit(articles);
 
-    var res = buffer.Response.init(ctx.allocator);
-    defer res.deinit();
-    try res.toJSON(struct { code: usize, data: []db.Article }{
+    try ctx.data(struct { code: usize, data: []db.Article }{
         .code = 0,
-        .data = ops,
+        .data = articles,
     });
-
-    ctx.evt.?.returnString(res.buffer.data[0..res.buffer.pos :0]);
-    // ctx.evt.?.returnString("[]");
 }
 
 pub fn save(ctx: zin.Context) !void {
@@ -49,12 +44,12 @@ pub fn save(ctx: zin.Context) !void {
     std.debug.print("data:{any}\n", .{data});
 
     // var sqler = try db.Sqler(db.Article).init(ctx.allocator);
-    // const ops = try sqler.limit(try sqler.toLimit("200", "10")).selectSlice(null);
-    // defer sqler.deinit(ops);
+    // const articles = try sqler.limit(try sqler.toLimit("200", "10")).selectSlice(null);
+    // defer sqler.deinit(articles);
     //
     // var res = buffer.Response.init(ctx.allocator);
     // defer res.deinit();
-    // try res.toJSON(ops);
+    // try res.toJSON(articles);
 
     // 当前的接口
     ctx.evt.?.returnString("[]");

@@ -1,6 +1,8 @@
 const std = @import("std");
 const webui = @import("webui");
 const myzql = @import("myzql");
+const buffer = @import("../util/buffer.zig");
+
 const mem = std.mem;
 const heap = std.heap;
 const json = std.json;
@@ -39,7 +41,15 @@ pub const Context = struct {
         }
         return null;
     }
+
+    pub fn data(self: *const Self, value: anytype) !void {
+        var res = buffer.Response.init(self.allocator);
+        defer res.deinit();
+        try res.toJSON(value);
+        self.evt.?.returnString(res.buffer.data[0..res.buffer.pos :0]);
+    }
 };
+
 // const ErrorRoute = error{};
 const Handle = fn (Context) anyerror!void;
 // const Handle = *const fn (Context) anyerror!void;

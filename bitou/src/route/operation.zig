@@ -17,17 +17,13 @@ pub fn list(ctx: zin.Context) !void {
     const ops = try sqler.selectSlice(null);
     defer sqler.deinit(ops);
 
-    var res = buffer.Response.init(ctx.allocator);
-    defer res.deinit();
-    try res.toJSON(struct {
+    try ctx.data(struct {
         code: usize,
         data: []db.Operation,
     }{
         .code = 0,
         .data = ops,
     });
-
-    ctx.evt.?.returnString(res.buffer.data[0..res.buffer.pos :0]);
 }
 
 pub fn save(ctx: zin.Context) !void {

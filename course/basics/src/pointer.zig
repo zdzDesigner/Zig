@@ -286,3 +286,24 @@ test "pointer const:" {
     // val.* = 3; // error: cannot assign to constant
     // std.debug.print("val:{}\n", .{val.*});
 }
+
+test "base::" {
+    // 常量
+    const a: u8 = 89;
+    std.debug.print("@TypeOf(a):{}\n", .{@TypeOf(a)}); // u8
+    std.debug.print("@TypeOf(&a):{}\n", .{@TypeOf(&a)}); // *const u8 (常量指针)
+
+    // 变量
+    var b: u8 = 89;
+    std.debug.print("@TypeOf(b):{}\n", .{@TypeOf(b)}); // u8
+    std.debug.print("@TypeOf(&b):{}\n", .{@TypeOf(&b)}); // *u8(指针)
+    b = b;
+
+    const c: *u8 = &b;
+    std.debug.print("@TypeOf(c):{}\n", .{@TypeOf(c)}); // *u8(指针常量)
+    std.debug.print("@TypeOf(c.*):{}\n", .{@TypeOf(c.*)}); // u8
+
+    var d: *u8 = undefined;
+    std.debug.print("@TypeOf(d):{}\n", .{@TypeOf(d)}); // *u8
+    d = &b;
+}

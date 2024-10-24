@@ -45,12 +45,12 @@ pub fn list(ctx: zin.Context) !void {
     // var res = buffer.Response{ .arena = arena.allocator() };
     // try res.toJSON(stages);
 
-    var res = buffer.Response.init(ctx.allocator);
-    defer res.deinit();
-    try res.toJSON(struct { code: usize, data: []db.Stage }{
-        .code = 0,
-        .data = stages,
-    });
+    // var res = buffer.Response.init(ctx.allocator);
+    // defer res.deinit();
+    // try res.toJSON(struct { code: usize, data: []db.Stage }{
+    //     .code = 0,
+    //     .data = stages,
+    // });
 
     // const key = ctx.evt.?.element;
     const key = ctx.getPath();
@@ -61,8 +61,13 @@ pub fn list(ctx: zin.Context) !void {
 
     // const str = try std.fmt.allocPrintZ(ctx.allocator, "response xx:{s}xxx", .{key});
     // defer ctx.allocator.free(str);
-    ctx.evt.?.returnString(res.buffer.data[0..res.buffer.pos :0]);
+    // ctx.evt.?.returnString(res.buffer.data[0..res.buffer.pos :0]);
     // ctx.evt.?.returnValue(res.buffer.data[0..res.buffer.pos]);
+
+    try ctx.data(struct { code: usize, data: []db.Stage }{
+        .code = 0,
+        .data = stages,
+    });
 }
 
 pub fn save(ctx: zin.Context) !void {

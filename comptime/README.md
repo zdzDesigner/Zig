@@ -1,11 +1,3 @@
-## 查看IR (未达预期)
-➜  zig build-exe ./base.zig -femit-llvm-ir -DreleaseFast
-➜  zig build-obj -O ReleaseSmall ./base.zig -femit-llvm-ir -target arm-freestanding 
-
-
-
-zig build-exe ./attr.zig -target arm-freestanding
-
 ## debug
 ```sh
 zig build-exe ./base.zig
@@ -24,6 +16,27 @@ gdb ./base
 b base.main
 ```
 
+## 验证符号表(`-target` arm-freestanding)
+```sh
+zig build-exe ./attr.zig -target arm-freestanding
+```
 
 
 
+
+## 验证comptime
+```sh
+zig build-exe ./blk.zig
+```
+
+
+
+
+## IR
+➜  zig build-exe ./base.zig -femit-llvm-ir -DreleaseFast
+➜  zig build-obj -O ReleaseSmall ./base.zig -femit-llvm-ir -target arm-freestanding 
+
+
+## feature
+√ 验证comptime data
+x 查看IR (未达预期)

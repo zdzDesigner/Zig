@@ -9,3 +9,14 @@ test "@setRuntimeSafety::" {
         x1 += 1;
     }
 }
+
+fn comp() !void {
+    if (!@inComptime()) {
+        // 运行时执行了
+        @compileLog("=============");
+    }
+}
+
+test "@inComptime::" {
+    try comp();
+}
