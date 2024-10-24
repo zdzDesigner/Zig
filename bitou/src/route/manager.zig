@@ -43,6 +43,7 @@ pub const Context = struct {
     }
 
     pub fn data(self: *const Self, value: anytype) !void {
+        defer self.deinit();
         var res = buffer.Response.init(self.allocator);
         defer res.deinit();
         try res.toJSON(value);

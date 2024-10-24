@@ -38,8 +38,8 @@ pub fn main() !void {
 
     // if (!win.setRootFolder("assets")) return; // 发布
     // if (!win.setRootFolder("test/web")) return; // web unit测试
-    if (!win.setRootFolder("/home/zdz/Documents/Try/SVG/bitou/dist")) return; // web 开发
-    // if (!win.setRootFolder("/home/zdz/Documents/Try/Svg/badnib/client/dist")) return; // P1 测试
+    // if (!win.setRootFolder("/home/zdz/Documents/Try/SVG/bitou/dist")) return; // web 开发
+    if (!win.setRootFolder("/home/zdz/Documents/Try/Svg/badnib/client/dist")) return; // P1 测试
 
     win.setFileHandler(fileHook);
 
